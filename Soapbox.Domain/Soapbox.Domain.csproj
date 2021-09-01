@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.26.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Soapbox.Core\Soapbox.Core.csproj" />
+    <ProjectReference Include="..\Soapbox.DataAccess\Soapbox.DataAccess.csproj" />
+    <ProjectReference Include="..\Soapbox.Models\Soapbox.Models.csproj" />
+  </ItemGroup>
+
+</Project>

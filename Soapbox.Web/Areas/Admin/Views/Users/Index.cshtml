@@ -1,0 +1,34 @@
+@model IEnumerable<Soapbox.Core.Identity.SoapboxUser>;
+
+  <header>
+    <h1>Users</h1>
+    <a asp-area="Admin" asp-controller="Users" asp-action="Create"><span class="material-icons">add</span></a>
+  </header>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var user in Model)
+      {
+        <tr>
+          <td>@user.UserName</td>
+          <td>@user.DisplayName</td>
+          <td>@user.Email</td>
+          <td>@user.Role</td>
+          <td>
+            <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>

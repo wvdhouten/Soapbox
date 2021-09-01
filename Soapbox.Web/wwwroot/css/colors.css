@@ -1,0 +1,61 @@
+body {
+  background: var(--background-color, #343a40);
+  color: var(--text-color, #f8f9fa);
+  transition: all 200ms ease;
+  transition-property: background, color;
+}
+
+a {
+  color: var(--text-color, #f8f9fa);
+  text-decoration: none;
+
+  transition: all 150ms ease;
+  transition-property: color;
+}
+
+  a:hover {
+    color: var(--hover-color, #f8f9fa);
+    text-decoration: none;
+  }
+
+  a:focus {
+    color: var(--focus-color, #f8f9fa);
+    text-decoration: none;
+  }
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #343a40;
+    --text-color: #f8f9fa;
+    --hover-color: #c6c7c8;
+    --hover-outline-color: #000;
+    --focus-color: #959596;
+    --focus-outline-color: #000;
+  }
+}
+
+.dark {
+  --background-color: #343a40;
+  --text-color: #f8f9fa;
+  --hover-color: #c6c7c8;
+  --hover-outline-color: #000;
+  --focus-color: #959596;
+  --focus-outline-color: #000;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-color: #eee;
+    --text-color: #000;
+    --hover-color: #333333;
+    --focus-color: #4d4d4d;
+  }
+}
+
+.light {
+  --background-color: #eee;
+  --text-color: #000;
+  --hover-color: #333333;
+  --focus-color: #4d4d4d;
+}

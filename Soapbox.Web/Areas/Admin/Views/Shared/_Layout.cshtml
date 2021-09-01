@@ -1,0 +1,46 @@
+@inject IOptionsSnapshot<Soapbox.Web.Config.SiteSettings> settings
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData[Constants.Title] - @settings.Value.Title</title>
+  <meta name="description" content="@ViewData[Constants.Description]" />
+
+  <!-- Icons are subject to change. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link rel="stylesheet" href="~/admin/css/colors.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/admin/css/variables.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/admin/css/layout.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/admin/css/site.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/admin/css/tables.css" asp-append-version="true" />
+
+  @await RenderSectionAsync(Constants.StyleSheets, required: false)
+
+</head>
+<body>
+  <header>
+    <a id="banner" asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a>
+    <nav id="site-nav">
+      <div>
+        <partial name="_NavigationPartial" />
+        <partial name="_LoginPartial" />
+      </div>
+    </nav>
+  </header>
+
+  <main role="main">
+    @RenderBody()
+
+    <footer>
+      Powered by <a>The soapbox project</a>
+    </footer>
+  </main>
+
+  <script src="~/js/site.js" asp-append-version="true"></script>
+
+  @await RenderSectionAsync(Constants.Scripts, required: false)
+</body>
+</html>

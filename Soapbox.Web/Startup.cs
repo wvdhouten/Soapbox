@@ -1,13 +1,19 @@
 namespace Soapbox.Web
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Soapbox.Web.Data;
+    using Soapbox.Core.Identity;
+    using Soapbox.DataAccess.Sqlite;
+    using Soapbox.Domain;
+    using Soapbox.Domain.Abstractions;
+    using Soapbox.Web.Config;
+    using Soapbox.Web.Identity;
+    using Soapbox.Web.Identity.Policies;
 
     public class Startup
     {
@@ -21,16 +27,56 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddSqlite(Configuration);
+
+            services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
+            services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    var section = Configuration.GetSection("Authentication:Google");
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                })
+                .AddMicrosoftAccount(options =>
+                {
+                    var section = Configuration.GetSection("Authentication:Google");
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                })
+                .AddFacebook(options =>
+                {
+                    var section = Configuration.GetSection("Authentication:Google");
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                })
+                .AddTwitter(options =>
+                {
+                    var section = Configuration.GetSection("Authentication:Google");
+                    options.ConsumerKey = section["ConsumerKey"] ?? "aaa";
+                    options.ConsumerSecret = section["ConsumerSecret"] ?? "aaa";
+                })
+                .AddGitHub(options =>
+                {
+                    var section = Configuration.GetSection("Authentication:Google");
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                });
+
+            services.AddAuthorization(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
             });
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationHandler>();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddScoped<IMarkdownParser, MarkdownParser>();
+
+            services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
+            services.AddScoped<IBlogService, BlogService>();
+
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,14 +85,16 @@ namespace Soapbox.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Pages/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSqlite(env);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -57,7 +105,11 @@ namespace Soapbox.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                // TODO: Add NotFound
+                // TODO: Add HealthCheck
+
+                endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

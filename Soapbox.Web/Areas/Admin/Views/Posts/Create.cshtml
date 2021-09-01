@@ -1,0 +1,30 @@
+@model Post
+@{
+  ViewData[Constants.Title] = "Edit " + (Model?.Title ?? "new post");
+}
+
+<header>
+  <h1>Create Post</h1>
+</header>
+
+<div>
+  <form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-field">
+      <label asp-for="@Model.Title"></label>
+      <input asp-for="@Model.Title" />
+      <span asp-validation-for="@Model.Title" class="text-danger"></span>
+    </div>
+    <div class="form-field">
+      <label asp-for="@Model.Content"></label>
+      <textarea asp-for="@Model.Content"></textarea>
+      <span asp-validation-for="@Model.Content" class="text-danger"></span>
+    </div>
+    <button type="submit">Save</button>
+  </form>
+</div>
+
+@section StyleSheets
+{
+  <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
+}

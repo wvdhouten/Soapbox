@@ -1,0 +1,11 @@
+@inject Soapbox.Domain.Abstractions.IBlogService BlogService
+@{
+    var posts = await BlogService.GetAllPostsAsync();
+}
+
+<ul>
+  @await foreach(var post in posts)
+      {
+        <li>@post.Title</li>
+      }
+</ul>

@@ -1,0 +1,47 @@
+/* RESET */
+:root, *, :before, :after {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:focus {
+  outline: none;
+}
+
+body {
+  margin: 0;
+  font: 19px/1.6 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+/* CONTAINERS */
+.container {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 0 1.5em;
+}
+
+/* SCROLLBARS */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--grey-medium) var(--grey-light);
+}
+
+  *::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--grey-light);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--grey-medium);
+    border-radius: 5px;
+  }
+

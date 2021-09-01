@@ -1,0 +1,52 @@
+@model Post;
+
+@{
+  var isNew = string.IsNullOrEmpty(Model.Title);
+  ViewData[Constants.Title] = "Edit " + (Model.Title ?? "new post");
+  var host = Context.Request.Host.ToString();
+}
+
+<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="Edit">
+  <div asp-validation-summary="All"></div>
+  <input type="hidden" asp-for="@Model.Id" />
+
+  <div class="form-field">
+    <label asp-for="@Model.Title" class="label">Title</label>
+    <input asp-for="@Model.Title" required placeholder="Title of blog post" />
+  </div>
+
+  <div class="form-field">
+    <label asp-for="@Model.Slug" class="label">Slug</label>
+    <input asp-for="@Model.Slug" placeholder="The URL name" />
+  </div>
+
+  @*<label for="categories" class="label">Tags</label>
+    <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)" />
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
+    <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
+    <datalist id="taglist">
+      @foreach (var cat in allCats)
+      {
+        <option value="@cat" />
+      }
+    </datalist>*@
+
+  <div class="form-field">
+    <label asp-for="@Model.Excerpt" class="label">Excerpt</label>
+    <textarea asp-for="@Model.Excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
+  </div>
+
+  <div class="form-field">
+    <textarea asp-for="@Model.Content" rows="20" aria-label="Content">@Model.Content</textarea>
+  </div>
+
+  <button type="submit" title="Save the post">Save</button>
+
+  @*<input asp-for="@Model.IsPublished" />
+    <label asp-for="@Model.IsPublished">Is published</label>*@
+
+  @if (!isNew)
+  {
+    <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.Id" />
+  }
+</form>
