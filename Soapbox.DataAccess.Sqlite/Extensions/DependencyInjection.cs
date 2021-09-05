@@ -11,13 +11,13 @@ namespace Soapbox.DataAccess.Sqlite
     using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite.Repositories;
-
+    
     public static class DependencyInjection
     {
-        public static IServiceCollection AddSqlite([NotNull] this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSqlite([NotNull] this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString")
+                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{BasePath}", env.ContentRootPath)
             ));
 
             services.AddDatabaseDeveloperPageExceptionFilter();

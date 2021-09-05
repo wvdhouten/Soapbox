@@ -1,7 +1,5 @@
 /* RESET */
 :root, *, :before, :after {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -24,10 +22,10 @@ body {
 /* CONTAINERS */
 .container {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  margin-left: auto;
   margin-right: auto;
-  margin-left: auto
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 @media(min-width:576px) {
@@ -55,7 +53,8 @@ body {
 }
 
 .content {
-    padding: 15px 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .columns {

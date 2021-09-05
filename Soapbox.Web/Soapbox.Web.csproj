@@ -53,4 +53,10 @@
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\Soapbox.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -5,10 +5,28 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
+  <script>
+    document.addEventListener('click', event => {
+      const formId = event.target.getAttribute('submit-form');
+      if (!formId)
+        return;
+
+      const form = Array.from(document.forms).find(form => form.id === formId);
+
+      if (!form)
+        return;
+
+      form.submit();
+
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  </script>
+
+  <a asp-area="Identity" asp-page="/Account/Manage/Index">@User.Identity.Name</a><text> - </text>
   <a asp-area="Admin" asp-controller="Site" asp-action="Dashboard">Admin</a>
-  <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post">
-    <button type="submit">Logout</button>
-  </form>
+  <a asp-area="Identity" asp-page="/Account/Logout" submit-form="logout">Logout</a>
+  <form id="logout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post" style="display: none;"></form>
 }
 else
 {
