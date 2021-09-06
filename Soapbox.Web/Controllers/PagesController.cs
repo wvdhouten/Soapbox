@@ -6,6 +6,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Models;
     using System.Diagnostics;
 
+    [Route("[controller]/[action]")]
     public class PagesController : Controller
     {
         private readonly ILogger<PagesController> _logger;
@@ -15,7 +16,10 @@ namespace Soapbox.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(string page = null)
+        [HttpGet("~/")]
+        [HttpGet("~/Pages")]
+        [HttpGet("{page?}")]
+        public IActionResult Index([FromRoute] string page = null)
         {
             if (page is null)
             {
