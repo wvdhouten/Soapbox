@@ -1,84 +1,142 @@
 @page
 @model LoginModel
+@inject IOptionsSnapshot<Soapbox.Web.Config.SiteSettings> settings
 
 @{
   ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-  <div class="col-md-4">
+<style>
+  .card {
+    display: block;
+    width: 400px;
+    padding: 20px;
+    background: rgba(255,255,255, .1);
+    border-radius: 4px;
+    margin: 0 auto 20px;
+  }
+
+    .card > *:not(:last-child) {
+      margin-bottom: 16px;
+    }
+
+  .centered {
+    text-align: center;
+  }
+
+  .subtle {
+    font-size: .8rem;
+  }
+
+  .card > header > h1 {
+    margin: 0;
+  }
+
+  #login .form-field {
+    margin-bottom: 12px;
+  }
+
+  #login input[type="text"], #login input[type="password"] {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 2px;
+  }
+
+  #login button {
+    width: 80%;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  #external-account{
+    display: flex;
+    justify-content: space-around;
+  }
+
+  #external-account button {
+    width: 30px;
+    height: 30px;
+    background-color: var(--text-color);
+    mask-size: cover;
+    border: none;
+    cursor: pointer;
+  }
+
+  .separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--text-color);
+    }
+
+    .separator:not(:empty)::before {
+      margin-right: .4em;
+    }
+
+    .separator:not(:empty)::after {
+      margin-left: .4em;
+    }
+</style>
+
+<div class="container content">
+
+  <div class="card">
+    <header class="centered">
+      <h1>@ViewData["Title"]</h1>
+    </header>
+
     <section>
-      <form id="account" method="post">
-        <h4>Use a local account to log in.</h4>
-        <hr />
+      <form id="login" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-field">
-          <label asp-for="Input.Username"></label>
-          <input asp-for="Input.Username" class="form-control" />
+          <input asp-for="Input.Username" />
           <span asp-validation-for="Input.Username" class="text-danger"></span>
         </div>
         <div class="form-field">
-          <label asp-for="Input.Password"></label>
-          <input asp-for="Input.Password" class="form-control" />
+          <input asp-for="Input.Password" />
           <span asp-validation-for="Input.Password" class="text-danger"></span>
         </div>
-        <div class="form-group">
-          <div class="checkbox">
-            <label asp-for="Input.RememberMe">
-              <input asp-for="Input.RememberMe" />
-              @Html.DisplayNameFor(m => m.Input.RememberMe)
-            </label>
-          </div>
+        <div class="form-field centered">
+          <label asp-for="Input.RememberMe">
+            <input asp-for="Input.RememberMe" />
+            @Html.DisplayNameFor(m => m.Input.RememberMe)
+          </label>
         </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary">Log in</button>
-        </div>
-        <div class="form-group">
-          <p>
-            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-          </p>
-          <p>
-            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-          </p>
-          <p>
-            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-          </p>
+        <div id="submit" class="centered">
+          <button type="submit">Log in</button>
         </div>
       </form>
     </section>
-  </div>
-  <div class="col-md-6 col-md-offset-2">
-    <section>
-      <h4>Use another service to log in.</h4>
-      <hr />
-      @{
-        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+    {
+      <div class="separator">or</div>
+      <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+        @foreach (var provider in Model.ExternalLogins)
         {
-          <div>
-            <p>
-              There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-              for details on setting up this ASP.NET application to support logging in via external services.
-            </p>
-          </div>
+          <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" style="mask: url('/assets/social/@(provider.DisplayName.ToLower()).svg'); mask-size: contain;"></button>
         }
-        else
-        {
-          <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-            <div>
-              <p>
-                @foreach (var provider in Model.ExternalLogins)
-                {
-                  <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                }
-              </p>
-            </div>
-          </form>
-        }
-      }
-    </section>
+      </form>
+    }
   </div>
-</div>
+  <div class="centered subtle">
+    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+    @if (settings.Value.AllowRegistration)
+    {
+      <text> - </text><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+    }
+  </div>
 
-@section Scripts {
-}
+</div>

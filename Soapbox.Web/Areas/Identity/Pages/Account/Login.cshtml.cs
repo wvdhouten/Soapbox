@@ -42,13 +42,15 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
         {
             [Required]
             [MinLength(10)]
+            [Display(Name = "Username", Prompt = "Username")]
             public string Username { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
+            [Display(Name = "Password", Prompt = "Password")]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Remember me")]
             public bool RememberMe { get; set; }
         }
 
