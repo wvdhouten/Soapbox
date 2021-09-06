@@ -31,6 +31,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress]
+            [Display(Name = "Email", Prompt = "Email")]
             public string Email { get; set; }
         }
 

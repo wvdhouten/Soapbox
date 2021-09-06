@@ -10,14 +10,14 @@ namespace Soapbox.Core.FileManagement
         {
             var configPath = Path.Combine(Environment.CurrentDirectory, "Config", path);
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
+            var options = new JsonWriterOptions { Indented = true };
 
             using var stream = new FileStream(configPath, FileMode.Create, FileAccess.Write);
-            using var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream, options);
             writer.WriteStartObject();
             writer.WritePropertyName(typeof(T).Name);
 
-            JsonSerializer.Serialize(writer, config, options);
+            JsonSerializer.Serialize(writer, config);
 
             writer.WriteEndObject();
             writer.Flush();

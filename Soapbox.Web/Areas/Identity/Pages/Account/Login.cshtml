@@ -92,7 +92,6 @@
 </style>
 
 <div class="container content">
-
   <div class="card">
     <header class="centered">
       <h1>@ViewData["Title"]</h1>
@@ -100,14 +99,14 @@
 
     <section>
       <form id="login" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly"></div>
         <div class="form-field">
           <input asp-for="Input.Username" />
-          <span asp-validation-for="Input.Username" class="text-danger"></span>
+          <span asp-validation-for="Input.Username"></span>
         </div>
         <div class="form-field">
           <input asp-for="Input.Password" />
-          <span asp-validation-for="Input.Password" class="text-danger"></span>
+          <span asp-validation-for="Input.Password"></span>
         </div>
         <div class="form-field centered">
           <label asp-for="Input.RememberMe">
@@ -135,8 +134,7 @@
     <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
     @if (settings.Value.AllowRegistration)
     {
-      <text> - </text><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+      <text> - </text><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
     }
   </div>
-
 </div>

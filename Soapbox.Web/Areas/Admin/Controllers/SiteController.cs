@@ -41,7 +41,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             var service = new ConfigFileService();
             service.SaveToFile(settings, "site.json");
 
-            return RedirectToAction("Settings");
+            return View(settings);
         }
     }
 }
