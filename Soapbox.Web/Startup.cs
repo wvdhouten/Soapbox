@@ -30,10 +30,9 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSqlite(Configuration, HostEnvironment);
-
             services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
+            services.AddSqlite(Configuration, HostEnvironment);
 
             services.AddAuthentication()
                 .AddGoogle(options =>

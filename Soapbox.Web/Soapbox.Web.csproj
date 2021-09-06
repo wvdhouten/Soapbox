@@ -50,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Properties\ServiceDependencies\soapbox - Web Deploy\" />
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 

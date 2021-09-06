@@ -16,9 +16,8 @@ namespace Soapbox.Web.Controllers
             _logger = logger;
         }
 
-        [HttpGet("~/")]
-        [HttpGet("~/Pages")]
-        [HttpGet("{page?}")]
+        [HttpGet("~/{page?}")]
+        [HttpGet("~/Pages/{page?}")]
         public IActionResult Index([FromRoute] string page = null)
         {
             if (page is null)
@@ -27,12 +26,6 @@ namespace Soapbox.Web.Controllers
             }
 
             return View(page);
-        }
-
-        [HttpGet]
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [HttpGet]
