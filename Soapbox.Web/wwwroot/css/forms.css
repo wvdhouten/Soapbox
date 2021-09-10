@@ -1,27 +1,82 @@
-.form-field
-{
-  margin-bottom: 8px;
+:root {
+  --input-background: #222;
+  --input-color: #fff;
+  --input-active-background: #333;
+  --input-disabled-background: #000;
 }
 
-  .form-field > label:first-child,
-  .form-field > span:first-child {
-    display: inline-block;
-    width: 14em;
-    vertical-align: top;
+.form-group {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 12px;
+}
+
+  .form-group > label {
+    min-width: 200px;
+    width: 16.67%;
+    padding: .5rem 1rem;
+    text-align: right;
   }
 
-input, textarea {
-  width: 24em;
-  padding: 0.25em;
-  line-height: normal;
-  border-radius: 0;
-  border: none;
-  background: none;
+.input-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
-input, textarea {
+  .input-group > input,
+  .input-group > textarea {
+    flex: 1;
+  }
+
+.input-group-addon {
+  background: var(--input-background);
+  padding: .5rem 1rem;
+  user-select: none;
+}
+
+input,
+textarea {
+  background: var(--input-background);
+  color: var(--input-color);
   font: inherit;
   line-height: inherit;
-  background: #222222;
-  color: white;
+  width: 100%;
+  padding: .5rem 1rem;
+  border: none;
+  border-radius: 2px;
 }
+
+  input:focus,
+  textarea:focus {
+    background: var(--input-active-background);
+  }
+
+  input:disabled,
+  textarea:disabled {
+    background: var(--input-disabled-background);
+  }
+
+/* BUTTONS */
+
+button {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 2px;
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
+
+  button:hover {
+    background: #dddddd;
+  }
+
+  button:active {
+    background: #bbbbbb;
+  }
+
+  button:disabled {
+    background: #999999;
+    cursor: default;
+  }

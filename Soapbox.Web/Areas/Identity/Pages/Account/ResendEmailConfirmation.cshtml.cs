@@ -7,22 +7,22 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
     using Microsoft.AspNetCore.Authorization;
 
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
 
     [AllowAnonymous]
     public class ResendEmailConfirmationModel : PageModel
     {
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailClient _emailClient;
 
-        public ResendEmailConfirmationModel(UserManager<SoapboxUser> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<SoapboxUser> userManager, IEmailClient emailClient)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
         }
 
         [BindProperty]
@@ -57,7 +57,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { userId, code }, protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await _emailClient.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();

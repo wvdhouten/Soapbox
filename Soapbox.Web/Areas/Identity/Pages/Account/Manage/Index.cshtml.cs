@@ -12,9 +12,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly SignInManager<SoapboxUser> _signInManager;
 
-        public IndexModel(
-            UserManager<SoapboxUser> userManager,
-            SignInManager<SoapboxUser> signInManager)
+        public IndexModel(UserManager<SoapboxUser> userManager, SignInManager<SoapboxUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,6 +28,9 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Display(Name = "Display name")]
+            public string DisplayName { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -44,6 +45,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                DisplayName = user.DisplayName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -83,6 +85,13 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            var displayName = user.DisplayName;
+            if (Input.DisplayName != displayName)
+            {
+                user.DisplayName = Input.DisplayName;
+                await _userManager.UpdateAsync(user);
             }
 
             await _signInManager.RefreshSignInAsync(user);

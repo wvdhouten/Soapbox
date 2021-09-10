@@ -4,22 +4,22 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Soapbox.Core.Identity;
+    using Soapbox.Core.Email.Abstractions;
 
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailSender _sender;
+        private readonly IEmailClient _emailClient;
 
-        public RegisterConfirmationModel(UserManager<SoapboxUser> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<SoapboxUser> userManager, IEmailClient emailClient)
         {
             _userManager = userManager;
-            _sender = sender;
+            _emailClient = emailClient;
         }
 
         public string Email { get; set; }
@@ -49,11 +49,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                EmailConfirmationUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId, code, returnUrl },
-                    protocol: Request.Scheme);
+                EmailConfirmationUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId, code, returnUrl }, protocol: Request.Scheme);
             }
 
             return Page();

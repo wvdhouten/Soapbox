@@ -6,22 +6,22 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Soapbox.Core.Identity;
+    using Soapbox.Core.Email.Abstractions;
 
     [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailClient _emailClient;
 
-        public ForgotPasswordModel(UserManager<SoapboxUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<SoapboxUser> userManager, IEmailClient emailClient)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
         }
 
         [BindProperty]
@@ -56,7 +56,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
+                await _emailClient.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

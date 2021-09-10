@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Identity\Pages\Account\Shared\_ViewStart.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Identity\Pages\Account\_ViewStart.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
   </ItemGroup>
 

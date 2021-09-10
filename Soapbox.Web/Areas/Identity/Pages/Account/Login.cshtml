@@ -20,10 +20,6 @@
       margin-bottom: 16px;
     }
 
-  .centered {
-    text-align: center;
-  }
-
   .subtle {
     font-size: .8rem;
   }
@@ -54,19 +50,19 @@
     cursor: pointer;
   }
 
-  #external-account{
+  #external-account {
     display: flex;
     justify-content: space-around;
   }
 
-  #external-account button {
-    width: 30px;
-    height: 30px;
-    background-color: var(--text-color);
-    mask-size: cover;
-    border: none;
-    cursor: pointer;
-  }
+    #external-account button {
+      width: 30px;
+      height: 30px;
+      background-color: var(--text-color);
+      mask-size: cover;
+      border: none;
+      cursor: pointer;
+    }
 
   .separator {
     display: flex;
@@ -91,50 +87,48 @@
     }
 </style>
 
-<div class="container content">
-  <div class="card">
-    <header class="centered">
-      <h1>@ViewData["Title"]</h1>
-    </header>
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData["Title"]</h1>
+  </header>
 
-    <section>
-      <form id="login" method="post">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div class="form-field">
-          <input asp-for="Input.Username" />
-          <span asp-validation-for="Input.Username"></span>
-        </div>
-        <div class="form-field">
-          <input asp-for="Input.Password" />
-          <span asp-validation-for="Input.Password"></span>
-        </div>
-        <div class="form-field centered">
-          <label asp-for="Input.RememberMe">
-            <input asp-for="Input.RememberMe" />
-            @Html.DisplayNameFor(m => m.Input.RememberMe)
-          </label>
-        </div>
-        <div id="submit" class="centered">
-          <button type="submit">Log in</button>
-        </div>
-      </form>
-    </section>
-    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-    {
-      <div class="separator">or</div>
-      <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-        @foreach (var provider in Model.ExternalLogins)
-        {
-          <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" style="mask: url('/assets/social/@(provider.DisplayName.ToLower()).svg'); mask-size: contain;"></button>
-        }
-      </form>
-    }
-  </div>
-  <div class="centered subtle">
-    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-    @if (settings.Value.AllowRegistration)
-    {
-      <text> - </text><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
-    }
-  </div>
+  <section>
+    <form id="login" method="post">
+      <div asp-validation-summary="ModelOnly"></div>
+      <div class="form-field">
+        <input asp-for="Input.Username" />
+        <span asp-validation-for="Input.Username"></span>
+      </div>
+      <div class="form-field">
+        <input asp-for="Input.Password" />
+        <span asp-validation-for="Input.Password"></span>
+      </div>
+      <div class="form-field centered">
+        <label asp-for="Input.RememberMe">
+          <input asp-for="Input.RememberMe" />
+          @Html.DisplayNameFor(m => m.Input.RememberMe)
+        </label>
+      </div>
+      <div id="submit" class="centered">
+        <button type="submit">Log in</button>
+      </div>
+    </form>
+  </section>
+  @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+  {
+    <div class="separator">or</div>
+    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+      @foreach (var provider in Model.ExternalLogins)
+      {
+        <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" style="mask: url('/assets/social/@(provider.DisplayName.ToLower()).svg'); mask-size: contain;"></button>
+      }
+    </form>
+  }
+</div>
+<div class="centered subtle">
+  <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+  @if (settings.Value.AllowRegistration)
+  {
+    <text> - </text><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
+  }
 </div>

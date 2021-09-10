@@ -8,12 +8,12 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
     using Soapbox.Web.Config;
 
@@ -23,21 +23,16 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
         private readonly SiteSettings _siteSettings;
         private readonly SignInManager<SoapboxUser> _signInManager;
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailClient _emailClient;
         private readonly ILogger<ExternalLoginModel> _logger;
 
-        public ExternalLoginModel(
-            IOptionsSnapshot<SiteSettings> siteSettings,
-            SignInManager<SoapboxUser> signInManager,
-            UserManager<SoapboxUser> userManager,
-            ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+        public ExternalLoginModel(IOptionsSnapshot<SiteSettings> siteSettings, SignInManager<SoapboxUser> signInManager, UserManager<SoapboxUser> userManager, ILogger<ExternalLoginModel> logger, IEmailClient emailClient)
         {
             _siteSettings = siteSettings.Value;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
         }
 
         [BindProperty]
@@ -150,7 +145,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId, code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        await _emailClient.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender

@@ -9,11 +9,11 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
 
     [AllowAnonymous]
@@ -22,18 +22,14 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<SoapboxUser> _signInManager;
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailClient _emailClient;
 
-        public RegisterModel(
-            UserManager<SoapboxUser> userManager,
-            SignInManager<SoapboxUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+        public RegisterModel(UserManager<SoapboxUser> userManager, SignInManager<SoapboxUser> signInManager, ILogger<RegisterModel> logger, IEmailClient emailClient)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
         }
 
         [BindProperty]
@@ -95,7 +91,7 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailClient.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

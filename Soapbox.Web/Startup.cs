@@ -1,5 +1,6 @@
 namespace Soapbox.Web
 {
+    using System.Linq;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,8 @@ namespace Soapbox.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Soapbox.Core.Email;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
     using Soapbox.DataAccess.Sqlite;
     using Soapbox.Domain;
@@ -30,41 +33,54 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            services.AddScoped<IEmailClient, SmtpEmailClient>();
+
             services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
+
             services.AddSqlite(Configuration, HostEnvironment);
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    var section = Configuration.GetSection("Authentication:Google");
-                    options.ClientId = section["ClientId"];
-                    options.ClientSecret = section["ClientSecret"];
-                })
-                .AddMicrosoftAccount(options =>
-                {
-                    var section = Configuration.GetSection("Authentication:Google");
-                    options.ClientId = section["ClientId"];
-                    options.ClientSecret = section["ClientSecret"];
-                })
-                .AddFacebook(options =>
-                {
-                    var section = Configuration.GetSection("Authentication:Google");
-                    options.ClientId = section["ClientId"];
-                    options.ClientSecret = section["ClientSecret"];
-                })
-                .AddTwitter(options =>
-                {
-                    var section = Configuration.GetSection("Authentication:Google");
-                    options.ConsumerKey = section["ConsumerKey"] ?? "aaa";
-                    options.ConsumerSecret = section["ConsumerSecret"] ?? "aaa";
-                })
-                .AddGitHub(options =>
-                {
-                    var section = Configuration.GetSection("Authentication:Google");
-                    options.ClientId = section["ClientId"];
-                    options.ClientSecret = section["ClientSecret"];
-                });
+            services.AddAuthentication(o =>
+            {
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddGoogle(options =>
+            {
+                var section = Configuration.GetSection("Authentication:Google");
+                options.ClientId = section["ClientId"];
+                options.ClientSecret = section["ClientSecret"];
+            })
+            .AddMicrosoftAccount(options =>
+            {
+                var section = Configuration.GetSection("Authentication:Google");
+                options.ClientId = section["ClientId"];
+                options.ClientSecret = section["ClientSecret"];
+            })
+            .AddFacebook(options =>
+            {
+                var section = Configuration.GetSection("Authentication:Google");
+                options.ClientId = section["ClientId"];
+                options.ClientSecret = section["ClientSecret"];
+            })
+            .AddTwitter(options =>
+            {
+                var section = Configuration.GetSection("Authentication:Google");
+                options.ConsumerKey = section["ConsumerKey"] ?? "aaa";
+                options.ConsumerSecret = section["ConsumerSecret"] ?? "aaa";
+            })
+            .AddGitHub(options =>
+            {
+                var section = Configuration.GetSection("Authentication:Google");
+                options.ClientId = section["ClientId"];
+                options.ClientSecret = section["ClientSecret"];
+            }).AddIdentityCookies();
+
+            services.AddIdentityCore<SoapboxUser>(o =>
+            {
+                o.Stores.MaxLengthForKeys = 128;
+            }).AddSignInManager().AddSqliteStore();
 
             services.AddAuthorization(options =>
             {

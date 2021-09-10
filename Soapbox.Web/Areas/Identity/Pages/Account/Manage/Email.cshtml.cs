@@ -5,26 +5,23 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
 
     public partial class EmailModel : PageModel
     {
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly SignInManager<SoapboxUser> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailClient _emailClient;
 
-        public EmailModel(
-            UserManager<SoapboxUser> userManager,
-            SignInManager<SoapboxUser> signInManager,
-            IEmailSender emailSender)
+        public EmailModel(UserManager<SoapboxUser> userManager, SignInManager<SoapboxUser> signInManager, IEmailClient emailClient)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
         }
 
         public string Username { get; set; }
@@ -92,21 +89,16 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { userId, email = Input.NewEmail, code },
-                    protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var callbackUrl = Url.Page("/Account/ConfirmEmailChange", pageHandler: null, values: new { userId, email = Input.NewEmail, code }, protocol: Request.Scheme);
+                await _emailClient.SendEmailAsync(Input.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
+
                 return RedirectToPage();
             }
 
             StatusMessage = "Your email is unchanged.";
+
             return RedirectToPage();
         }
 
@@ -128,17 +120,11 @@ namespace Soapbox.Web.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId, code },
-                protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            var callbackUrl = Url.Page("Identity/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId, code }, protocol: Request.Scheme);
+            await _emailClient.SendEmailAsync(email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             StatusMessage = "Verification email sent. Please check your email.";
+
             return RedirectToPage();
         }
     }

@@ -11,21 +11,24 @@ namespace Soapbox.DataAccess.Sqlite
     using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite.Repositories;
-    
+    using Microsoft.AspNetCore.Identity;
+
     public static class DependencyInjection
     {
         public static IServiceCollection AddSqlite([NotNull] this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            services.AddScoped<IPostRepository, PostRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{BasePath}", env.ContentRootPath)
             ));
-
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<SoapboxUser>().AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddScoped<IPostRepository, PostRepository>();
 
             return services;
+        }
+
+        public static IdentityBuilder AddSqliteStore(this IdentityBuilder builder)
+        {
+            return builder.AddEntityFrameworkStores<ApplicationDbContext>();
         }
 
         public static IApplicationBuilder UseSqlite(this IApplicationBuilder app, IWebHostEnvironment env)

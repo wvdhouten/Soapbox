@@ -7,13 +7,14 @@
   <title>@ViewData[Constants.Title]</title>
   <meta name="description" content="@ViewData[Constants.Description]" />
 
-  <!-- Icons are subject to change. -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
 
   <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/variables.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+  <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
 
   @await RenderSectionAsync(Constants.StyleSheets, required: false)
 
@@ -40,17 +41,13 @@
       <div>
         <h3>Blog</h3>
         <ul>
-          <li>
-            <a asp-area="" asp-controller="Blog" asp-action="Index">All posts</a>
-          </li>
+          <li><a asp-area="" asp-controller="Blog" asp-action="Index">All posts</a></li>
         </ul>
       </div>
       <div>
         <h3>Site</h3>
         <ul>
-          <li>
-            <a asp-area="" asp-controller="Pages" asp-action="Privacy">Privacy</a>
-          </li>
+          <li><a asp-area="" asp-controller="Pages" asp-action="Privacy">Privacy</a></li>
         </ul>
       </div>
     </section>
