@@ -25,14 +25,14 @@
 
   <a asp-area="Identity" asp-page="/Account/Manage/Index">@User.Identity.Name</a><text> - </text>
   <a asp-area="Admin" asp-controller="Site" asp-action="Dashboard">Admin</a>
-  <a asp-area="Identity" asp-page="/Account/Logout" submit-form="logout">Logout</a>
-  <form id="logout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post" style="display: none;"></form>
+  <a asp-area="Identity" asp-controller="Account" asp-action="Logout" submit-form="logout">Logout</a>
+  <form id="logout" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post" style="display: none;"></form>
 }
 else
 {
   if (settings.Value.AllowRegistration)
   {
-    <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <a asp-controller="Account" asp-action="Register">Register</a>
   }
-  <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+  <a asp-controller="Account" asp-action="Login">Login</a>
 }

@@ -36,6 +36,12 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
         public IActionResult Offline()
         {
             ViewData[Constants.Title] = Resources.Offline;

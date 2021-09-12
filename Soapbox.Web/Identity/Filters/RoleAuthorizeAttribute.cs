@@ -20,7 +20,7 @@ namespace Soapbox.Web.Identity.Attributes
             var roleClaim = context.HttpContext.User.FindFirst(JwtClaimTypes.Role);
             if (roleClaim is null)
             {
-                context.Result = new RedirectToPageResult("/Account/Login", new { Area = "Identity" });
+                context.Result = new RedirectToPageResult("/Account/Login");
                 return;
             }
 
