@@ -6,49 +6,6 @@
 }
 
 <style>
-  .card {
-    display: block;
-    width: 400px;
-    padding: 20px;
-    background: rgba(255,255,255, .1);
-    border-radius: 4px;
-    margin: 0 auto 20px;
-  }
-
-    .card > *:not(:last-child) {
-      margin-bottom: 16px;
-    }
-
-  .subtle {
-    font-size: .8rem;
-  }
-
-  .card > header > h1 {
-    margin: 0;
-  }
-
-  #login .form-field {
-    margin-bottom: 12px;
-  }
-
-  #login input[type="text"], #login input[type="password"] {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    background: white;
-    border: 1px solid black;
-    border-radius: 2px;
-  }
-
-  #login button {
-    width: 80%;
-    padding: 8px 12px;
-    background: white;
-    border: 1px solid black;
-    border-radius: 2px;
-    cursor: pointer;
-  }
-
   #external-account {
     display: flex;
     justify-content: space-around;
@@ -60,30 +17,9 @@
       background-color: var(--text-color);
       mask-size: cover;
       border: none;
+      border-radius: initial;
       cursor: pointer;
       padding: 0;
-    }
-
-  .separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-  }
-
-    .separator::before,
-    .separator::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--text-color);
-    }
-
-    .separator:not(:empty)::before {
-      margin-right: .4em;
-    }
-
-    .separator:not(:empty)::after {
-      margin-left: .4em;
     }
 </style>
 
@@ -93,24 +29,26 @@
   </header>
 
   <section>
-    <form id="login" method="post">
+    <form id="login" asp-route-returnUrl="@Model.ReturnUrl" method="post">
       <div asp-validation-summary="ModelOnly"></div>
-      <div class="form-field">
+      <div class="form-group">
+        <label asp-for="Input.Username"></label>
         <input asp-for="Input.Username" />
         <span asp-validation-for="Input.Username"></span>
       </div>
-      <div class="form-field">
+      <div class="form-group">
+        <label asp-for="Input.Password"></label>
         <input asp-for="Input.Password" />
         <span asp-validation-for="Input.Password"></span>
       </div>
-      <div class="form-field centered">
+      <div class="form-group centered">
         <label asp-for="Input.RememberMe">
           <input asp-for="Input.RememberMe" />
           @Html.DisplayNameFor(m => m.Input.RememberMe)
         </label>
       </div>
       <div id="submit" class="centered">
-        <button type="submit">Log in</button>
+        <button class="large" type="submit">Log in</button>
       </div>
     </form>
   </section>

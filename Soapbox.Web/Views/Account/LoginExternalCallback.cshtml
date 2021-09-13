@@ -1,0 +1,89 @@
+@model Models.Account.LoginExternalModel
+@{
+  ViewData["Title"] = "Register";
+}
+
+
+<style>
+  .card {
+    display: block;
+    width: 400px;
+    padding: 20px;
+    background: rgba(255,255,255, .1);
+    border-radius: 4px;
+    margin: 0 auto 20px;
+  }
+
+    .card > *:not(:last-child) {
+      margin-bottom: 16px;
+    }
+
+  .subtle {
+    font-size: .8rem;
+  }
+
+  .card > header > h1 {
+    margin: 0;
+  }
+
+  #register .form-field {
+    margin-bottom: 12px;
+  }
+
+  register input[type="text"], #login input[type="password"] {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid black;
+    border-radius: 2px;
+  }
+
+  #register button {
+    width: 80%;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  #external-account {
+    display: flex;
+    justify-content: space-around;
+  }
+
+    #external-account button {
+      width: 30px;
+      height: 30px;
+      background-color: var(--text-color);
+      mask-size: cover;
+      border: none;
+      border-radius: initial;
+      cursor: pointer;
+      padding: 0;
+    }
+</style>
+
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData["Title"]</h1>
+    <h4>Associate your @Model.ProviderDisplayName account.</h4>
+  </header>
+
+  <p id="external-login-description" class="text-info">
+    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+    Please enter an email address for this site below and click the Register button to finish logging in.
+  </p>
+
+  <form id="register" asp-controller="Account" asp-action="@nameof(Controllers.AccountController.LoginExternalConfirmation)" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+      <label asp-for="Input.Email"></label>
+      <input asp-for="Input.Email" />
+      <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div id="submit" class="centered">
+      <button class="large" type="submit">Register</button>
+    </div>
+  </form>
+</div>

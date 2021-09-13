@@ -1,7 +1,6 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<Soapbox.Core.Identity.SoapboxUser> SignInManager
 @inject UserManager<Soapbox.Core.Identity.SoapboxUser> UserManager
-@inject IOptionsSnapshot<Soapbox.Web.Config.SiteSettings> settings
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -23,16 +22,12 @@
     });
   </script>
 
-  <a asp-area="Identity" asp-page="/Account/Manage/Index">@User.Identity.Name</a><text> - </text>
+  <a asp-page="/Account/Manage/Index">@User.Identity.Name</a><text> - </text>
   <a asp-area="Admin" asp-controller="Site" asp-action="Dashboard">Admin</a>
-  <a asp-area="Identity" asp-controller="Account" asp-action="Logout" submit-form="logout">Logout</a>
-  <form id="logout" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post" style="display: none;"></form>
+  <a asp-area="" asp-controller="Account" asp-action="Logout" submit-form="logout">Logout</a>
+  <form id="logout" asp-area="" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Pages", new { Area = "" })" method="post" style="display: none;"></form>
 }
 else
 {
-  if (settings.Value.AllowRegistration)
-  {
-    <a asp-controller="Account" asp-action="Register">Register</a>
-  }
-  <a asp-controller="Account" asp-action="Login">Login</a>
+  <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
 }

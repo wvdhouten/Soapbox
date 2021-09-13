@@ -133,6 +133,49 @@
   font-size: .8rem;
 }
 
+/* CARD */
+
+.card {
+  display: block;
+  width: 400px;
+  padding: 20px;
+  background: rgba(255,255,255, .1);
+  border-radius: 4px;
+  margin: 0 auto 20px;
+}
+
+  .card > *:not(:last-child) {
+    margin-bottom: 16px;
+  }
+
+  .card > header > h1 {
+    margin: 0;
+  }
+
+/* SEPARATOR */
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+  .separator::before,
+  .separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--text-color);
+  }
+
+  .separator:not(:empty)::before {
+    margin-right: .4em;
+  }
+
+  .separator:not(:empty)::after {
+    margin-left: .4em;
+  }
+
 /* DISCLAIMER */
 
 .disclaimer {

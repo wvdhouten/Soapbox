@@ -3,6 +3,6 @@
     "Title": "Soapbox",
     "Description": "Get on your soapbox!",
     "AdminEmail": null,
-    "AllowRegistration": false
+    "AllowRegistration": true
   }
 }

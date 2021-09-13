@@ -7,16 +7,26 @@
 
 .form-group {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 12px;
 }
 
-  .form-group > label {
-    min-width: 200px;
-    width: 16.67%;
-    padding: .5rem 1rem;
-    text-align: right;
-  }
+form.horizontal-form .form-group {
+    flex-direction: row;
+}
+
+.form-group > label{
+    padding: 0 4px;
+    margin-bottom: 4px;
+}
+
+form.horizontal-form .form-group > label {
+  min-width: 200px;
+  width: 16.67%;
+  padding: .5rem 1rem;
+  margin: 0;
+  text-align: right;
+}
 
 .input-group {
   display: flex;
@@ -35,7 +45,7 @@
   user-select: none;
 }
 
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 textarea {
   background: var(--input-background);
   color: var(--input-color);
@@ -79,4 +89,13 @@ button {
   button:disabled {
     background: #999999;
     cursor: default;
+  }
+
+  button.large {
+    width: 80%;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 2px;
+    cursor: pointer;
   }

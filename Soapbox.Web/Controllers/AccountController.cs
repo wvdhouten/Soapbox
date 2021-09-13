@@ -18,6 +18,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Config;
     using Soapbox.Web.Models.Account;
 
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly SiteSettings _siteSettings;
@@ -45,13 +46,17 @@ namespace Soapbox.Web.Controllers
             _logger = logger;
         }
 
-        [AllowAnonymous]
-        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            return View(); // TODO: Default page
+        }
+
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Dashboard", "Site", new { Area = "Admin" });
+                return LocalRedirect(returnUrl);
             }
 
             returnUrl ??= Url.Content("~/");
@@ -68,8 +73,7 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] LoginModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -78,9 +82,8 @@ namespace Soapbox.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Input.Username, model.Input.Password, model.Input.RememberMe, lockoutOnFailure: false);
+                var triggerLockoutOnFailure = false;
+                var result = await _signInManager.PasswordSignInAsync(model.Input.Username, model.Input.Password, model.Input.RememberMe, triggerLockoutOnFailure);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -88,12 +91,12 @@ namespace Soapbox.Web.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction("Login2fa", new { ReturnUrl = returnUrl, model.Input.RememberMe });
+                    return RedirectToAction(nameof(Login2fa), new { ReturnUrl = returnUrl, model.Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToAction("Lockout");
+                    return RedirectToAction(nameof(Lockout));
                 }
                 else
                 {
@@ -105,41 +108,40 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public IActionResult LoginExternal([FromForm] string provider, [FromQuery] string returnUrl = null)
         {
-            // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(LoginExternalCallback), "Account", new { returnUrl });
+            var redirectUrl = Url.Action(nameof(LoginExternalCallback), new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> LoginExternalCallback([FromQuery] string returnUrl = null, [FromQuery] string remoteError = null)
         {
             returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                _logger.LogInformation($"{info.Principal.Identity.Name} logged in with {info.LoginProvider} provider.");
                 return LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
             {
-                return RedirectToPage("./Lockout");
+                return RedirectToAction(nameof(Lockout));
             }
             else
             {
@@ -162,11 +164,11 @@ namespace Soapbox.Web.Controllers
                     };
                 }
 
-                return View(nameof(LoginExternal), model);
+                return View(model);
             }
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> LoginExternalConfirmation([FromBody] LoginExternalModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -176,7 +178,7 @@ namespace Soapbox.Web.Controllers
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
 
             if (ModelState.IsValid)
@@ -189,19 +191,19 @@ namespace Soapbox.Web.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        _logger.LogInformation($"User created an account using {info.LoginProvider} provider.");
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId, code }, protocol: Request.Scheme);
+                        var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
 
                         await _emailClient.SendEmailAsync(model.Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
-                            return RedirectToPage("./RegisterConfirmation", new { model.Input.Email });
+                            return RedirectToAction(nameof(RegisterConfirmation), new { model.Input.Email });
                         }
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
@@ -220,14 +222,14 @@ namespace Soapbox.Web.Controllers
             return View(nameof(LoginExternal), model);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login2fa([FromQuery] bool rememberMe, [FromQuery] string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+                throw new InvalidOperationException("Unable to load two-factor authentication user.");
             }
 
             var model = new Login2faModel
@@ -239,7 +241,7 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login2fa([FromForm] Login2faModel model, [FromQuery] bool rememberMe, [FromQuery] string returnUrl = null)
         {
             if (!ModelState.IsValid)
@@ -267,7 +269,7 @@ namespace Soapbox.Web.Controllers
             else if (result.IsLockedOut)
             {
                 _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
-                return RedirectToPage("./Lockout");
+                return RedirectToAction(nameof(Lockout));
             }
             else
             {
@@ -277,7 +279,7 @@ namespace Soapbox.Web.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> LoginRecoveryCode(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
@@ -295,7 +297,7 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> LoginRecoveryCode([FromForm] LoginRecoveryCodeModel model, [FromQuery] string returnUrl = null)
         {
             if (!ModelState.IsValid)
@@ -321,7 +323,7 @@ namespace Soapbox.Web.Controllers
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
-                return RedirectToPage("./Lockout");
+                return RedirectToAction(nameof(Lockout));
             }
             else
             {
@@ -337,12 +339,12 @@ namespace Soapbox.Web.Controllers
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
 
-            return returnUrl != null
-              ? LocalRedirect(returnUrl)
-              : RedirectToAction("Index", "Pages"); // TODO: Default from settings, or logout page.
+            returnUrl ??= Url.Content("~/");
+
+            return LocalRedirect(returnUrl);
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromForm] ForgotPasswordModel model)
         {
             if (ModelState.IsValid)
@@ -351,24 +353,24 @@ namespace Soapbox.Web.Controllers
                 if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
                 }
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page("/Account/ResetPassword", pageHandler: null, values: new { area = "Identity", code }, protocol: Request.Scheme);
+                var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, Request.Scheme);
 
                 await _emailClient.SendEmailAsync(model.Input.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
             var model = new ResetPasswordModel();
@@ -383,7 +385,7 @@ namespace Soapbox.Web.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             if (!ModelState.IsValid)
@@ -394,7 +396,7 @@ namespace Soapbox.Web.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
+                // Don't reveal that the user does not exist.
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
@@ -417,7 +419,7 @@ namespace Soapbox.Web.Controllers
             if (userId == null || code == null)
             {
                 // TODO: right page.
-                return RedirectToAction(string.Empty);
+                RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -489,25 +491,25 @@ namespace Soapbox.Web.Controllers
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { userId, code }, protocol: Request.Scheme);
+            var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
             await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Register(string returnUrl = null)
         {
             var model = new RegisterModel()
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = returnUrl ?? Url.Content("~/"),
                 ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
             };
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Register([FromForm] RegisterModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -521,20 +523,19 @@ namespace Soapbox.Web.Controllers
                     Role = UserRole.Subscriber
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
-
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
+                    var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
 
                     await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = model.Email, returnUrl });
+                        return RedirectToAction(nameof(RegisterConfirmation), new { email = model.Email, returnUrl });
                     }
                     else
                     {
@@ -577,7 +578,7 @@ namespace Soapbox.Web.Controllers
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                model.EmailConfirmationUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId, code, returnUrl }, protocol: Request.Scheme);
+                model.EmailConfirmationUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code, returnUrl }, protocol: Request.Scheme);
             }
 
             return View(model);

@@ -61,6 +61,10 @@ body {
   text-align: center;
 }
 
+.subtle {
+  font-size: .8rem;
+}
+
 .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;

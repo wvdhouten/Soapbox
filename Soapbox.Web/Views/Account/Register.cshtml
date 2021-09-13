@@ -3,58 +3,63 @@
   ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-  <h4>Create a new account.</h4>
-  <hr />
-  <div asp-validation-summary="All" class="text-danger"></div>
-  <div class="form-field">
-    <label asp-for="Username"></label>
-    <input asp-for="Email" />
-    <span asp-validation-for="Email" class="text-danger"></span>
-  </div>
-  <div class="form-field">
-    <label asp-for="Email"></label>
-    <input asp-for="Email" />
-    <span asp-validation-for="Email" class="text-danger"></span>
-  </div>
-  <div asp-validation-summary="All" class="text-danger"></div>
-  <div class="form-field">
-    <label asp-for="Password"></label>
-    <input asp-for="Password" />
-    <span asp-validation-for="Password" class="text-danger"></span>
-  </div>
-  <div class="form-field">
-    <label asp-for="ConfirmPassword"></label>
-    <input asp-for="ConfirmPassword" />
-    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-  </div>
-  <button type="submit">Register</button>
-</form>
-<section>
-  <h4>Use another service to register.</h4>
-  <hr />
-  @{
-    if ((@Model.ExternalLogins?.Count ?? 0) == 0)
-    {
-      <div>
-        <p>
-          There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-          for details on setting up this ASP.NET application to support logging in via external services.
-        </p>
-      </div>
-    }
-    else
-    {
-      <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-        <p>
-          @foreach (var provider in @Model.ExternalLogins)
-          {
-            <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-          }
-        </p>
-      </form>
-    }
+<style>
+  #external-account {
+    display: flex;
+    justify-content: space-around;
   }
-</section>
+
+    #external-account button {
+      width: 30px;
+      height: 30px;
+      background-color: var(--text-color);
+      mask-size: cover;
+      border: none;
+      border-radius: initial;
+      cursor: pointer;
+      padding: 0;
+    }
+</style>
+
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData["Title"]</h1>
+  </header>
+
+  <form id="register" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+      <label asp-for="Username"></label>
+      <input asp-for="Username" />
+      <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+      <label asp-for="Email"></label>
+      <input asp-for="Email" />
+      <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+      <label asp-for="Password"></label>
+      <input asp-for="Password" />
+      <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+      <label asp-for="ConfirmPassword"></label>
+      <input asp-for="ConfirmPassword" />
+      <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div id="submit" class="centered">
+      <button class="large" type="submit">Register</button>
+    </div>
+  </form>
+  @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+  {
+    <div class="separator">or</div>
+    <form id="external-account" class="form-horizontal" asp-controller="Account" asp-action="LoginExternal" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+      @foreach (var provider in Model.ExternalLogins)
+      {
+        <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" style="mask: url('/assets/social/@(provider.DisplayName.ToLower()).svg'); mask-size: contain;"></button>
+      }
+    </form>
+  }
+</div>
