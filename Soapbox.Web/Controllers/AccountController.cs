@@ -15,7 +15,7 @@ namespace Soapbox.Web.Controllers
     using Microsoft.Extensions.Options;
     using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
-    using Soapbox.Web.Config;
+    using Soapbox.Web.Settings;
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Services;
 

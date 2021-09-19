@@ -4,8 +4,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Identity;
-    using Soapbox.Web.Config;
     using Soapbox.Web.Identity.Attributes;
+    using Soapbox.Web.Settings;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]

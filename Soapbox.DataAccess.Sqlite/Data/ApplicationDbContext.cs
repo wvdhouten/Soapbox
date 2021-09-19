@@ -11,6 +11,7 @@ namespace Soapbox.DataAccess.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            Database.Migrate();
         }
 
         public DbSet<Post> Posts { get; set; }

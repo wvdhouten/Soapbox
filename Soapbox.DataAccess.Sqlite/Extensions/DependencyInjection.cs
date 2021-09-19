@@ -7,7 +7,6 @@ namespace Soapbox.DataAccess.Sqlite
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Soapbox.Core.Identity;
     using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite.Repositories;

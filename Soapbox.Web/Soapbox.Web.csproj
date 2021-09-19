@@ -46,9 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\Soapbox.sqlite">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Content\" />
   </ItemGroup>
 
 </Project>

@@ -14,10 +14,10 @@ namespace Soapbox.Web
     using Soapbox.DataAccess.Sqlite;
     using Soapbox.Domain;
     using Soapbox.Domain.Abstractions;
-    using Soapbox.Web.Config;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
+    using Soapbox.Web.Settings;
 
     public class Startup
     {

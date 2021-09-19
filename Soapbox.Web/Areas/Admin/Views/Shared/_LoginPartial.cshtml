@@ -1,7 +1,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<Soapbox.Core.Identity.SoapboxUser> SignInManager
 @inject UserManager<Soapbox.Core.Identity.SoapboxUser> UserManager
-@inject IOptionsSnapshot<Soapbox.Web.Config.SiteSettings> settings
+@inject IOptionsSnapshot<Soapbox.Web.Settings.SiteSettings> settings
 
 <ul>
   @if (SignInManager.IsSignedIn(User))

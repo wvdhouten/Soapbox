@@ -1,4 +1,4 @@
-namespace Soapbox.Web.Config
+namespace Soapbox.Web.Settings
 {
     using System.ComponentModel.DataAnnotations;
 
