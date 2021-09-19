@@ -49,50 +49,5 @@ namespace Soapbox.Web.Controllers
 
             return View(post);
         }
-
-        [HttpGet("{id?}/edit")]
-        [Authorize]
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return View(new Post());
-            }
-
-            var post = await _blogService.GetPostByIdAsync(id);
-            if (post is null)
-            {
-                return NotFound();
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, post, "EditPostPolicy");
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
-            return View(post);
-        }
-
-        [HttpPost("{id?}")]
-        [Authorize, AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Edit(Post post)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(nameof(Edit), post);
-            }
-
-            if (post is null)
-            {
-                throw new ArgumentNullException(nameof(post));
-            }
-
-            await _blogService.CreateOrUpdatePostAsync(post);
-
-            return View(post);
-
-            //return this.Redirect(post.GetEncodedLink());
-        }
     }
 }
