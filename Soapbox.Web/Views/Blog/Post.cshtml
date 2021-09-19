@@ -4,7 +4,7 @@
 <article class="post">
   <header style="position:relative;background-image:url('https://picsum.photos/1700/650/')">
     <div class="container">
-      <h1><a asp-area="" asp-controller="Blog" asp-action="Read" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
+      <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
       <div class="sub-header"><time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time> | </div>
     </div>
   </header>

@@ -2,16 +2,20 @@
   #intro {
     display: flex;
     justify-content: center;
+    background: rgba(255, 255,255,.05);
     align-items: center;
     min-height: 300px;
     height: 40vh;
     text-align: center;
   }
 </style>
-<div id="intro" class="container content">
-  <div>
-    <h1>Welcome to your soapbox <sup></sup></h1>
+<section id="intro">
+  <div class="container content">
+    <h1>Welcome to your soapbox<sup></sup></h1>
     <h3>/ˈsəʊpbɒks/</h3>
     <p>a rough wooden box or any raised, <del>temporary</del> surface for people to stand on while making informal public speeches</p>
   </div>
-</div>
+</section>
+<section class="container content">
+  <partial name="~/Views/Blog/_Widget.cshtml" />
+</section>

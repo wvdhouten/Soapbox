@@ -41,9 +41,13 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet("{slug}")]
-        public async Task<IActionResult> Read(string slug)
+        public async Task<IActionResult> Post(string slug)
         {
             var post = await _blogService.GetPostBySlugAsync(slug);
+            if (post is null)
+            {
+                return NotFound();
+            }
 
             ViewData[Constants.Title] = post;
 

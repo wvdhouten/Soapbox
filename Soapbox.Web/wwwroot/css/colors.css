@@ -1,3 +1,8 @@
+:root {
+  --accent-hue: 320;
+  --accent-color: hsl(var(--accent-hue), 100%, 50%);
+}
+
 body {
   background: var(--background-color, #343a40);
   color: var(--text-color, #f8f9fa);

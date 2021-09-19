@@ -1,0 +1,33 @@
+@model IAsyncEnumerable<Post>
+@inject Soapbox.Domain.Abstractions.IBlogService BlogService
+@{
+  var posts = await BlogService.GetAllPostsAsync();
+}
+
+<style>
+  .widget > header {
+    overflow: auto;
+    padding: 10px;
+    background: red;
+  }
+
+  .widget > header > h1 {
+    margin: 0;
+  }
+
+  .item-feed {
+    padding: 20px;
+  }
+</style>
+
+<article class="widget">
+  <header>
+    <h1>Blog</h1>
+  </header>
+  <section class="item-feed">
+    @await foreach (var post in posts)
+    {
+      <partial name="~/Views/Blog/_Headline.cshtml" for="@post" />
+    }
+  </section>
+</article>
