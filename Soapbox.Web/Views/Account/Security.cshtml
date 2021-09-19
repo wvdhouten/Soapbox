@@ -1,0 +1,127 @@
+@model Models.Account.SecurityModel
+@{
+  ViewData["Title"] = "Security";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h4>Password</h4>
+<form method="post" asp-controller="Action" asp-action="UpdatePassword">
+  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  @if (Model.HasPassword)
+  {
+    <div class="form-group">
+      <label asp-for="OldPassword"></label>
+      <input asp-for="OldPassword" />
+      <span asp-validation-for="OldPassword" class="text-danger"></span>
+    </div>
+  }
+  else
+  {
+    <p class="text-info">You do not have a local username/password for this site. Add a local account so you can log in without an external login.</p>
+  }
+  <div class="form-group">
+    <label asp-for="NewPassword"></label>
+    <input asp-for="NewPassword" />
+    <span asp-validation-for="NewPassword" class="text-danger"></span>
+  </div>
+  <div class="form-group">
+    <label asp-for="ConfirmPassword"></label>
+    <input asp-for="ConfirmPassword" />
+    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+  </div>
+  <div class="button-container">
+    <button type="submit">Save</button>
+  </div>
+</form>
+
+<hr />
+@if (Model.CurrentLogins?.Count > 0)
+{
+  <h4>External Logins</h4>
+  <table>
+    <tbody>
+      @foreach (var login in Model.CurrentLogins)
+      {
+        <tr>
+          <td id="@($"login-provider-{login.LoginProvider}")">@login.ProviderDisplayName</td>
+          <td>
+            @if (Model.ShowRemoveButton)
+            {
+              <form id="@($"remove-login-{login.LoginProvider}")" asp-page-handler="RemoveLogin" method="post">
+                <div>
+                  <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                  <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                  <button type="submit" title="Remove this @login.ProviderDisplayName login from your account">Remove</button>
+                </div>
+              </form>
+            }
+            else
+            {
+              @: &nbsp;
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+@if (Model.OtherLogins?.Count > 0)
+{
+  <h4>Add another service to log in.</h4>
+  <hr />
+  <form asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+    <p>
+      @foreach (var provider in Model.OtherLogins)
+      {
+        <button id="@($"link-login-button-{provider.Name}")" type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+      }
+    </p>
+  </form>
+}
+
+<hr />
+<h4>@ViewData["Title"]</h4>
+@if (Model.TwoFactor.Is2faEnabled)
+{
+  if (Model.TwoFactor.RecoveryCodesLeft == 0)
+  {
+    <div class="alert alert-danger">
+      <strong>You have no recovery codes left.</strong>
+      <p>You must <a asp-controller="Account" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+    </div>
+  }
+  else if (Model.TwoFactor.RecoveryCodesLeft == 1)
+  {
+    <div class="alert alert-danger">
+      <strong>You have 1 recovery code left.</strong>
+      <p>You can <a asp-controller="Account" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+    </div>
+  }
+  else if (Model.TwoFactor.RecoveryCodesLeft <= 3)
+  {
+    <div class="alert alert-warning">
+      <strong>You have @Model.TwoFactor.RecoveryCodesLeft recovery codes left.</strong>
+      <p>You should <a asp-controller="Account" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+    </div>
+  }
+
+  if (Model.TwoFactor.IsMachineRemembered)
+  {
+    <form method="post" style="display: inline-block">
+      <button type="submit">Forget this browser</button>
+    </form>
+  }
+  <a asp-controller="Account" asp-action="Disable2fa">Disable 2FA</a>
+  <a asp-controller="Account" asp-action="GenerateRecoveryCodes">Reset recovery codes</a>
+}
+
+<h5>Authenticator app</h5>
+@if (!Model.TwoFactor.HasAuthenticator)
+{
+  <a asp-controller="Account" asp-action="EnableAuthenticator">Add authenticator app</a>
+}
+else
+{
+  <a asp-controller="Account" asp-action="EnableAuthenticator">Setup authenticator app</a>
+  <a asp-controller="Account" asp-action="ResetAuthenticator">Reset authenticator app</a>
+}

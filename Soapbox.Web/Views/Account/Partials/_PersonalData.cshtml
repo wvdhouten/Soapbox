@@ -1,0 +1,17 @@
+<form id="download-personal-data" asp-controller="Account" asp-action="DownloadPersonalData" method="post" style="display: none;"></form>
+<form class="horizontal-form">
+  <div class="form-group">
+    <label>Personal data</label>
+    <div class="static-value">
+      <a asp-controller="Account" asp-action="DownloadPersonalData" submit-form="download-personal-data">Download</a>
+      <p class="subtle">Your account contains personal data that you have given us.</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Delete account</label>
+    <div class="static-value">
+      <a asp-controller="Account" asp-action="Delete">Delete</a>
+      <p class="subtle">Deleting your account will destroy the account and the attached personal data. This action is permanent, and it cannot be reversed.</p>
+    </div>
+  </div>
+</form>

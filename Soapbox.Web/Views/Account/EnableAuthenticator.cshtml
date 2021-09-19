@@ -1,0 +1,60 @@
+@model Models.Account.EnableAuthenticatorModel
+@{
+  ViewData["Title"] = "Configure authenticator app";
+}
+
+<style>
+  #qrCode > img {
+    display: block;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 16px;
+    margin: auto;
+  }
+
+  kbd {
+    text-align: center;
+    display: block;
+  }
+</style>
+
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData["Title"]</h1>
+  </header>
+  <div>
+    <p>Download a 2FA app:</p>
+    <div>Microsoft Authenticator (<a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> / <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a>)</div>
+    <div>Google Authenticator (<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> / <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>)</div>
+    <p>Scan the QR Code or enter the below into the 2FA app.</p>
+    <div id="qrCode"></div>
+    <div id="qrCodeData" data-url="@Html.Raw(@Model.AuthenticatorUri)"></div>
+    <kbd>@Model.SharedKey</kbd>
+    <p>Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below.</p>
+    <form id="send-code" method="post">
+      <div class="form-group">
+        <label asp-for="Input.Code">Verification Code</label>
+        <input asp-for="Input.Code" autocomplete="off" />
+        <span asp-validation-for="Input.Code" class="text-danger"></span>
+      </div>
+      <button type="submit">Verify</button>
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </form>
+  </div>
+</div>
+
+@section Scripts {
+  <script type="text/javascript" src="~/lib/qrcodejs/qrcode.min.js"></script>
+  <script type="text/javascript">
+    new QRCode(document.getElementById("qrCode"),
+      {
+        text: "@Html.Raw(Model.AuthenticatorUri)",
+        width: 250,
+        height: 250,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+  </script>
+}

@@ -16,7 +16,7 @@ namespace Soapbox.Web.Controllers
             _logger = logger;
         }
 
-        [HttpGet("~/{page?}")]
+        [HttpGet("~/")]
         [HttpGet("~/Pages/{page?}")]
         public IActionResult Index([FromRoute] string page = null)
         {

@@ -31,7 +31,7 @@ namespace Soapbox.Core.Email
             return new SmtpClient(_settings.Host, _settings.Port)
             {
                 Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
-                EnableSsl = true,
+                EnableSsl = _settings.EnableSsl,
             };
         }
     }

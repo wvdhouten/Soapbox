@@ -15,7 +15,7 @@ form.horizontal-form .form-group {
     flex-direction: row;
 }
 
-.form-group > label{
+.form-group > label {
     padding: 0 4px;
     margin-bottom: 4px;
 }
@@ -28,9 +28,13 @@ form.horizontal-form .form-group > label {
   text-align: right;
 }
 
+form .form-group > .static-value {
+  padding: .5rem 0;
+}
+
 .input-group {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
 }
 

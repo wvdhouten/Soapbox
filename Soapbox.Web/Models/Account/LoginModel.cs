@@ -7,20 +7,17 @@ namespace Soapbox.Web.Models.Account
 
     public class LoginModel
     {
-        [BindProperty]
-        public InputModel Input { get; set; }
-
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
 
-        [TempData]
-        public string ErrorMessage { get; set; }
+        [BindProperty]
+        public InputModel Input { get; set; }
 
         public class InputModel
         {
             [Required]
-            [MinLength(10)]
+            [MinLength(8)]
             [Display(Name = "Username", Prompt = "Username")]
             public string Username { get; set; }
 

@@ -21,13 +21,13 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailClient emailClient;
+        private readonly IEmailClient _emailClient;
         private readonly ILogger<UsersController> _logger;
 
         public UsersController(UserManager<SoapboxUser> userManager, IEmailClient emailClient, ILogger<UsersController> logger)
         {
             _userManager = userManager;
-            this.emailClient = emailClient;
+            _emailClient = emailClient;
             _logger = logger;
         }
 
@@ -67,9 +67,9 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var returnUrl = string.Empty;
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", values: new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
 
-                    await emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -111,9 +111,9 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var returnUrl = string.Empty;
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", values: new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
 
-                    await emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     return RedirectToAction(nameof(Index));
                 }

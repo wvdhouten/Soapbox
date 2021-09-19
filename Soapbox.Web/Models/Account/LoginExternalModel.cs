@@ -15,6 +15,11 @@ namespace Soapbox.Web.Models.Account
         public class InputModel
         {
             [Required]
+            [MinLength(8)]
+            [Display(Name = "Username", Prompt = "Username")]
+            public string Username { get; set; }
+
+            [Required]
             [EmailAddress]
             public string Email { get; set; }
         }

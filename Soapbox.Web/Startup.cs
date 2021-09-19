@@ -17,6 +17,7 @@ namespace Soapbox.Web
     using Soapbox.Web.Config;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
+    using Soapbox.Web.Services;
 
     public class Startup
     {
@@ -37,6 +38,7 @@ namespace Soapbox.Web
             services.AddScoped<IEmailClient, SmtpEmailClient>();
 
             services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
 
             services.AddSqlite(Configuration, HostEnvironment);
@@ -80,7 +82,9 @@ namespace Soapbox.Web
             services.AddIdentityCore<SoapboxUser>(o =>
             {
                 o.Stores.MaxLengthForKeys = 128;
-            }).AddSignInManager().AddSqliteStore();
+            }).AddDefaultTokenProviders()
+            .AddSignInManager()
+            .AddSqliteStore();
 
             services.AddAuthorization(options =>
             {
