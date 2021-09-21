@@ -8,6 +8,8 @@ namespace Soapbox.Domain.Abstractions
     {
         Task<IAsyncEnumerable<Post>> GetAllPostsAsync();
 
+        Task<IAsyncEnumerable<Post>> GetRecentPosts(int count);
+
         Task CreateOrUpdatePostAsync(Post post);
 
         Task<Post> GetPostByIdAsync(string id);

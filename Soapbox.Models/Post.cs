@@ -2,6 +2,7 @@ namespace Soapbox.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Represents a blog post.
@@ -14,24 +15,14 @@ namespace Soapbox.Models
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the author identifier.
-        /// </summary>
-        public string Author { get; set; }
-
-        /// <summary>
         /// Gets or sets the post title.
         /// </summary>
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the post content.
+        /// Gets or sets the author identifier.
         /// </summary>
-        public string Content { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the post excerpt. *optional
-        /// </summary>
-        public string Excerpt { get; set; } = string.Empty;
+        public string Author { get; set; }
 
         /// <summary>
         /// Gets or sets the post slug.
@@ -39,9 +30,24 @@ namespace Soapbox.Models
         public string Slug { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the post excerpt. *optional
+        /// </summary>
+        public string Excerpt { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the post content.
+        /// </summary>
+        public string Content { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the modification date.
         /// </summary>
         public DateTime ModifiedOn { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets or sets the post content.
+        /// </summary>
+        public PostStatus Status { get; set; } = PostStatus.Private;
 
         /// <summary>
         /// Gets or sets the publication date.
@@ -53,5 +59,11 @@ namespace Soapbox.Models
         /// Gets or sets the post categories.
         /// </summary>
         public IList<string> Categories { get; } = new List<string>();
+    }
+
+    public enum PostStatus
+    {
+        Published,
+        Private
     }
 }

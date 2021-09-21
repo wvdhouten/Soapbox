@@ -4,11 +4,9 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Common;
     using Soapbox.Core.Identity;
     using Soapbox.Domain.Abstractions;
     using Soapbox.Models;
-    using Soapbox.Web.Areas.Admin.ViewModels.Users;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
 
@@ -50,7 +48,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             post.Author = User.GetUserId<string>();
             await _blogService.CreateOrUpdatePostAsync(post);
 
-            return View(post);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -87,7 +85,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
             catch
             {
-                // Add some data to viewbag or so.
+                // TODO: Add status message.
             }
 
             return RedirectToAction(nameof(Index));

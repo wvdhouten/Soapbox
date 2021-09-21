@@ -1,33 +1,41 @@
-@model IAsyncEnumerable<Post>
+@model Models.Blog.RecentPostsWidgetModel
 @inject Soapbox.Domain.Abstractions.IBlogService BlogService
 @{
-  var posts = await BlogService.GetAllPostsAsync();
+  var model = Model ?? new Models.Blog.RecentPostsWidgetModel();
+  var posts = await BlogService.GetRecentPosts(model.PostCount);
 }
 
 <style>
   .widget > header {
     overflow: auto;
     padding: 10px;
-    background: red;
+    border-color: var(--accent2-500);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
   }
 
-  .widget > header > h1 {
-    margin: 0;
-  }
+    .widget > header > h1 {
+      margin: 0;
+    }
 
   .item-feed {
-    padding: 20px;
+    padding: .5rem 1rem;
+  }
+
+  .widget .item {
+      margin-bottom: .5rem;
   }
 </style>
 
 <article class="widget">
   <header>
-    <h1>Blog</h1>
+    <h1>Latest <a asp-controller="Blog" asp-action="Index">blog</a> posts:</h1>
   </header>
   <section class="item-feed">
     @await foreach (var post in posts)
     {
-      <partial name="~/Views/Blog/_Headline.cshtml" for="@post" />
+      <partial name="~/Views/Blog/_Headline.cshtml" model="post" />
     }
   </section>
 </article>

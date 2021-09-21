@@ -1,0 +1,15 @@
+a {
+  color: var(--accent1-500, #f8f9fa);
+  text-decoration: none;
+  transition: all 150ms ease;
+  transition-property: color;
+}
+
+a:hover {
+  color: var(--accent1-700, #f8f9fa);
+  text-decoration: none;
+}
+
+a:focus {
+  outline-width: 4px;
+}

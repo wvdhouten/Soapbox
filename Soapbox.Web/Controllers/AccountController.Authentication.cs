@@ -39,6 +39,7 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpPost, AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromForm] LoginModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");

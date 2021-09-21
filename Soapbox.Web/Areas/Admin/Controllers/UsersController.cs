@@ -12,7 +12,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.Core.Common;
     using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
-    using Soapbox.Web.Areas.Admin.ViewModels.Users;
+    using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
 

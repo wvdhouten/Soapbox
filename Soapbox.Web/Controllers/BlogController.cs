@@ -49,7 +49,7 @@ namespace Soapbox.Web.Controllers
                 return NotFound();
             }
 
-            ViewData[Constants.Title] = post;
+            ViewData[Constants.Title] = post.Title;
 
             return View(post);
         }

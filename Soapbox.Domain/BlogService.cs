@@ -22,14 +22,19 @@ namespace Soapbox.Domain
             return await _postRepository.ListAsync();
         }
 
+        public async Task<IAsyncEnumerable<Post>> GetRecentPosts(int count)
+        {
+            return await _postRepository.ListAsync(0, count);
+        }
+
         public async Task CreateOrUpdatePostAsync(Post post)
         {
             var existing = await _postRepository.GetByIdAsync(post.Id).ConfigureAwait(false) ?? post;
             existing.Categories.Clear();
             existing.Title = post.Title.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : CreateSlug(post.Title);
-            existing.Content = post.Content.Trim();
-            existing.Excerpt = post.Excerpt.Trim();
+            existing.Content = (post.Content ?? "").Trim();
+            existing.Excerpt = (post.Excerpt ?? "").Trim();
 
             if (string.IsNullOrEmpty(existing.Id))
             {

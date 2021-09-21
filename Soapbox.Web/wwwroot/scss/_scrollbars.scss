@@ -1,0 +1,17 @@
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent1-400) var(--accent1-200);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--accent1-500);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--accent1-300);
+  border-radius: 5px;
+}

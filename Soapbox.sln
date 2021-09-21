@@ -3,22 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Web", "Soapbox.Web\Soapbox.Web.csproj", "{318EEE6C-47C5-4A78-8581-43CBFC80C5B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Web", "Soapbox.Web\Soapbox.Web.csproj", "{318EEE6C-47C5-4A78-8581-43CBFC80C5B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8FCA0F88-7F03-4549-BCA8-BE90FFF9CC4D}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.DataAccess.Sqlite", "Soapbox.DataAccess.Sqlite\Soapbox.DataAccess.Sqlite.csproj", "{D66B4870-C6FF-4B50-A58B-C547C011C371}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.DataAccess.Sqlite", "Soapbox.DataAccess.Sqlite\Soapbox.DataAccess.Sqlite.csproj", "{D66B4870-C6FF-4B50-A58B-C547C011C371}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.DataAccess", "Soapbox.DataAccess\Soapbox.DataAccess.csproj", "{07AF51C6-5CD8-4387-A85F-BC25D1CCB3CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.DataAccess", "Soapbox.DataAccess\Soapbox.DataAccess.csproj", "{07AF51C6-5CD8-4387-A85F-BC25D1CCB3CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Models", "Soapbox.Models\Soapbox.Models.csproj", "{F66AA056-5FBA-47D8-83D1-542CA78C30BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Models", "Soapbox.Models\Soapbox.Models.csproj", "{F66AA056-5FBA-47D8-83D1-542CA78C30BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Core", "Soapbox.Core\Soapbox.Core.csproj", "{F91E4F81-8049-40DD-AE3B-856CA28CB8E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Core", "Soapbox.Core\Soapbox.Core.csproj", "{F91E4F81-8049-40DD-AE3B-856CA28CB8E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Domain", "Soapbox.Domain\Soapbox.Domain.csproj", "{08B8BA0F-5375-43A4-981C-8BC73AFC3F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Domain", "Soapbox.Domain\Soapbox.Domain.csproj", "{08B8BA0F-5375-43A4-981C-8BC73AFC3F17}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A3B1592C-B16F-4905-8A1E-110996071D41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

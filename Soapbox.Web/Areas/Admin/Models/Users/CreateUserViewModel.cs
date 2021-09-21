@@ -1,4 +1,4 @@
-namespace Soapbox.Web.Areas.Admin.ViewModels.Users
+namespace Soapbox.Web.Areas.Admin.Models.Users
 {
     using System.ComponentModel.DataAnnotations;
     using Soapbox.Core.Identity;

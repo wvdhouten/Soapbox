@@ -18,6 +18,7 @@ namespace Soapbox.Web
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
     using Soapbox.Web.Settings;
+    using WebOptimizer.Sass;
 
     public class Startup
     {
@@ -99,11 +100,15 @@ namespace Soapbox.Web
             services.AddScoped<IBlogService, BlogService>();
 
             services.AddRazorPages();
+            services.AddWebOptimizer(options => {
+                options.AddScssBundle("/css/bundle.css", "scss/site.scss");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseWebOptimizer();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

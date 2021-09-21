@@ -1,7 +1,14 @@
 @model Post
 @inject Soapbox.Domain.Abstractions.IMarkdownParser Parser
+@{
+  var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
 
-<article class="post">
+  var content = !isFullPost
+    ? Model.Excerpt
+    : Model.Content;
+}
+
+<article class="post excerpt">
   <header>
     <div class="container">
       <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
@@ -14,12 +21,15 @@
   </section>
   <section>
     <div class="body container">
-      @Html.Raw(Parser.Parse(Model.Content))
+      @Html.Raw(Parser.Parse(content))
     </div>
   </section>
   <footer>
     <div class="container">
-      Like, share & subscribe.
+      @if (!isFullPost)
+      {
+        <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">Read More</a>
+      }
     </div>
   </footer>
 </article>

@@ -12,12 +12,12 @@
 }
 
 form.horizontal-form .form-group {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .form-group > label {
-    padding: 0 4px;
-    margin-bottom: 4px;
+  padding: 0 4px;
+  margin-bottom: 4px;
 }
 
 form.horizontal-form .form-group > label {
@@ -38,10 +38,11 @@ form .form-group > .static-value {
   width: 100%;
 }
 
-  .input-group > input,
-  .input-group > textarea {
-    flex: 1;
-  }
+.input-group > input,
+.input-group > select,
+.input-group > textarea {
+  flex: 1;
+}
 
 .input-group-addon {
   background: var(--input-background);
@@ -50,6 +51,7 @@ form .form-group > .static-value {
 }
 
 input:not([type="checkbox"]):not([type="radio"]),
+select,
 textarea {
   background: var(--input-background);
   color: var(--input-color);
@@ -61,15 +63,17 @@ textarea {
   border-radius: 2px;
 }
 
-  input:focus,
-  textarea:focus {
-    background: var(--input-active-background);
-  }
+input:focus,
+select:focus
+textarea:focus {
+  background: var(--input-active-background);
+}
 
-  input:disabled,
-  textarea:disabled {
-    background: var(--input-disabled-background);
-  }
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--input-disabled-background);
+}
 
 /* BUTTONS */
 
@@ -82,24 +86,24 @@ button {
   cursor: pointer;
 }
 
-  button:hover {
-    background: #dddddd;
-  }
+button:hover {
+  background: #dddddd;
+}
 
-  button:active {
-    background: #bbbbbb;
-  }
+button:active {
+  background: #bbbbbb;
+}
 
-  button:disabled {
-    background: #999999;
-    cursor: default;
-  }
+button:disabled {
+  background: #999999;
+  cursor: default;
+}
 
-  button.large {
-    width: 80%;
-    padding: 8px 12px;
-    background: white;
-    border: 1px solid black;
-    border-radius: 2px;
-    cursor: pointer;
-  }
+button.large {
+  width: 80%;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+}

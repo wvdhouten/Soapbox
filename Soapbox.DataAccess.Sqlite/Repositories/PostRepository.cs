@@ -8,6 +8,7 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
     using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
+    using Microsoft.EntityFrameworkCore;
 
     public class PostRepository : IPostRepository
     {
@@ -17,9 +18,20 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
         {
             _context = context;
         }
-        public Task<IAsyncEnumerable<Post>> ListAsync()
+
+        public Task<IAsyncEnumerable<Post>> ListAsync(int page = 0, int pageSize = 0)
         {
-            return Task.FromResult(_context.Posts.AsAsyncEnumerable());
+            IQueryable<Post> posts = _context.Posts;
+            var now = DateTime.UtcNow;
+            posts = posts.Where(post => post.Status == PostStatus.Published && post.PublishedOn <= now);
+            posts = posts.OrderByDescending(post => EF.Property<Post>(post, "PublishedOn"));
+
+            if (page >= 0 && pageSize > 0)
+            {
+                posts = posts.Skip(page * pageSize).Take(pageSize);
+            }
+
+            return Task.FromResult(posts.AsAsyncEnumerable());
         }
 
         public async Task<Post> CreateAsync(Post post)
