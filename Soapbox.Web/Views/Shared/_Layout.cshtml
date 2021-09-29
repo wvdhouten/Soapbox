@@ -9,6 +9,7 @@
 
   <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/prism-theme.css" asp-append-version="true" />
 
   @await RenderSectionAsync(Constants.StyleSheets, required: false)
 
@@ -55,6 +56,8 @@
   </footer>
 
   <script src="~/js/site.js" asp-append-version="true"></script>
+  <script src="~/lib/prism/prism.min.js" asp-append-version="true"></script>
+  <script src="~/lib/prism/plugins/autoloader/prism-autoloader.min.js" asp-append-version="true"></script>
 
   @await RenderSectionAsync(Constants.Scripts, required: false)
 </body>

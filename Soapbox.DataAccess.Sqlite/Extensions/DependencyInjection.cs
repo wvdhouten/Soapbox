@@ -11,6 +11,7 @@ namespace Soapbox.DataAccess.Sqlite
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite.Repositories;
     using Microsoft.AspNetCore.Identity;
+    using System.IO;
 
     public static class DependencyInjection
     {
@@ -18,8 +19,10 @@ namespace Soapbox.DataAccess.Sqlite
         {
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{BasePath}", env.ContentRootPath)
-            ));
+            {
+                Directory.CreateDirectory(env.ContentRootPath);
+                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{BasePath}", env.ContentRootPath));
+            });
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;

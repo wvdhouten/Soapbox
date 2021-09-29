@@ -3,12 +3,16 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "fork-awesome@1.2.0",
-      "destination": "wwwroot/lib/fork-awesome/"
-    },
-    {
       "library": "qrcodejs@1.0.0",
       "destination": "wwwroot/lib/qrcodejs/"
+    },
+    {
+      "library": "prism@1.25.0",
+      "destination": "wwwroot/lib/prism/"
+    },
+    {
+      "library": "fork-awesome@1.2.0",
+      "destination": "wwwroot/lib/fork-awesome/"
     }
   ]
 }

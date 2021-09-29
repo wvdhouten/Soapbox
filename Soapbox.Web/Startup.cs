@@ -102,6 +102,7 @@ namespace Soapbox.Web
             services.AddRazorPages();
             services.AddWebOptimizer(options => {
                 options.AddScssBundle("/css/bundle.css", "scss/site.scss");
+                options.AddScssBundle("/css/prism-theme.css", "scss/prism-theme.scss");
             });
         }
 

@@ -1,7 +1,12 @@
+$dark-h: 0;
+$dark-s: 23%;
+
 :root {
   --accent1-hue: 320;
   --accent2-hue: 200;
-  
+  --dark-hue: 210;
+  --dark-saturation: 15%;
+
   @for $i from 1 through 9 {
     --accent1-#{$i * 100}: hsl(var(--accent1-hue), 100%, #{$i * 10}%)
   }
@@ -9,18 +14,15 @@
   @for $i from 1 through 9 {
     --accent2-#{$i * 100}: hsl(var(--accent2-hue), 100%, #{$i * 10}%)
   }
-}
 
-body {
-  background: var(--background-color, #343a40);
-  color: var(--text-color, #f8f9fa);
-  transition: all 200ms ease;
-  transition-property: background, color;
+  @for $i from 1 through 9 {
+    --dark-#{$i * 100}: hsl(var(--dark-hue), var(--dark-saturation), #{10 + $i}%)
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: #343a40;
+    --background-color: var(--dark-100);
     --text-color: #f8f9fa;
     --hover-color: #c6c7c8;
     --hover-outline-color: #000;
@@ -30,7 +32,7 @@ body {
 }
 
 body.dark {
-  --background-color: #343a40;
+  --background-color: var(--dark-100);
   --text-color: #f8f9fa;
   --hover-color: #c6c7c8;
   --hover-outline-color: #000;
@@ -52,4 +54,11 @@ body.light {
   --text-color: #000;
   --hover-color: #333333;
   --focus-color: #4d4d4d;
+}
+
+body {
+  background: var(--background-color, #343a40);
+  color: var(--text-color, #f8f9fa);
+  transition: all 200ms ease;
+  transition-property: background, color;
 }

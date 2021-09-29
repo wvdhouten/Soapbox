@@ -1,35 +1,32 @@
 @model Soapbox.Web.Settings.SiteSettings
 @{
-    ViewData[Constants.Title] = "Site Configuration";
+  ViewData[Constants.Title] = "Site Configuration";
 }
 
-<header>
-  <h1>Site Configuration</h1>
-</header>
+<div class="container">
+  <header>
+    <h1>Site Configuration</h1>
+  </header>
 
-<form method="post" id="edit" asp-area="Admin" asp-controller="Site" asp-action="Settings">
-  <div asp-validation-summary="ModelOnly"></div>
+  <form method="post" id="edit" asp-area="Admin" asp-controller="Site" asp-action="Settings">
+    <div asp-validation-summary="ModelOnly"></div>
 
-  <div class="form-field">
-    <label asp-for="@Model.Title" class="label"></label>
-    <input asp-for="@Model.Title" />
-  </div>
+    <div class="form-field">
+      <label asp-for="@Model.Title" class="label"></label>
+      <input asp-for="@Model.Title" />
+    </div>
 
-  <div class="form-field">
-    <label asp-for="@Model.Description" class="label"></label>
-    <input asp-for="@Model.Description" />
-  </div>
+    <div class="form-field">
+      <label asp-for="@Model.Description" class="label"></label>
+      <input asp-for="@Model.Description" />
+    </div>
 
-  <div class="form-field">
-    <span class="label">Membership</span>
-    <input asp-for="@Model.AllowRegistration" />
-    <label asp-for="@Model.AllowRegistration" class="label"></label>
-  </div>
+    <div class="form-field">
+      <span class="label">Membership</span>
+      <input asp-for="@Model.AllowRegistration" />
+      <label asp-for="@Model.AllowRegistration" class="label"></label>
+    </div>
 
-  <button type="submit">Save</button>
-</form>
-
-@section StyleSheets
-{
-  <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
-}
+    <button type="submit">Save</button>
+  </form>
+</div>

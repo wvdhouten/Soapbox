@@ -4,36 +4,47 @@
 }
 
 <header>
-  <h1>Posts</h1>
-  <a asp-area="Admin" asp-controller="Posts" asp-action="Create"><span class="material-icons">add</span></a>
+  <div class="container">
+    <h1>Posts</h1>
+  </div>
 </header>
+<section class="sub-header">
+  <div class="container">
+    <a asp-area="Admin" asp-controller="Posts" asp-action="Create"><i class="fa fa-plus" aria-hidden="true"></i></a>
+  </div>
+</section>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Date</th>
-      <th>Categories</th>
-      <th>Tags</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    @await foreach (var post in Model)
-    {
+<section class="container wide">
+  <table>
+    <thead>
       <tr>
-        <td><a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a></td>
-        <td>@post.Author</td>
-        <td>@((post.PublishedOn ?? post.ModifiedOn).ToString("yyyy-MM-dd HH:mm zz")) @if (post.PublishedOn.HasValue) { <span class="material-icons">done</span> }</td>
-        <td>@string.Join(',', post.Categories)</td>
-        <td>-</td>
-        <td>
-          <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" method="post">
-            <button type="submit">Delete</button>
-          </form>
-        </td>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th>Categories</th>
+        <th>Tags</th>
+        <th></th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @await foreach (var post in Model)
+      {
+        <tr>
+          <td><a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a></td>
+          <td>@post.Author</td>
+          <td>
+            @((post.PublishedOn ?? post.ModifiedOn).ToString("yyyy-MM-dd HH:mm zz")) @if (post.PublishedOn.HasValue)
+            {<i class="fa fa-check" aria-hidden="true"></i>}
+          </td>
+          <td>@string.Join(',', post.Categories)</td>
+          <td>-</td>
+          <td>
+            <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" method="post">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

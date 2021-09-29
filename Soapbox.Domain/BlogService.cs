@@ -33,6 +33,8 @@ namespace Soapbox.Domain
             existing.Categories.Clear();
             existing.Title = post.Title.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : CreateSlug(post.Title);
+            existing.ModifiedOn = DateTime.UtcNow;
+            existing.PublishedOn = post.PublishedOn;
             existing.Content = (post.Content ?? "").Trim();
             existing.Excerpt = (post.Excerpt ?? "").Trim();
 

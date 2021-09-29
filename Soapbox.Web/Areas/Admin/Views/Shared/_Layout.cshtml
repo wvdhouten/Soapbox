@@ -1,46 +1,63 @@
 @inject IOptionsSnapshot<Soapbox.Web.Settings.SiteSettings> settings
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@ViewData[Constants.Title] - @settings.Value.Title</title>
+  <title>@ViewData[Constants.Title] | @settings.Value.Title</title>
   <meta name="description" content="@ViewData[Constants.Description]" />
 
-  <!-- Icons are subject to change. -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-  <link rel="stylesheet" href="~/admin/css/colors.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/admin/css/variables.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/admin/css/layout.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/admin/css/site.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/admin/css/tables.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/prism-theme.css" asp-append-version="true" />
 
   @await RenderSectionAsync(Constants.StyleSheets, required: false)
 
 </head>
 <body>
-  <header>
-    <a id="banner" asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a>
-    <nav id="site-nav">
-      <div>
-        <partial name="_NavigationPartial" />
-        <partial name="_LoginPartial" />
+  <header id="site-header">
+    <div class="container">
+      <div id="brand">
+        <h1><a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a></h1>
+        <div>@settings.Value.Description</div>
       </div>
-    </nav>
+      <nav id="site-nav">
+        <partial name="_NavigationPartial" />
+      </nav>
+    </div>
   </header>
 
   <main role="main">
     @RenderBody()
-
-    <footer>
-      Powered by <a>The soapbox project</a>
-    </footer>
   </main>
 
+  <footer id="site-footer">
+    <section id="footer-nav" class="container columns">
+      <div>
+        <h3>Blog</h3>
+        <ul>
+          <li><a asp-area="" asp-controller="Blog" asp-action="Index">All posts</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <ul>
+          <li><a asp-area="" asp-controller="Pages" asp-action="Privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </section>
+    <section id="copyright" class="container">
+      <div>
+        &copy; @DateTime.UtcNow.Year - <a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a> -
+        <partial name="_LoginPartial" />
+      </div>
+      <div>Powered by <a href="https://github.com/wvdhouten/Soapbox" title="Soapbox">Soapbox</a></div>
+    </section>
+  </footer>
+
   <script src="~/js/site.js" asp-append-version="true"></script>
+  <script src="~/lib/prism/prism.min.js" asp-append-version="true"></script>
+  <script src="~/lib/prism/plugins/autoloader/prism-autoloader.min.js" asp-append-version="true"></script>
 
   @await RenderSectionAsync(Constants.Scripts, required: false)
 </body>

@@ -73,7 +73,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
             await _blogService.CreateOrUpdatePostAsync(post);
 
-            return View(post);
+            return RedirectToAction(nameof(Edit), new { id = post.Id });
         }
 
         [HttpPost]

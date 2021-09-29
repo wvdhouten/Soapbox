@@ -1,3 +1,7 @@
+html {
+  overflow-y: scroll;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--accent1-400) var(--accent1-200);
