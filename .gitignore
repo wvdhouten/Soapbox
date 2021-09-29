@@ -351,3 +351,4 @@ MigrationBackup/
 
 **/wwwroot/dist
 **/Soapbox.Web/Content
+**/Soapbox.Web/wwwroot/lib
