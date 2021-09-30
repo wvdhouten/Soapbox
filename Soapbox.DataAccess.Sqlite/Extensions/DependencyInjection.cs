@@ -20,8 +20,9 @@ namespace Soapbox.DataAccess.Sqlite
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                Directory.CreateDirectory(env.ContentRootPath);
-                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{BasePath}", env.ContentRootPath));
+                var contentPath = $"{env.ContentRootPath}\\Content";
+                Directory.CreateDirectory(contentPath);
+                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{ContentPath}", contentPath));
             });
             services.AddDatabaseDeveloperPageExceptionFilter();
 
