@@ -8,6 +8,8 @@ namespace Soapbox.DataAccess.Abstractions
 
     public interface IPostRepository
     {
+        public Task<IAsyncEnumerable<Post>> ListAsync(Expression<Func<Post, bool>> predicate);
+
         public Task<IAsyncEnumerable<Post>> ListAsync(int page = 0, int pageSize = 0);
 
         public Task<Post> CreateAsync(Post post);

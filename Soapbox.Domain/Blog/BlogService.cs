@@ -1,11 +1,11 @@
-namespace Soapbox.Domain
+namespace Soapbox.Domain.Blog
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Soapbox.Core.Extensions;
     using Soapbox.DataAccess.Abstractions;
-    using Soapbox.Domain.Abstractions;
     using Soapbox.Models;
 
     public class BlogService : IBlogService
@@ -22,9 +22,14 @@ namespace Soapbox.Domain
             return await _postRepository.ListAsync();
         }
 
-        public async Task<IAsyncEnumerable<Post>> GetRecentPosts(int count)
+        public async Task<IAsyncEnumerable<Post>> GetPostsAsync(int count, int skip = 0)
         {
-            return await _postRepository.ListAsync(0, count);
+            return await _postRepository.ListAsync(skip, count);
+        }
+
+        public async Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
+        {
+            return await _postRepository.ListAsync(predicate);
         }
 
         public async Task CreateOrUpdatePostAsync(Post post)
@@ -66,8 +71,8 @@ namespace Soapbox.Domain
         private static string CreateSlug(string title)
         {
             title = title?.ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
-            title = StringUtils.RemoveDiacritics(title);
-            title = StringUtils.RemoveReservedUrlCharacters(title);
+            title = title.RemoveDiacritics();
+            title = title.RemoveReservedUrlCharacters();
 
             return title.ToLowerInvariant();
         }

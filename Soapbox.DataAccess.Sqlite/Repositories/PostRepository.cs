@@ -34,11 +34,16 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             return Task.FromResult(posts.AsAsyncEnumerable());
         }
 
+        public Task<IAsyncEnumerable<Post>> ListAsync(Expression<Func<Post, bool>> predicate)
+        {
+            return Task.FromResult(_context.Posts.Where(predicate).AsAsyncEnumerable());
+        }
+
         public async Task<Post> CreateAsync(Post post)
         {
             post.Id = Guid.NewGuid().ToString();
-
             await _context.Posts.AddAsync(post);
+
             await _context.SaveChangesAsync();
 
             return post;
@@ -63,6 +68,7 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             }
 
             _context.Entry(entity).CurrentValues.SetValues(post);
+
             await _context.SaveChangesAsync();
 
             return post;
@@ -72,6 +78,7 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
         {
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
+
             await _context.SaveChangesAsync();
         }
     }

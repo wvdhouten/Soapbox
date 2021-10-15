@@ -1,4 +1,4 @@
-namespace Soapbox.Core.Email.Abstractions
+namespace Soapbox.Core.Email
 {
     using System.Threading.Tasks;
 

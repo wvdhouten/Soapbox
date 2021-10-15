@@ -1,4 +1,4 @@
-namespace Soapbox.Domain.Abstractions
+namespace Soapbox.Core.Markdown
 {
     public interface IMarkdownParser
     {

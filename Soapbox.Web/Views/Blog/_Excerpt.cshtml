@@ -1,5 +1,5 @@
 @model Post
-@inject Soapbox.Domain.Abstractions.IMarkdownParser Parser
+@inject Soapbox.Core.Markdown.IMarkdownParser Parser
 @{
   var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
 

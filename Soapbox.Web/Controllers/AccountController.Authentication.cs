@@ -334,7 +334,7 @@ namespace Soapbox.Web.Controllers
             }
             else
             {
-                model.Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                model.Code = code;
                 return View(model);
             }
         }
@@ -353,7 +353,8 @@ namespace Soapbox.Web.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Code));
+            var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
@@ -368,8 +369,10 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult ResetPasswordConfirmation()
+        public async Task<IActionResult> ResetPasswordConfirmation()
         {
+            await _signInManager.SignOutAsync();
+
             // TODO: Consider status message and redirect.
             return View();
         }

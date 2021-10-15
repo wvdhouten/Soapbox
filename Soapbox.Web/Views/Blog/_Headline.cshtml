@@ -1,5 +1,6 @@
 @model Post
-  <article class="item">
-    <header><a asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></header>
-    <section class="metadata"><time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time></section>
-  </article>
+
+<article class="item">
+  <header><a asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></header>
+  <section class="metadata"><time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time></section>
+</article>

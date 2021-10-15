@@ -1,10 +1,14 @@
 namespace Soapbox.Web.Areas.Admin.Models.Users
 {
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using Soapbox.Core.Identity;
 
-    public class CreateUserViewModel
+    public class EditUserViewModel
     {
+        [Required, ReadOnly(true)]
+        public string Id { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

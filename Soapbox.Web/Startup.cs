@@ -1,6 +1,6 @@
 namespace Soapbox.Web
 {
-    using System.Linq;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -9,16 +9,14 @@ namespace Soapbox.Web
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Soapbox.Core.Email;
-    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
+    using Soapbox.Core.Markdown;
     using Soapbox.DataAccess.Sqlite;
-    using Soapbox.Domain;
-    using Soapbox.Domain.Abstractions;
+    using Soapbox.Domain.Blog;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
     using Soapbox.Web.Settings;
-    using WebOptimizer.Sass;
 
     public class Startup
     {
@@ -35,6 +33,7 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddScoped<IEmailClient, SmtpEmailClient>();
 
@@ -44,41 +43,12 @@ namespace Soapbox.Web
 
             services.AddSqlite(Configuration, HostEnvironment);
 
-            services.AddAuthentication(o =>
+            var auth = services.AddAuthentication(o =>
             {
                 o.DefaultScheme = IdentityConstants.ApplicationScheme;
                 o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddGoogle(options =>
-            {
-                var section = Configuration.GetSection("Authentication:Google");
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
-            })
-            .AddMicrosoftAccount(options =>
-            {
-                var section = Configuration.GetSection("Authentication:Google");
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
-            })
-            .AddFacebook(options =>
-            {
-                var section = Configuration.GetSection("Authentication:Google");
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
-            })
-            .AddTwitter(options =>
-            {
-                var section = Configuration.GetSection("Authentication:Google");
-                options.ConsumerKey = section["ConsumerKey"] ?? "aaa";
-                options.ConsumerSecret = section["ConsumerSecret"] ?? "aaa";
-            })
-            .AddGitHub(options =>
-            {
-                var section = Configuration.GetSection("Authentication:Google");
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
-            }).AddIdentityCookies();
+            });
+            TryAddExternalIdentityProviders(auth);
 
             services.AddIdentityCore<SoapboxUser>(o =>
             {
@@ -92,15 +62,15 @@ namespace Soapbox.Web
                 options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
             });
 
-            services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationHandler>();
-
-            services.AddScoped<IMarkdownParser, MarkdownParser>();
+            services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
+            services.AddSingleton<IMarkdownParser, MarkdownParser>();
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<IBlogService, BlogService>();
 
             services.AddRazorPages();
-            services.AddWebOptimizer(options => {
+            services.AddWebOptimizer(options =>
+            {
                 options.AddScssBundle("/css/bundle.css", "scss/site.scss");
                 options.AddScssBundle("/css/prism-theme.css", "scss/prism-theme.scss");
             });
@@ -117,9 +87,9 @@ namespace Soapbox.Web
             else
             {
                 app.UseExceptionHandler("/Pages/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseStatusCodePagesWithReExecute("/Pages/Error");
 
             app.UseSqlite(env);
 
@@ -140,6 +110,63 @@ namespace Soapbox.Web
                 endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void TryAddExternalIdentityProviders(AuthenticationBuilder auth)
+        {
+            // TODO: Put all identity code in a single module.
+            var section = Configuration.GetSection("Authentication:Google");
+            if (section.Exists())
+            {
+                auth.AddGoogle(options =>
+                {
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                });
+            }
+
+            var msSection = Configuration.GetSection("Authentication:Microsoft");
+            if (msSection.Exists())
+            {
+                auth.AddMicrosoftAccount(options =>
+                {
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                });
+            }
+
+            var fbSection = Configuration.GetSection("Authentication:Facebook");
+            if (fbSection.Exists())
+            {
+                auth.AddFacebook(options =>
+                {
+                    options.ClientId = fbSection["ClientId"];
+                    options.ClientSecret = fbSection["ClientSecret"];
+                });
+            }
+
+            var tSection = Configuration.GetSection("Authentication:Twitter");
+            if (tSection.Exists())
+            {
+                auth.AddTwitter(options =>
+                {
+
+                    options.ConsumerKey = tSection["ConsumerKey"];
+                    options.ConsumerSecret = tSection["ConsumerSecret"];
+                });
+            }
+
+            var ghSection = Configuration.GetSection("Authentication:GitHub");
+            if (ghSection.Exists())
+            {
+                auth.AddGitHub(options =>
+                {
+                    options.ClientId = ghSection["ClientId"];
+                    options.ClientSecret = ghSection["ClientSecret"];
+                });
+            }
+
+            auth.AddIdentityCookies();
         }
     }
 }

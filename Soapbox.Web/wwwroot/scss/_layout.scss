@@ -210,6 +210,12 @@
   }
 }
 
+header.has-actions {
+  display: grid;
+  grid-template-columns: auto min-content;
+  align-items: center;
+}
+
 .container.wide {
   max-width: initial;
 }

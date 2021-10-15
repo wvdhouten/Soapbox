@@ -1,5 +1,35 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@model Soapbox.Web.Areas.Admin.Models.Users.EditUserViewModel
+
+<div class="container">
+  <header>
+    <h1>@ViewData[Constants.Title]</h1>
+  </header>
+
+  <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="@Model.Id" type="hidden" />
+    <div class="form-field">
+      <label asp-for="@Model.Username"></label>
+      <input asp-for="@Model.Username" />
+      <span asp-validation-for="@Model.Username" class="text-danger"></span>
+    </div>
+    <div class="form-field">
+      <label asp-for="@Model.Email"></label>
+      <input asp-for="@Model.Email" />
+      <span asp-validation-for="@Model.Email" class="text-danger"></span>
+    </div>
+    <div class="form-field">
+      <label asp-for="@Model.DisplayName"></label>
+      <input asp-for="@Model.DisplayName" />
+      <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
+    </div>
+    <div class="form-field">
+      <label asp-for="@Model.Role"></label>
+      <select asp-for="@Model.Role" asp-items="Html.GetEnumSelectList<Soapbox.Core.Identity.UserRole>()">
+        <option value="" selected>Please select</option>
+      </select>
+      <span asp-validation-for="@Model.Role" class="text-danger"></span>
+    </div>
+    <button type="submit">Update</button>
+  </form>
+</div>

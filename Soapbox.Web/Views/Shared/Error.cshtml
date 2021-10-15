@@ -1,14 +1,19 @@
 @model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+  ViewData["Title"] = "Error";
+    var message = Model.Message ?? "An error occurred while processing your request.";
 }
 
-<h1>Error.</h1>
-<h2>An error occurred while processing your request.</h2>
+<dir class="container">
+  <header>
+    <h1>Error.</h1>
+    <p>@message</p>
+  </header>
 
-@if (Model.ShowRequestId)
-{
+  @if (Model.ShowRequestId)
+  {
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+      <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
-}
+  }
+</dir>

@@ -1,13 +1,14 @@
 @model IAsyncEnumerable<Post>
 
-  <div class="container">
-    <header>
-      <div class="container" style="text-align: right">
-        <input name="search" placeholder="Search placeholder" disabled style="display: inline-block; width: auto" /> <button>Search</button>
-      </div>
-    </header>
-    @await foreach (var post in Model)
-    {
-      <partial name="_Excerpt" model="post" />
-    }
-  </div>
+<div class="container">
+  <header>
+    <div class="container" style="text-align: right">
+      <input name="search" placeholder="Search placeholder" disabled style="display: inline-block; width: auto" /> <button>Search</button>
+    </div>
+  </header>
+</div>
+
+@await foreach (var post in Model)
+{
+  <partial name="_Excerpt" model="post" />
+}

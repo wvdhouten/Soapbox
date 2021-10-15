@@ -4,7 +4,6 @@ namespace Soapbox.Core.Email
     using System.Net.Mail;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Email.Abstractions;
 
     public class SmtpEmailClient : IEmailClient
     {

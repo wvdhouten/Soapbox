@@ -20,5 +20,7 @@ namespace Soapbox.Web.Models
         ///   <c>true</c> if to [show request identifier]; otherwise, <c>false</c>.
         /// </value>
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+        public string Message { get; set; }
     }
 }

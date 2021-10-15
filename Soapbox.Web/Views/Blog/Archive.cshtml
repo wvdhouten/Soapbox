@@ -1,0 +1,93 @@
+@model Models.Blog.ArchiveModel
+
+@{
+  ViewData["Title"] = "Archive";
+
+  var prevMonth = Model.CurrentMonth.AddMonths(-1);
+  var nextMonth = Model.CurrentMonth.AddMonths(1);
+  var endOfWeek = Model.StartOfWeek + 6;
+  var startOfCalendar = Model.Days.First().Key;
+  var today = DateTime.UtcNow;
+}
+
+<style>
+  #month-view {
+    table-layout: fixed;
+  }
+
+    #month-view td > header > span {
+      opacity: .5;
+    }
+
+    #month-view td {
+      height: 100px;
+      vertical-align: top;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+      #month-view td > * {
+        padding-left: .7em;
+        padding-right: .7em;
+      }
+
+      #month-view td.outside {
+        background: hsla(0, 0%, 100%, .1);
+      }
+
+      #month-view td header.today {
+        background: var(--accent1-400);
+      }
+</style>
+<div class="container">
+  <div>
+    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month"><<</a>
+    <span>@Model.CurrentMonth.ToString("MMMM yyyy")</span>
+    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month">>></a>
+  </div>
+  <table id="month-view">
+    <thead>
+      <tr>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+        <th>Sun</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var day in Model.Days)
+      {
+        var modifier = day.Key.Month != Model.CurrentMonth.Month ? "outside" : "";
+        var todayClass = day.Key.Date == today.Date ? "today" : "";
+
+        if (day.Key.DayOfWeek == Model.StartOfWeek)
+        {
+          @:<tr>
+          }
+          <td class="@modifier">
+            <header class="@todayClass">
+              @day.Key.Day
+              @if (day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date)
+              {<span>@day.Key.ToString("MMM")</span>}
+            </header>
+            <section>
+              @if (day.Value != null && day.Value.Any())
+              {
+                foreach (var post in day.Value)
+                {
+                  <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a>
+                }
+              }
+            </section>
+          </td>
+          if (day.Key.DayOfWeek == endOfWeek)
+          {
+          @:</tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

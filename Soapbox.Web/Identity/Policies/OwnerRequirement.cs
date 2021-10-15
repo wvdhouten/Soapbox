@@ -7,7 +7,7 @@ namespace Soapbox.Web.Identity.Policies
     using Soapbox.Core.Identity;
     using Soapbox.Models;
 
-    public class DocumentAuthorizationHandler : AuthorizationHandler<OwnerRequirement, Post>
+    public class OwnerAuthorizationHandler : AuthorizationHandler<OwnerRequirement, Post>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnerRequirement requirement, Post resource)
         {

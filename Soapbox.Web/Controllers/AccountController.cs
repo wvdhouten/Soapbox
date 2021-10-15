@@ -13,11 +13,11 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Identity;
     using Soapbox.Web.Settings;
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Services;
+    using Soapbox.Core.Email;
 
     [Authorize]
     public partial class AccountController : Controller
@@ -602,7 +602,7 @@ namespace Soapbox.Web.Controllers
             }
             if (currentPosition < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition));
+                result.Append(unformattedKey[currentPosition..]);
             }
 
             return result.ToString().ToLowerInvariant();

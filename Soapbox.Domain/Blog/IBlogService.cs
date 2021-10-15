@@ -1,6 +1,8 @@
-namespace Soapbox.Domain.Abstractions
+namespace Soapbox.Domain.Blog
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Soapbox.Models;
 
@@ -8,7 +10,9 @@ namespace Soapbox.Domain.Abstractions
     {
         Task<IAsyncEnumerable<Post>> GetAllPostsAsync();
 
-        Task<IAsyncEnumerable<Post>> GetRecentPosts(int count);
+        Task<IAsyncEnumerable<Post>> GetPostsAsync(int count, int skip = 0);
+
+        Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
         Task CreateOrUpdatePostAsync(Post post);
 

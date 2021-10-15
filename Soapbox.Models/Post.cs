@@ -2,7 +2,6 @@ namespace Soapbox.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Represents a blog post.
@@ -30,7 +29,7 @@ namespace Soapbox.Models
         public string Slug { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the post excerpt. *optional
+        /// Gets or sets the post excerpt.
         /// </summary>
         public string Excerpt { get; set; } = string.Empty;
 
@@ -45,7 +44,7 @@ namespace Soapbox.Models
         public DateTime ModifiedOn { get; set; } = DateTime.UtcNow;
 
         /// <summary>
-        /// Gets or sets the post content.
+        /// Gets or sets the post status.
         /// </summary>
         public PostStatus Status { get; set; } = PostStatus.Private;
 
@@ -61,9 +60,19 @@ namespace Soapbox.Models
         public IList<string> Categories { get; } = new List<string>();
     }
 
+    /// <summary>
+    /// The status of a post.
+    /// </summary>
     public enum PostStatus
     {
+        /// <summary>
+        /// Published
+        /// </summary>
         Published,
+
+        /// <summary>
+        /// Private
+        /// </summary>
         Private
     }
 }

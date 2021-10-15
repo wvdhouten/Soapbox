@@ -74,36 +74,3 @@ select:disabled,
 textarea:disabled {
   background: var(--input-disabled-background);
 }
-
-/* BUTTONS */
-
-button {
-  background: #ffffff;
-  color: #000000;
-  border: 1px solid #000000;
-  border-radius: 2px;
-  padding: .5rem 1rem;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #dddddd;
-}
-
-button:active {
-  background: #bbbbbb;
-}
-
-button:disabled {
-  background: #999999;
-  cursor: default;
-}
-
-button.large {
-  width: 80%;
-  padding: 8px 12px;
-  background: white;
-  border: 1px solid black;
-  border-radius: 2px;
-  cursor: pointer;
-}
