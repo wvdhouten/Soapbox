@@ -1,10 +1,16 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Common;
+    using Soapbox.Core.Email;
     using Soapbox.Core.Identity;
     using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
@@ -16,20 +22,24 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly UserManager<SoapboxUser> _userManager;
+        private readonly IEmailClient _emailClient;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IAccountService accountService, ILogger<UsersController> logger)
+        public UsersController(IAccountService accountService, UserManager<SoapboxUser> userManager, IEmailClient emailClient, ILogger<UsersController> logger)
         {
             _accountService = accountService;
+            _userManager = userManager;
+            _emailClient = emailClient;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             ViewData[Constants.Title] = "Users";
 
-            var users = await _accountService.GetUsersAsync();
+            var users = _userManager.Users.AsEnumerable();
 
             return View(users);
         }
@@ -58,9 +68,16 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 Role = model.Role
             };
 
-            var result = await _accountService.CreateUserAsync(user);
+            var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
+                _logger.LogInformation("New user created without password.");
+
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { area = "", code });
+                await _emailClient.SendEmailAsync(user.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
                 return RedirectToAction(nameof(Index));
             }
 

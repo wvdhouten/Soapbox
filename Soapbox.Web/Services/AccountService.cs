@@ -4,7 +4,6 @@ namespace Soapbox.Web.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
@@ -31,29 +30,6 @@ namespace Soapbox.Web.Services
             _logger = logger;
         }
 
-        public async Task<IdentityResult> CreateUserAsync(SoapboxUser user)
-        {
-            var result = await _userManager.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                return result;
-            }
-
-            _logger.LogInformation("New user created without password.");
-
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = _linkGenerator.GetUriByAction(_httpContextAccessor.HttpContext, "ResetPassword", "Account", new { area = "", code });
-            await _emailClient.SendEmailAsync(user.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-            return result;
-        }
-
-        public Task<IEnumerable<SoapboxUser>> GetUsersAsync()
-        {
-            return Task.FromResult(_userManager.Users.AsEnumerable());
-        }
-
         public async Task<SoapboxUser> FindUserByIdAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -63,7 +39,7 @@ namespace Soapbox.Web.Services
 
         public async Task<IdentityResult> UpdateUserAsync(SoapboxUser user)
         {
-            var existing = await FindUserByIdAsync(user.Id);
+            var existing = await _userManager.FindByIdAsync(user.Id);
 
             existing.UserName = user.UserName;
             existing.Email = user.Email;

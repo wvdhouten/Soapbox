@@ -7,8 +7,6 @@ namespace Soapbox.Web.Services
 
     public interface IAccountService
     {
-        Task<IEnumerable<SoapboxUser>> GetUsersAsync();
-
         Task<SoapboxUser> FindUserByIdAsync(string id);
 
         Task<Dictionary<string,string>> GetPersonalDataAsync(SoapboxUser user);
@@ -16,8 +14,6 @@ namespace Soapbox.Web.Services
         Task<string> GeneratePasswordResetCode(SoapboxUser user);
 
         Task DeleteUserAsync(SoapboxUser user);
-
-        Task<IdentityResult> CreateUserAsync(SoapboxUser user);
 
         Task<IdentityResult> UpdateUserAsync(SoapboxUser user);
     }
