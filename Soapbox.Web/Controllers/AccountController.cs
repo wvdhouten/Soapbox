@@ -226,7 +226,7 @@ namespace Soapbox.Web.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var hasUsers = _userManager.Users.Count() > 0;
+                var hasUsers = _userManager.Users.Any();
 
                 var user = new SoapboxUser
                 {

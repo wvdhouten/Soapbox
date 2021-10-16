@@ -37,22 +37,18 @@
         <h3>Blog</h3>
         <ul>
           <li><a asp-area="" asp-controller="Blog" asp-action="Index">All posts</a></li>
+          <li><a asp-area="" asp-controller="Blog" asp-action="Archive">Archive</a></li>
         </ul>
       </div>
       <div>
         <h3>Site</h3>
         <ul>
+          <partial name="_LoginPartial" />
           <li><a asp-area="" asp-controller="Pages" asp-action="Privacy">Privacy</a></li>
         </ul>
       </div>
     </section>
-    <section id="copyright" class="container">
-      <div>
-        &copy; @DateTime.UtcNow.Year - <a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a> -
-        <partial name="_LoginPartial" />
-      </div>
-      <div>Powered by <a href="https://github.com/wvdhouten/Soapbox" title="Soapbox">Soapbox</a></div>
-    </section>
+    <partial name="_Copyright" />
   </footer>
 
   <script src="~/js/site.js" asp-append-version="true"></script>
