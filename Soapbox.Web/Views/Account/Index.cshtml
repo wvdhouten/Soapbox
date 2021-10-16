@@ -3,8 +3,8 @@
   ViewData["Title"] = "Manage account";
 }
 
-<h2>Profile</h2>
 <form class="horizontal-form" method="post">
+  <h2>Profile</h2>
   <div asp-validation-summary="ModelOnly" class="text-danger"></div>
   <div class="form-group">
     <label asp-for="Username"></label>
@@ -40,9 +40,8 @@
   <button type="submit">Update</button>
 </form>
 
-<h2>Security</h2>
-
-<form class="horizontal-form">
+<form class="horizontal-form" method="post">
+  <h2>Security</h2>
   <div class="form-group">
     <label>Password</label>
     <div class="static-value">
@@ -64,7 +63,5 @@
     </div>
   </div>
 </form>
-
-<hr />
 
 <partial name="Partials/_PersonalData" />

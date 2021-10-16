@@ -19,7 +19,13 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet("~/")]
-        public IActionResult Index([FromRoute] string page = null)
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet("~/Pages/{page}")]
+        public IActionResult Page([FromRoute] string page = null)
         {
             if (page is null)
             {

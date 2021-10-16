@@ -52,7 +52,6 @@
 }
 
 /* BLOG */
-
 .post header {
   background: var(--accent2-100);
 }
@@ -98,7 +97,6 @@
 }
 
 /* FOOTER */
-
 #site-footer {
   border-top: 1px solid var(--text-color);
 }
@@ -126,7 +124,6 @@
 }
 
 /* CARD */
-
 .card {
   display: block;
   width: 500px;
@@ -145,7 +142,6 @@
 }
 
 /* SEPARATOR */
-
 .separator {
   display: flex;
   align-items: center;
@@ -169,7 +165,6 @@
 }
 
 /* DISCLAIMER */
-
 .disclaimer {
   font-size: 12pt;
   text-align: justify;
@@ -231,6 +226,7 @@ header.has-actions {
 
 .subtle {
   font-size: .8rem;
+  color: var(--subtle-color);
 }
 
 .columns {

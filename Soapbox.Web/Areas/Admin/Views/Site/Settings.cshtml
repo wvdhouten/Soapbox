@@ -3,30 +3,28 @@
   ViewData[Constants.Title] = "Site Configuration";
 }
 
-<div class="container">
-  <header>
-    <h1>Site Configuration</h1>
-  </header>
+<div class="container content">
+  <form class="horizontal-form" asp-area="Admin" asp-controller="Site" asp-action="Settings" method="post">
+    <header>
+      <h2>Site Configuration</h2>
+    </header>
 
-  <form method="post" id="edit" asp-area="Admin" asp-controller="Site" asp-action="Settings">
     <div asp-validation-summary="ModelOnly"></div>
-
-    <div class="form-field">
+    <div class="form-group">
       <label asp-for="@Model.Title" class="label"></label>
       <input asp-for="@Model.Title" />
     </div>
-
-    <div class="form-field">
+    <div class="form-group">
       <label asp-for="@Model.Description" class="label"></label>
       <input asp-for="@Model.Description" />
     </div>
-
-    <div class="form-field">
+    <div class="form-group">
       <span class="label">Membership</span>
-      <input asp-for="@Model.AllowRegistration" />
-      <label asp-for="@Model.AllowRegistration" class="label"></label>
+      <div class="input">
+        <input asp-for="@Model.AllowRegistration" />
+        <label asp-for="@Model.AllowRegistration" class="label"></label>
+      </div>
     </div>
-
     <button type="submit">Save</button>
   </form>
 </div>
