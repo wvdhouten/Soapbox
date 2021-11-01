@@ -1,9 +1,19 @@
+:root {
+  --button-text-color: var(--text-color);
+  --button-background-color: var(--accent1-400);
+  --button-hover-background-color: var(--accent1-300);
+  --button-active-background-color: var(--accent1-200);
+  --button-disabled-text-color: #000;
+  --button-disabled-background-color: #999;
+}
+
 button,
 a.button {
   display: inline-block;
-  color: var(--text-color);
-  background: var(--accent1-400);
-  border: 1px solid var(--accent1-400);
+  color: var(--button-text-color);
+  font-weight: bold;
+  background: var(--button-background-color);
+  border: 1px solid var(--button-background-color);
   border-radius: 2px;
   padding: .5rem 1rem;
   cursor: pointer;
@@ -11,27 +21,22 @@ a.button {
 
 button:hover,
 a.button:hover {
-  background: var(--accent1-300);
+  background: var(--button-hover-background-color);
 }
 
 button:active,
 a.button:active {
-  background: var(--accent1-200);
+  background: var(--button-active-background-color);
 }
 
 button:disabled,
 a.button:disabled {
-  background: #999999;
-  color: #000000;
+  background: var(--button-disabled-background-color);
+  color: var(--button-disabled-text-color);
   cursor: default;
 }
 
 button.large,
 a.button.large {
   width: 80%;
-  padding: 8px 12px;
-  background: white;
-  border: 1px solid black;
-  border-radius: 2px;
-  cursor: pointer;
 }

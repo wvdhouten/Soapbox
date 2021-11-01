@@ -21,5 +21,7 @@ namespace Soapbox.Domain.Blog
         Task<Post> GetPostBySlugAsync(string slug);
 
         Task DeletePostByIdAsync(string id);
+
+        Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string id);
     }
 }

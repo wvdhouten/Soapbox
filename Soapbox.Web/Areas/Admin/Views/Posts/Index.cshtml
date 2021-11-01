@@ -3,16 +3,14 @@
   ViewData[Constants.Title] = "Posts";
 }
 
-<header class="container">
-  <h1>Posts</h1>
-</header>
-<section class="sub-header">
-  <div class="container">
-    <a asp-area="Admin" asp-controller="Posts" asp-action="Create"><i class="fa fa-plus" aria-hidden="true"></i></a>
-  </div>
-</section>
+<section class="container content">
+  <header class="has-actions">
+    <h1>Posts</h1>
+    <div>
+      <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    </div>
+  </header>
 
-<section class="container">
   <table>
     <thead>
       <tr>

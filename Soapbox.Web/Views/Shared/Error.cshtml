@@ -1,7 +1,7 @@
 @model ErrorViewModel
 @{
-  ViewData["Title"] = "Error";
-    var message = Model.Message ?? "An error occurred while processing your request.";
+  ViewData[Constants.Title] = "Error";
+  var message = Model.Message ?? "An error occurred while processing your request.";
 }
 
 <dir class="container">

@@ -27,6 +27,11 @@ namespace Soapbox.Domain.Blog
             return await _postRepository.ListAsync(skip, count);
         }
 
+        public async Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string id)
+        {
+            return await _postRepository.ListAsync(p => p.Author == id);
+        }
+
         public async Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
         {
             return await _postRepository.ListAsync(predicate);

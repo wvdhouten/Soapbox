@@ -5,6 +5,10 @@
   --input-disabled-background: #000;
 }
 
+form > button {
+  margin-bottom: 12px;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -18,19 +22,21 @@
 
 @media(min-width:768px) {
 
-  form.horizontal-form .form-group {
+  form.horizontal-form .form-group,
+  .form-group.horizontal {
     flex-direction: row;
-  }
 
-  form.horizontal-form .form-group > label,
-  form.horizontal-form .form-group > .label {
-    min-width: 200px;
-    width: 16.67%;
-    padding: .5rem 1rem;
-    margin: 0;
-    text-align: right;
+    > label,
+    > .label {
+      min-width: 200px;
+      width: 16.67%;
+      padding: .5rem 1rem;
+      margin: 0;
+      text-align: right;
+    }
   }
 }
+
 
 form .form-group > .static-value,
 form .form-group > .input {
@@ -41,6 +47,10 @@ form .form-group > .input {
   display: flex;
   align-items: stretch;
   width: 100%;
+}
+
+textarea {
+  resize: vertical;
 }
 
 .input-group > input,

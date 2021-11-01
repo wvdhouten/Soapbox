@@ -1,0 +1,16 @@
+@model IAsyncEnumerable<Post>
+
+<header>
+  <div class="container" style="text-align: right">
+    <input name="search" placeholder="Search placeholder" disabled style="display: inline-block; width: auto" /> <button>Search</button>
+  </div>
+</header>
+
+<div class="container">
+  <ul>
+    @await foreach (var post in Model)
+    {
+      <li><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a> (@post.PublishedOn)</li>
+    }
+  </ul>
+</div>

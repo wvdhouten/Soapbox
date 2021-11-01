@@ -1,9 +1,7 @@
 namespace Soapbox.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -74,6 +72,19 @@ namespace Soapbox.Web.Controllers
             var model = await GetMonthModel(currentDate);
 
             return View(model);
+        }
+
+        [HttpGet("author/{id}")]
+        public async Task<IActionResult> Author(string id)
+        {
+            // var author = 
+            //if (author is null)
+            //{
+            //    return NotFound();
+            //}
+            var posts = await _blogService.GetPostsByAuthorAsync(id);
+
+            return View(posts);
         }
 
         private async Task<ArchiveModel> GetMonthModel(DateTime currentMonth)

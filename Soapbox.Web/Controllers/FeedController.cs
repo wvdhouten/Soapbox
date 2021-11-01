@@ -12,6 +12,11 @@ namespace Soapbox.Web.Controllers
 
     public class FeedController : Controller
     {
+        private enum FeedFormat
+        {
+            Rss,
+            Atom
+        }
 
         private readonly IBlogService _blogService;
         private readonly IMarkdownParser _markdownParser;
@@ -22,8 +27,17 @@ namespace Soapbox.Web.Controllers
             _markdownParser = markdownParser;
         }
 
+        public async Task Rss()
+        {
+            await OutputFeed(FeedFormat.Rss);
+        }
 
-        public async Task Index([FromQuery] string format = "rss")
+        public async Task Atom()
+        {
+            await OutputFeed(FeedFormat.Atom);
+        }
+
+        private async Task OutputFeed(FeedFormat format = FeedFormat.Rss)
         {
             Response.ContentType = "text/xml";
 
@@ -51,11 +65,11 @@ namespace Soapbox.Web.Controllers
                 Indent = true
             };
 
-            var writer = XmlWriter.Create(Response.Body, settings);
+            await using var writer = XmlWriter.Create(Response.Body, settings);
 
-            SyndicationFeedFormatter formatter = format.ToLower() switch
+            SyndicationFeedFormatter formatter = format switch
             {
-                "atom" => feed.GetAtom10Formatter(),
+                FeedFormat.Atom => feed.GetAtom10Formatter(),
                 _ => feed.GetRss20Formatter(false),
             };
 

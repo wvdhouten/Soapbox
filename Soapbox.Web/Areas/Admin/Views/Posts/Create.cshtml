@@ -3,37 +3,37 @@
   ViewData[Constants.Title] = "Edit " + (Model?.Title ?? "new post");
 }
 
-<div class="container">
-  <header>
-    <h1>Create Post</h1>
-  </header>
+<div class="container content">
   <form method="post">
+    <header>
+      <h2>Create Post</h2>
+    </header>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Title"></label>
       <input asp-for="@Model.Title" />
       <span asp-validation-for="@Model.Title" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Slug"></label>
       <input asp-for="@Model.Slug" />
       <span asp-validation-for="@Model.Slug" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Status"></label>
       <select asp-for="@Model.Status" asp-items="Html.GetEnumSelectList<PostStatus>()"></select>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.PublishedOn"></label>
       <input asp-for="@Model.PublishedOn" value="@DateTime.UtcNow" />
       <span asp-validation-for="@Model.PublishedOn" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group">
       <label asp-for="@Model.Excerpt"></label>
       <textarea asp-for="@Model.Excerpt"></textarea>
       <span asp-validation-for="@Model.Excerpt" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group">
       <label asp-for="@Model.Content"></label>
       <textarea asp-for="@Model.Content"></textarea>
       <span asp-validation-for="@Model.Content" class="text-danger"></span>
