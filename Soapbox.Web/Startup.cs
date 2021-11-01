@@ -17,6 +17,7 @@ namespace Soapbox.Web
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
     using Soapbox.Web.Settings;
+    using WilderMinds.MetaWeblog;
 
     public class Startup
     {
@@ -67,6 +68,7 @@ namespace Soapbox.Web
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<IBlogService, BlogService>();
+            services.AddMetaWeblog<Services.MetaWeblogService>();
 
             services.AddRazorPages();
             services.AddWebOptimizer(options =>
@@ -101,6 +103,7 @@ namespace Soapbox.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMetaWeblog("/livewriter");
             app.UseEndpoints(endpoints =>
             {
                 // TODO: Add NotFound

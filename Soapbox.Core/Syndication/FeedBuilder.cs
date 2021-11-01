@@ -18,9 +18,10 @@ namespace Soapbox.Core.Syndication
             };
         }
 
+        // TODO
         public SyndicationFeed GetFeed()
         {
-            _feed.WithImage(new Uri("https://localhost/TODO.png"))
+            _feed.WithImage(new Uri(_baseUri, "/TODO.png"))
                  .WithCopyright("TODO")
                  .WithManagingEditor("TODO")
                  .WithWebMaster("TODO")
