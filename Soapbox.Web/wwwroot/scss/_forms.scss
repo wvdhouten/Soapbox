@@ -65,6 +65,8 @@ textarea {
   user-select: none;
 }
 
+// TODO
+
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
@@ -78,13 +80,13 @@ textarea {
   border-radius: 2px;
 }
 
-input:focus,
+input:not([type="checkbox"]):not([type="radio"]):focus,
 select:focus
 textarea:focus {
   background: var(--input-active-background);
 }
 
-input:disabled,
+input:not([type="checkbox"]):not([type="radio"]):disabled,
 select:disabled,
 textarea:disabled {
   background: var(--input-disabled-background);
