@@ -11,12 +11,13 @@ namespace Soapbox.Web
     using Soapbox.Core.Email;
     using Soapbox.Core.Identity;
     using Soapbox.Core.Markdown;
+    using Soapbox.Core.Settings;
     using Soapbox.DataAccess.Sqlite;
+    using Soapbox.Domain.Abstractions;
     using Soapbox.Domain.Blog;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
-    using Soapbox.Web.Settings;
     using WilderMinds.MetaWeblog;
 
     public class Startup
@@ -34,15 +35,14 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
+            services.AddSqlite(Configuration, HostEnvironment);
+
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddScoped<IEmailClient, SmtpEmailClient>();
 
             services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
-
-            services.AddSqlite(Configuration, HostEnvironment);
 
             var auth = services.AddAuthentication(o =>
             {
@@ -54,22 +54,25 @@ namespace Soapbox.Web
             services.AddIdentityCore<SoapboxUser>(o =>
             {
                 o.Stores.MaxLengthForKeys = 128;
-            }).AddDefaultTokenProviders()
+            })
+            .AddDefaultTokenProviders()
             .AddSignInManager()
             .AddSqliteStore();
 
+            services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
             });
 
-            services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
-            services.AddSingleton<IMarkdownParser, MarkdownParser>();
-
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<IBlogService, BlogService>();
+
+            services.AddSingleton<IMarkdownParser, MarkdownParser>();
+
             services.AddMetaWeblog<Services.MetaWeblogService>();
 
+            services.AddHttpContextAccessor();
             services.AddRazorPages();
             services.AddWebOptimizer(options =>
             {
@@ -81,9 +84,11 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseWebOptimizer();
+            app.UseSqlite(env);
+
             if (env.IsDevelopment())
             {
+                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -91,19 +96,19 @@ namespace Soapbox.Web
                 app.UseExceptionHandler("/Pages/Error");
                 app.UseHsts();
             }
+
             app.UseStatusCodePagesWithReExecute("/Pages/Error");
+            app.UseWebOptimizer();
 
-            app.UseSqlite(env);
-
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
 
+            app.UseMetaWeblog("/livewriter");
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMetaWeblog("/livewriter");
             app.UseEndpoints(endpoints =>
             {
                 // TODO: Add NotFound

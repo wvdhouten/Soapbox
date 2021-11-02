@@ -6,7 +6,7 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
-    using Soapbox.Domain.Blog;
+    using Soapbox.Domain.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
 

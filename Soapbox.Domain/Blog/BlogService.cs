@@ -6,6 +6,7 @@ namespace Soapbox.Domain.Blog
     using System.Threading.Tasks;
     using Soapbox.Core.Extensions;
     using Soapbox.DataAccess.Abstractions;
+    using Soapbox.Domain.Abstractions;
     using Soapbox.Models;
 
     public class BlogService : IBlogService

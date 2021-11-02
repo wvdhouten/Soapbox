@@ -1,5 +1,5 @@
 @model Models.Blog.RecentPostsWidgetModel
-@inject Soapbox.Domain.Blog.IBlogService BlogService
+@inject Soapbox.Domain.Abstractions.IBlogService BlogService
 @{
     var model = Model ?? new Models.Blog.RecentPostsWidgetModel();
     var posts = await BlogService.GetPostsAsync(model.PostCount);
@@ -9,7 +9,7 @@
   .widget > header {
     overflow: auto;
     padding: 10px;
-    border-color: var(--accent2-500);
+    border-color: var(--accent1-500);
     border-width: 1px;
     border-style: solid;
     border-radius: 3px;

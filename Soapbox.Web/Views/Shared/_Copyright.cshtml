@@ -1,4 +1,4 @@
-@inject IOptionsSnapshot<Soapbox.Web.Settings.SiteSettings> settings
+@inject IOptionsSnapshot<SiteSettings> settings
 <section id="copyright" class="container">
   <div>&copy; Copyright @DateTime.UtcNow.Year <a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a></div>
   <div>Powered by <a href="https://github.com/wvdhouten/Soapbox" title="Soapbox">Soapbox</a></div>

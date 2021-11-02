@@ -1,4 +1,4 @@
-namespace Soapbox.Domain.Blog
+namespace Soapbox.Domain.Abstractions
 {
     using System;
     using System.Collections.Generic;

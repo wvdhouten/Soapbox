@@ -4,13 +4,21 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Identity;
+    using Soapbox.Core.Settings;
     using Soapbox.Web.Identity.Attributes;
-    using Soapbox.Web.Settings;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
     public class SiteController : Controller
     {
+        private readonly ConfigFileService _configFileService;
+
+        public SiteController()
+        {
+            // TODO: Dependency Injection
+            _configFileService = new ConfigFileService();
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -37,11 +45,9 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(settings);
             }
 
-            // TODO: Dependency Injection
-            var service = new ConfigFileService();
-            service.SaveToFile(settings, "site.json");
+            _configFileService.SaveToFile(settings, "site.json");
 
-            return View(settings);
+            return RedirectToAction("Settings");
         }
     }
 }

@@ -6,9 +6,9 @@ namespace Soapbox.Core.FileManagement
 
     public class ConfigFileService
     {
-        public void SaveToFile<T>(T config, string path)
+        public void SaveToFile<T>(T config, string fileName)
         {
-            var configPath = Path.Combine(Environment.CurrentDirectory, "Config", path);
+            var configPath = Path.Combine(Environment.CurrentDirectory, "Config", fileName);
 
             var options = new JsonWriterOptions { Indented = true };
 

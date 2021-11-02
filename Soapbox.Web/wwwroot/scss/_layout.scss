@@ -151,7 +151,8 @@
 /* CARD */
 .card {
   display: block;
-  width: 500px;
+  width: 100%;
+  min-width: 340px;
   padding: 20px;
   background: rgba(255,255,255, .1);
   border-radius: 4px;
@@ -209,6 +210,10 @@
 @media(min-width:576px) {
   .container {
     max-width: 540px
+  }
+
+  .card {
+    width: 500px;
   }
 }
 

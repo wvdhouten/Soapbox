@@ -6,9 +6,11 @@ namespace Soapbox.Web.Controllers
     using System.Threading.Tasks;
     using System.Xml;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
     using Soapbox.Core.Markdown;
+    using Soapbox.Core.Settings;
     using Soapbox.Core.Syndication;
-    using Soapbox.Domain.Blog;
+    using Soapbox.Domain.Abstractions;
 
     public class FeedController : Controller
     {
@@ -18,11 +20,13 @@ namespace Soapbox.Web.Controllers
             Atom
         }
 
+        private readonly SiteSettings _settings;
         private readonly IBlogService _blogService;
         private readonly IMarkdownParser _markdownParser;
 
-        public FeedController(IBlogService blogService, IMarkdownParser markdownParser)
+        public FeedController(IOptionsSnapshot<SiteSettings> config, IBlogService blogService, IMarkdownParser markdownParser)
         {
+            _settings = config.Value;
             _blogService = blogService;
             _markdownParser = markdownParser;
         }
@@ -41,9 +45,10 @@ namespace Soapbox.Web.Controllers
         {
             Response.ContentType = "text/xml";
 
-            var baseUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}/blog/");
-            var builder = new FeedBuilder("Soapbox", "Get on your soapbox!", baseUri);
-            var feed = builder.GetFeed();
+            var siteUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
+            var builder = new FeedBuilder(new Uri(siteUri, "/blog/"), _settings.Title, _settings.Description, new Uri(siteUri, "/assets/yaktocat.png"));
+            builder.AddCopyright(_settings.Owner);
+            var feed = builder.GetFeed(_settings.AdminEmail);
 
             var posts = await _blogService.GetPostsAsync(15, 0);
 

@@ -2,7 +2,9 @@
   "SiteSettings": {
     "Title": "Soapbox",
     "Description": "Get on your soapbox!",
-    "AdminEmail": null,
-    "AllowRegistration": true
+    "Owner": "Walter van den Houten",
+    "AdminEmail": "soapbox@forwarder.one",
+    "AllowRegistration": true,
+    "PostsPerPage": 5
   }
 }

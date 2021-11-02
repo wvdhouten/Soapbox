@@ -139,7 +139,13 @@ namespace Soapbox.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new SoapboxUser { UserName = model.Input.Username, Email = model.Input.Email };
+                var hasUsers = _userManager.Users.Any();
+                var user = new SoapboxUser
+                {
+                    UserName = model.Input.Username,
+                    Email = model.Input.Email,
+                    Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -325,7 +331,7 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult ResetPassword([FromQuery]string code = null)
+        public IActionResult ResetPassword([FromQuery] string code = null)
         {
             var model = new ResetPasswordModel();
             if (code == null)

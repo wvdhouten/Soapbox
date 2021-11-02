@@ -1,4 +1,4 @@
-@model Soapbox.Web.Settings.SiteSettings
+@model             SiteSettings
 @{
   ViewData[Constants.Title] = "Site Configuration";
 }
@@ -17,6 +17,18 @@
     <div class="form-group">
       <label asp-for="@Model.Description" class="label"></label>
       <input asp-for="@Model.Description" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.PostsPerPage" class="label"></label>
+      <input asp-for="@Model.PostsPerPage" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Owner" class="label"></label>
+      <input asp-for="@Model.Owner" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.AdminEmail" class="label"></label>
+      <input asp-for="@Model.AdminEmail" />
     </div>
     <div class="form-group">
       <span class="label">Membership</span>
