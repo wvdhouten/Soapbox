@@ -1,4 +1,3 @@
-
 namespace Soapbox.DataAccess.Data
 {
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

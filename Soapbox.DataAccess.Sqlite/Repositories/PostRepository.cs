@@ -54,7 +54,7 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             return await _context.Posts.FindAsync(id);
         }
 
-        public Task<Post> GetByFilterAsync(Expression<Func<Post,bool>> predicate)
+        public Task<Post> GetByFilterAsync(Expression<Func<Post, bool>> predicate)
         {
             return Task.FromResult(_context.Posts.FirstOrDefault(predicate));
         }

@@ -1,5 +1,6 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
+    using System.Threading;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
@@ -46,6 +47,9 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             _configFileService.SaveToFile(settings, "site.json");
+
+            // Wait for the settings to be written before redirecting.
+            Thread.Sleep(250);
 
             return RedirectToAction("Settings");
         }

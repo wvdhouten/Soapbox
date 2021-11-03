@@ -2,7 +2,7 @@ namespace Soapbox.Web.Migrations
 {
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class ExtendedUser : Migration
+    public partial class AddUserRoleAndDisplayName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
