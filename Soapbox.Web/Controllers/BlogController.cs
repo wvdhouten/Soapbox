@@ -3,7 +3,6 @@ namespace Soapbox.Web.Controllers
     using System;
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
     using Soapbox.Domain.Abstractions;
@@ -13,12 +12,10 @@ namespace Soapbox.Web.Controllers
     [Route("blog")]
     public class BlogController : Controller
     {
-        private readonly IAuthorizationService _authorizationService;
         private readonly IBlogService _blogService;
 
-        public BlogController(IAuthorizationService authorizationService, IBlogService blogService)
+        public BlogController(IBlogService blogService)
         {
-            _authorizationService = authorizationService;
             _blogService = blogService;
         }
 
@@ -74,17 +71,32 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
+        [HttpGet("categories")]
+        public async Task<IActionResult> Categories()
+        {
+            var categories = await _blogService.GetAllCategoriesAsync(true);
+
+            return View(categories);
+        }
+
+        [HttpGet("category/{slug}")]
+        public async Task<IActionResult> Category(string slug)
+        {
+            var category = await _blogService.GetCategoryBySlugAsync(slug, true);
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
         [HttpGet("author/{id}")]
         public async Task<IActionResult> Author(string id)
         {
-            // var author = 
-            //if (author is null)
-            //{
-            //    return NotFound();
-            //}
-            var posts = await _blogService.GetPostsByAuthorAsync(id);
+            var author = await _blogService.GetAuthorByIdAsync(id);
 
-            return View(posts);
+            return View(author);
         }
 
         private async Task<ArchiveModel> GetMonthModel(DateTime currentMonth)

@@ -11,7 +11,7 @@ namespace Soapbox.Web.Services
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Email;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
 
     public class AccountService : IAccountService
     {

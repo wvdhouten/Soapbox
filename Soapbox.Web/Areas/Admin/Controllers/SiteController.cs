@@ -4,8 +4,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
-    using Soapbox.Core.Identity;
     using Soapbox.Core.Settings;
+    using Soapbox.Models;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]

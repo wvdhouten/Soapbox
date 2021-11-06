@@ -21,5 +21,11 @@ namespace Soapbox.DataAccess.Abstractions
         public Task<Post> UpdateAsync(Post post);
 
         public Task DeleteByIdAsync(string id);
+
+        public Task<IAsyncEnumerable<PostCategory>> GetCategoriesAsync(bool includePosts = false);
+
+        public Task<PostCategory> GetCategoryBySlug(string slug, bool includePosts = false);
+
+        public Task<SoapboxUser> GetUserByIdAsync(string id);
     }
 }

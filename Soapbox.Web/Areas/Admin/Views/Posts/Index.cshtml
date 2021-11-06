@@ -29,11 +29,17 @@
           <td><a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a></td>
           <td>@post.Author</td>
           <td>
-            @((post.PublishedOn ?? post.ModifiedOn).ToString("yyyy-MM-dd HH:mm zz")) @if (post.PublishedOn.HasValue)
-            {<i class="fa fa-check" aria-hidden="true"></i>}
+            @((post.PublishedOn ?? post.ModifiedOn).ToString("yyyy-MM-dd HH:mm"))
+            @if (post.Status == PostStatus.Published && post.PublishedOn.HasValue)
+            {
+              <i class="fa fa-check" aria-hidden="true"></i>
+            }
           </td>
-          <td>@string.Join(',', post.Categories)</td>
-          <td>-</td>
+          <td>
+            <span>
+              @string.Join("; ", post.Categories.Select(c => c.Name))
+            </span>
+          </td>
           <td>
             <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" method="post">
               <button type="submit">Delete</button>

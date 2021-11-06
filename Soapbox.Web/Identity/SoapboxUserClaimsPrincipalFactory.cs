@@ -5,7 +5,7 @@ namespace Soapbox.Web.Identity
     using IdentityModel;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
 
     /// <summary>
     /// Provides methods to create a claims principal for a given soapbox user.

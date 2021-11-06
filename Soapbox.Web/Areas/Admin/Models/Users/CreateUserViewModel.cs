@@ -1,7 +1,7 @@
 namespace Soapbox.Web.Areas.Admin.Models.Users
 {
     using System.ComponentModel.DataAnnotations;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
 
     public class CreateUserViewModel
     {

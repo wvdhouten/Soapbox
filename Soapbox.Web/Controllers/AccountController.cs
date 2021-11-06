@@ -13,11 +13,11 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Identity;
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Services;
     using Soapbox.Core.Email;
     using Soapbox.Core.Settings;
+    using Soapbox.Models;
 
     [Authorize]
     public partial class AccountController : Controller

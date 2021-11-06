@@ -11,7 +11,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Common;
     using Soapbox.Core.Email;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;

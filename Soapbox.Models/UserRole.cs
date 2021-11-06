@@ -1,4 +1,4 @@
-namespace Soapbox.Core.Identity
+namespace Soapbox.Models
 {
     using System.ComponentModel.DataAnnotations;
 

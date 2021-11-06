@@ -1,0 +1,32 @@
+@model IAsyncEnumerable<PostCategory>
+@{
+  ViewData["Title"] = $"Categories";
+}
+
+<header>
+  <div class="container">
+    <h1>Categories</h1>
+  </div>
+</header>
+<div class="container">
+  <ul>
+    @await foreach (var category in Model)
+    {
+      <li><a href="#@category.Slug">@category.Name</a></li>
+    }
+  </ul>
+</div>
+
+@await foreach (var category in Model)
+{
+  <div class="container">
+    <h2 id="@category.Slug">@category.Name</h2>
+
+    <ul>
+      @foreach (var post in category.Posts)
+      {
+        <li>@post.PublishedOn.Value.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></li>
+      }
+    </ul>
+  </div>
+}

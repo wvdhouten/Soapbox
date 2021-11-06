@@ -4,7 +4,7 @@ namespace Soapbox.Web.Identity.Attributes
     using IdentityModel;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
 
     public class RoleAuthorizeAttribute : ActionFilterAttribute
     {

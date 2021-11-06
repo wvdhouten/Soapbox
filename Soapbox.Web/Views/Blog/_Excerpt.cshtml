@@ -17,6 +17,12 @@
   <section class="sub-header">
     <div class="container">
       <time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time>
+      <div>
+        @foreach (var category in Model.Categories)
+        {
+          <a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a>
+        }
+      </div>
     </div>
   </section>
   <section>

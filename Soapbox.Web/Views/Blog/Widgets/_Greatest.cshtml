@@ -1,0 +1,18 @@
+@model Models.Blog.RecentPostsWidgetModel
+@inject Soapbox.Domain.Abstractions.IBlogService BlogService
+@{
+    var model = Model ?? new Models.Blog.RecentPostsWidgetModel();
+    var posts = new List<Post>();
+}
+
+<article class="widget">
+  <header>
+    <h2>Blog: Pinned</h2>
+  </header>
+  <section class="item-feed">
+    @foreach (var post in posts)
+    {
+      <partial name="~/Views/Blog/_Headline.cshtml" model="post" />
+    }
+  </section>
+</article>

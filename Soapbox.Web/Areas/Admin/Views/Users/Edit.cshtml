@@ -25,7 +25,7 @@
     </div>
     <div class="form-field">
       <label asp-for="@Model.Role"></label>
-      <select asp-for="@Model.Role" asp-items="Html.GetEnumSelectList<Soapbox.Core.Identity.UserRole>()">
+      <select asp-for="@Model.Role" asp-items="Html.GetEnumSelectList<UserRole>()">
         <option value="" selected>Please select</option>
       </select>
       <span asp-validation-for="@Model.Role" class="text-danger"></span>

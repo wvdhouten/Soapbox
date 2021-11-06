@@ -1,12 +1,11 @@
-@model SoapboxUser
+@model PostCategory
 @{
-  var name = !string.IsNullOrEmpty(Model.DisplayName) ? Model.DisplayName : Model.UserName;
-  ViewData["Title"] = $"Author: {name}";
+  ViewData["Title"] = $"Category: {Model.Name}";
 }
 
 <header>
   <div class="container">
-    <h1>Author: @name</h1>
+    <h1>Category: @Model.Name</h1>
   </div>
 </header>
 

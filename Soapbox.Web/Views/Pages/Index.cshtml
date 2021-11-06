@@ -11,6 +11,33 @@
     height: 40vh;
     text-align: center;
   }
+
+  #widgets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 12px;
+  }
+
+  .widget > header {
+    overflow: auto;
+    padding: 10px;
+    border-color: var(--accent1-500);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+  }
+
+    .widget > header > h2 {
+      margin: 0;
+    }
+
+  .item-feed {
+    padding: .5rem 1rem;
+  }
+
+  .widget .item {
+    margin-bottom: .5rem;
+  }
 </style>
 <section id="intro">
   <div class="container content">
@@ -19,6 +46,7 @@
     <p>a rough wooden box or any raised, <del>temporary</del> surface for people to stand on while making informal public speeches</p>
   </div>
 </section>
-<section class="container content">
-  <partial name="~/Views/Blog/_Widget.cshtml" />
+<section id="widgets" class="container content">
+  <partial name="~/Views/Blog/Widgets/_Latest.cshtml" />
+  <partial name="~/Views/Blog/Widgets/_Greatest.cshtml" />
 </section>

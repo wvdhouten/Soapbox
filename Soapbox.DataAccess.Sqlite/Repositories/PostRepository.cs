@@ -19,11 +19,33 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             _context = context;
         }
 
+        public Task<IAsyncEnumerable<PostCategory>> GetCategoriesAsync(bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.OrderBy(c => c.Name).AsAsyncEnumerable());
+        }
+
+        public Task<PostCategory> GetCategoryBySlug(string slug, bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.FirstOrDefault(c => c.Slug == slug));
+        }
+
         public Task<IAsyncEnumerable<Post>> ListAsync(int page = 0, int pageSize = 0)
         {
-            IQueryable<Post> posts = _context.Posts;
+            IQueryable<Post> posts = _context.Posts.Include(p => p.Author).Include(p => p.Categories);
             var now = DateTime.UtcNow;
-            posts = posts.Where(post => post.Status == PostStatus.Published && post.PublishedOn <= now);
+            // posts = posts.Where(post => post.Status == PostStatus.Published && post.PublishedOn <= now);
             posts = posts.OrderByDescending(post => EF.Property<Post>(post, "PublishedOn"));
 
             if (page >= 0 && pageSize > 0)
@@ -36,13 +58,26 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
 
         public Task<IAsyncEnumerable<Post>> ListAsync(Expression<Func<Post, bool>> predicate)
         {
-            return Task.FromResult(_context.Posts.Where(predicate).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(predicate).AsAsyncEnumerable());
         }
 
         public async Task<Post> CreateAsync(Post post)
         {
             post.Id = Guid.NewGuid().ToString();
             await _context.Posts.AddAsync(post);
+
+            _context.Users.Attach(post.Author);
+            foreach (var category in post.Categories)
+            {
+                if (category.Id == default)
+                {
+                    _context.PostCategories.Add(category);
+                }
+                else
+                {
+                    _context.PostCategories.Attach(category);
+                }
+            }
 
             await _context.SaveChangesAsync();
 
@@ -51,12 +86,12 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
 
         public async Task<Post> GetByIdAsync(string id)
         {
-            return await _context.Posts.FindAsync(id);
+            return await _context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public Task<Post> GetByFilterAsync(Expression<Func<Post, bool>> predicate)
         {
-            return Task.FromResult(_context.Posts.FirstOrDefault(predicate));
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefault(predicate));
         }
 
         public async Task<Post> UpdateAsync(Post post)
@@ -68,6 +103,18 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             }
 
             _context.Entry(entity).CurrentValues.SetValues(post);
+            _context.Users.Attach(post.Author);
+            foreach (var category in post.Categories)
+            {
+                if (category.Id == default)
+                {
+                    _context.PostCategories.Add(category);
+                }
+                else
+                {
+                    _context.PostCategories.Attach(category);
+                }
+            }
 
             await _context.SaveChangesAsync();
 
@@ -80,6 +127,13 @@ namespace Soapbox.DataAccess.Sqlite.Repositories
             _context.Posts.Remove(post);
 
             await _context.SaveChangesAsync();
+        }
+
+        public Task<SoapboxUser> GetUserByIdAsync(string id)
+        {
+            IQueryable<SoapboxUser> query = _context.Users.Include(u => u.Posts);
+
+            return Task.FromResult(query.FirstOrDefault(u => u.Id == id));
         }
     }
 }

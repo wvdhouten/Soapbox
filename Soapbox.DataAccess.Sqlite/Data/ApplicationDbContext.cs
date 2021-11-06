@@ -2,7 +2,6 @@ namespace Soapbox.DataAccess.Data
 {
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-    using Soapbox.Core.Identity;
     using Soapbox.Models;
 
     public class ApplicationDbContext : IdentityDbContext<SoapboxUser>
@@ -14,5 +13,9 @@ namespace Soapbox.DataAccess.Data
         }
 
         public DbSet<Post> Posts { get; set; }
+
+        public DbSet<PostCategory> PostCategories { get; set; }
+
+        public DbSet<PostMeta> PostMeta { get; set; }
     }
 }

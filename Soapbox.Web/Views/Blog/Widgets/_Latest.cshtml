@@ -5,32 +5,9 @@
     var posts = await BlogService.GetPostsAsync(model.PostCount);
 }
 
-<style>
-  .widget > header {
-    overflow: auto;
-    padding: 10px;
-    border-color: var(--accent1-500);
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 3px;
-  }
-
-    .widget > header > h1 {
-      margin: 0;
-    }
-
-  .item-feed {
-    padding: .5rem 1rem;
-  }
-
-  .widget .item {
-      margin-bottom: .5rem;
-  }
-</style>
-
 <article class="widget">
   <header>
-    <h1>Latest <a asp-controller="Blog" asp-action="Index">blog</a> posts:</h1>
+    <h2>Blog: Latest</h2>
   </header>
   <section class="item-feed">
     @await foreach (var post in posts)

@@ -1,12 +1,15 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Identity;
+    using Soapbox.Core.Extensions;
     using Soapbox.Domain.Abstractions;
     using Soapbox.Models;
+    using Soapbox.Web.Areas.Admin.Models.Posts;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
 
@@ -15,16 +18,18 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     public class PostsController : Controller
     {
         private readonly IBlogService _blogService;
+        private readonly IMapper _mapper;
         private readonly ILogger<PostsController> _logger;
 
-        public PostsController(IBlogService blogService, ILogger<PostsController> logger)
+        public PostsController(IBlogService blogService, IMapper mapper, ILogger<PostsController> logger)
         {
             _blogService = blogService;
+            _mapper = mapper;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute] int page = 0)
+        public async Task<IActionResult> Index()
         {
             var posts = await _blogService.GetAllPostsAsync();
 
@@ -32,20 +37,39 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new PostViewModel
+            {
+                AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category => _mapper.Map<PostCategoryViewModel>(category)).ToListAsync()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Post post)
+        public async Task<IActionResult> Create([FromForm] PostViewModel post, string action)
         {
+            if (action == nameof(AddCategory))
+            {
+                return AddCategory(post);
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(post);
             }
 
-            post.Author = User.GetUserId<string>();
+            post.Author.Id = User.GetUserId<string>();
+            foreach (var category in post.AllCategories.Where(c => c.Checked))
+            {
+                if (category.Id == default)
+                {
+                    category.Slug = CreateSlug(category.Name);
+                }
+                post.Categories.Add(category);
+            }
+
             await _blogService.CreateOrUpdatePostAsync(post);
 
             return RedirectToAction(nameof(Index));
@@ -58,17 +82,42 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             if (post is null)
             {
                 throw new Exception("Not Found");
-            }    
+            }
 
-            return View(post);
+            var model = _mapper.Map<PostViewModel>(post);
+
+            model.AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category =>
+            {
+                return _mapper.Map<PostCategory, PostCategoryViewModel>(category, opts =>
+                {
+                    opts.AfterMap((source, destination) => { destination.Checked = post.Categories.Any(c => destination.Id == c.Id); });
+                });
+            }).ToListAsync();
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] Post post)
+        public async Task<IActionResult> Edit([FromForm] PostViewModel post, string action)
         {
+            if (action == nameof(AddCategory))
+            {
+                return AddCategory(post);
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(post);
+            }
+
+            foreach (var category in post.AllCategories.Where(c => c.Checked))
+            {
+                if (category.Id == default)
+                {
+                    category.Slug = CreateSlug(category.Name);
+                }
+
+                post.Categories.Add(category);
             }
 
             await _blogService.CreateOrUpdatePostAsync(post);
@@ -89,6 +138,45 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private IActionResult AddCategory(PostViewModel model)
+        {
+            ModelState.ClearValidationState(string.Empty);
+            if (string.IsNullOrWhiteSpace(model.NewCategory))
+            {
+                ModelState.AddModelError(nameof(model.NewCategory), "To add a category you must enter some text in the box next to the 'Add' button before clicking 'Add'");
+                return View(model);
+            }
+
+            var categoryName = model.NewCategory.Trim();
+            var newCategory = new PostCategoryViewModel
+            {
+                Name = categoryName,
+                Checked = true
+            };
+
+            if (model.AllCategories.Any(c => c.Name == newCategory.Name))
+            {
+                ModelState.AddModelError(nameof(model.NewCategory), $"The category \"{model.NewCategory}\" already exists");
+            }
+            else
+            {
+                model.AllCategories.Add(newCategory);
+                model.NewCategory = string.Empty;
+                ModelState.Remove(nameof(model.NewCategory));
+            }
+
+            return View(model);
+        }
+
+        private static string CreateSlug(string title)
+        {
+            title = title?.ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
+            title = title.RemoveDiacritics();
+            title = title.RemoveReservedUrlCharacters();
+
+            return title.ToLowerInvariant();
         }
     }
 }

@@ -3,7 +3,7 @@ namespace Soapbox.Web.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
-    using Soapbox.Core.Identity;
+    using Soapbox.Models;
 
     public interface IAccountService
     {

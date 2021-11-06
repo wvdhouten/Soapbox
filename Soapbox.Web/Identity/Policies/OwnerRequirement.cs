@@ -4,7 +4,6 @@ namespace Soapbox.Web.Identity.Policies
     using System.Threading.Tasks;
     using IdentityModel;
     using Microsoft.AspNetCore.Authorization;
-    using Soapbox.Core.Identity;
     using Soapbox.Models;
 
     public class OwnerAuthorizationHandler : AuthorizationHandler<OwnerRequirement, Post>
@@ -27,7 +26,7 @@ namespace Soapbox.Web.Identity.Policies
                     break;
                 case UserRole.Author:
                 case UserRole.Contributor:
-                    if (context.User.Identity?.Name == resource.Author)
+                    if (context.User.Identity.Name == resource.Author.UserName)
                     {
                         context.Succeed(requirement);
                     }

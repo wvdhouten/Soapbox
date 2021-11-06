@@ -1,5 +1,6 @@
-namespace Soapbox.Core.Identity
+namespace Soapbox.Models
 {
+    using System.Collections.Generic;
     using Microsoft.AspNetCore.Identity;
 
     public class SoapboxUser : IdentityUser
@@ -8,5 +9,7 @@ namespace Soapbox.Core.Identity
         public string DisplayName { get; set; }
 
         public UserRole Role { get; set; }
+
+        public IList<Post> Posts { get; set; }
     }
 }

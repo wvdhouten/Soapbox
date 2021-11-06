@@ -37,14 +37,15 @@
         <h3>Blog</h3>
         <ul>
           <li><a asp-area="" asp-controller="Blog" asp-action="Index">All posts</a></li>
+          <li><a asp-area="" asp-controller="Blog" asp-action="Categories">Categories</a></li>
           <li><a asp-area="" asp-controller="Blog" asp-action="Archive">Archive</a></li>
-          <li><a asp-area="" asp-controller="Pages" asp-action="Page" asp-route-page="Privacy">Privacy</a></li>
         </ul>
       </div>
       <div>
         <h3>Site</h3>
         <ul>
           <partial name="_LoginPartial" />
+          <li><a asp-area="" asp-controller="Pages" asp-action="Page" asp-route-page="Privacy">Privacy</a></li>
         </ul>
       </div>
     </section>

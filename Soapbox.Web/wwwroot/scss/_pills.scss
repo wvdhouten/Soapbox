@@ -1,0 +1,31 @@
+.pillbox {
+  display: flex;
+  white-space: nowrap;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  margin: .3rem;
+  overflow: hidden;
+
+  > div {
+    background: rgba(255, 255, 255, .1);
+  }
+
+  > * {
+    padding: .2rem .5rem;
+    border-radius: 0;
+
+    &:first-child {
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
+    }
+  }
+}

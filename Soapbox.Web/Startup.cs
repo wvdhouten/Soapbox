@@ -9,12 +9,12 @@ namespace Soapbox.Web
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Soapbox.Core.Email;
-    using Soapbox.Core.Identity;
     using Soapbox.Core.Markdown;
     using Soapbox.Core.Settings;
     using Soapbox.DataAccess.Sqlite;
     using Soapbox.Domain.Abstractions;
     using Soapbox.Domain.Blog;
+    using Soapbox.Models;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
@@ -35,6 +35,7 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.AddSqlite(Configuration, HostEnvironment);
 
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));

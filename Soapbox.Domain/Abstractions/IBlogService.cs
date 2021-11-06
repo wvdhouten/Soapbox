@@ -14,6 +14,10 @@ namespace Soapbox.Domain.Abstractions
 
         Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
+        Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long id);
+
+        Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId);
+
         Task CreateOrUpdatePostAsync(Post post);
 
         Task<Post> GetPostByIdAsync(string id);
@@ -22,6 +26,10 @@ namespace Soapbox.Domain.Abstractions
 
         Task DeletePostByIdAsync(string id);
 
-        Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string id);
+        Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
+
+        Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false);
+
+        Task<SoapboxUser> GetAuthorByIdAsync(string id);
     }
 }

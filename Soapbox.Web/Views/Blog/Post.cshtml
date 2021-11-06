@@ -15,17 +15,7 @@
   <section class="sub-header">
     <div class="container">
       <time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time>
-      <span class="author">by <a asp-area="" asp-controller="Blog" asp-action="Aythor" asp-route-category="@Model.Author">@Model.Author</a></span>
-      @if (Model.Categories.Any())
-      {
-        <span class="categories">
-          in
-          @foreach (var category in Model.Categories)
-          {
-            <a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-category="@category">@category</a>
-          }
-        </span>
-      }
+      <span class="author">by <a asp-area="" asp-controller="Blog" asp-action="Author" asp-route-id="@Model.Author.Id">@(!string.IsNullOrEmpty(Model.Author.DisplayName) ? Model.Author.DisplayName : Model.Author.UserName)</a></span>
     </div>
   </section>
   <section>

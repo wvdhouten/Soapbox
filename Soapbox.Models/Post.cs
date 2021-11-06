@@ -21,7 +21,7 @@ namespace Soapbox.Models
         /// <summary>
         /// Gets or sets the author identifier.
         /// </summary>
-        public string Author { get; set; }
+        public SoapboxUser Author { get; set; }
 
         /// <summary>
         /// Gets or sets the post slug.
@@ -53,11 +53,15 @@ namespace Soapbox.Models
         /// </summary>
         public DateTime? PublishedOn { get; set; } = null;
 
-        // TODO: Re-evaluate how to manage categories.
         /// <summary>
-        /// Gets or sets the post categories.
+        /// Gets or sets the categories.
         /// </summary>
-        public IList<string> Categories { get; } = new List<string>();
+        public IList<PostCategory> Categories { get; set; } = new List<PostCategory>();
+
+        /// <summary>
+        /// Gets or sets the meta data.
+        /// </summary>
+        public IList<PostMeta> Meta { get; set; } = new List<PostMeta>();
     }
 
     /// <summary>
