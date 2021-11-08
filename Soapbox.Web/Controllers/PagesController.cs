@@ -44,6 +44,8 @@ namespace Soapbox.Web.Controllers
             };
 
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            // TODO: Better public exception management.
             if (exceptionHandlerPathFeature?.Error is InvalidOperationException)
             {
                 model.Message = exceptionHandlerPathFeature.Error.Message;

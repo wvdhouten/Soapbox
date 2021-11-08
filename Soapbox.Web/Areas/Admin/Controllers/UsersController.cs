@@ -150,8 +150,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // TODO: Delegate to service
-            var userId = User.GetUserId<string>();
+            var userId = User.GetUserId();
             if (user.Id == userId)
             {
                 throw new InvalidOperationException("You cannot delete yourself.");
