@@ -1,5 +1,10 @@
+@using Identity.Extensions
 <ul>
   <li>
     <a asp-area="" asp-controller="Blog" asp-action="Index">Blog</a>
+    @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
+    {
+      <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button">New Post</a>
+    }
   </li>
 </ul>

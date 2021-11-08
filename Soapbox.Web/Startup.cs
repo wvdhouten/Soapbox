@@ -159,7 +159,6 @@ namespace Soapbox.Web
             {
                 auth.AddTwitter(options =>
                 {
-
                     options.ConsumerKey = tSection["ConsumerKey"];
                     options.ConsumerSecret = tSection["ConsumerSecret"];
                 });
@@ -172,6 +171,16 @@ namespace Soapbox.Web
                 {
                     options.ClientId = ghSection["ClientId"];
                     options.ClientSecret = ghSection["ClientSecret"];
+                });
+            }
+
+            var ySection = Configuration.GetSection("Authentication:Yahoo");
+            if (ySection.Exists())
+            {
+                auth.AddYahoo(options =>
+                {
+                    options.ClientId = ySection["ClientId"];
+                    options.ClientSecret = ySection["ClientSecret"];
                 });
             }
 
