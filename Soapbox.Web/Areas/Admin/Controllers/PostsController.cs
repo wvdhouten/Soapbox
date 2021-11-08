@@ -60,7 +60,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
-            post.Author.Id = User.GetUserId<string>();
+            post.Author = new SoapboxUser { Id = User.GetUserId<string>() };
             foreach (var category in post.AllCategories.Where(c => c.Checked))
             {
                 if (category.Id == default)
