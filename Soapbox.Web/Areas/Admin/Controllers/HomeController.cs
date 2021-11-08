@@ -19,7 +19,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return RedirectToAction("Dashboard", "Site");
+            return RedirectToAction("Posts", "Index");
         }
     }
 }
