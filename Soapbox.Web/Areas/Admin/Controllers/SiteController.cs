@@ -21,18 +21,6 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View(nameof(Dashboard));
-        }
-
-        [HttpGet]
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
-        [HttpGet]
         public IActionResult Settings([FromServices] IOptionsSnapshot<SiteSettings> config)
         {
             return View(config.Value);

@@ -10,7 +10,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Core.Markdown;
     using Soapbox.Core.Settings;
     using Soapbox.Core.Syndication;
-    using Soapbox.Domain.Abstractions;
+    using Soapbox.DataAccess.Abstractions;
 
     public class FeedController : Controller
     {

@@ -1,5 +1,5 @@
 @model Models.Blog.RecentPostsWidgetModel
-@inject Soapbox.Domain.Abstractions.IBlogService BlogService
+@inject DataAccess.Abstractions.IBlogService BlogService
 @{
     var model = Model ?? new Models.Blog.RecentPostsWidgetModel();
     var posts = await BlogService.GetPostsAsync(model.PostCount);

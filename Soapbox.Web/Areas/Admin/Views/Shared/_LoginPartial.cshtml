@@ -4,7 +4,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
   <li>
-    <a asp-area="Admin" asp-controller="Site" asp-action="Dashboard">Admin panel</a>
+    <a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin panel</a>
   </li>
   <li>
     <a asp-area="" asp-controller="Account" asp-action="Index">@User.Identity.Name</a>

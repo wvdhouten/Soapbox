@@ -11,9 +11,8 @@ namespace Soapbox.Web
     using Soapbox.Core.Email;
     using Soapbox.Core.Markdown;
     using Soapbox.Core.Settings;
+    using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite;
-    using Soapbox.Domain.Abstractions;
-    using Soapbox.Domain.Blog;
     using Soapbox.Models;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
@@ -67,7 +66,6 @@ namespace Soapbox.Web
             });
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
-            services.AddScoped<IBlogService, BlogService>();
 
             services.AddSingleton<IMarkdownParser, MarkdownParser>();
 
@@ -98,7 +96,7 @@ namespace Soapbox.Web
                 app.UseHsts();
             }
 
-            app.UseStatusCodePagesWithReExecute("/Pages/Error");
+            app.UseStatusCodePagesWithReExecute("/Pages/Error", "?statusCode={0}");
             app.UseWebOptimizer();
 
             app.UseStaticFiles();

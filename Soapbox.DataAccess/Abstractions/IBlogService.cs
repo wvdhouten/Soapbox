@@ -1,4 +1,4 @@
-namespace Soapbox.Domain.Abstractions
+namespace Soapbox.DataAccess.Abstractions
 {
     using System;
     using System.Collections.Generic;
