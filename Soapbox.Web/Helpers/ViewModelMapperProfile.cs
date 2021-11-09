@@ -1,4 +1,4 @@
-namespace Soapbox.Web
+namespace Soapbox.Web.Helpers
 {
     using AutoMapper;
     using Soapbox.Models;
