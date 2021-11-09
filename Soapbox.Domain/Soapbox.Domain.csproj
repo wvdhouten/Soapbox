@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Soapbox.Models\Soapbox.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+  </ItemGroup>
+
 </Project>

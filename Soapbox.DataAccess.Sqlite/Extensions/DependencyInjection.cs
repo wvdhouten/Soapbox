@@ -9,7 +9,6 @@ namespace Soapbox.DataAccess.Sqlite
     using Microsoft.Extensions.Hosting;
     using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
-    using Soapbox.DataAccess.Sqlite.Repositories;
     using Microsoft.AspNetCore.Identity;
     using System.IO;
 
@@ -17,7 +16,7 @@ namespace Soapbox.DataAccess.Sqlite
     {
         public static IServiceCollection AddSqlite([NotNull] this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IBlogService, BlogService>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 var contentPath = $"{env.ContentRootPath}\\Content";

@@ -42,7 +42,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Soapbox.Core\Soapbox.Core.csproj" />
     <ProjectReference Include="..\Soapbox.DataAccess.Sqlite\Soapbox.DataAccess.Sqlite.csproj" />
-    <ProjectReference Include="..\Soapbox.Domain\Soapbox.Domain.csproj" />
     <ProjectReference Include="..\Soapbox.Models\Soapbox.Models.csproj" />
   </ItemGroup>
 

@@ -36,8 +36,14 @@ namespace Soapbox.Web.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? statusCode = null)
         {
+            switch (statusCode)
+            {
+                case 404:
+                    return RedirectToAction("NotFound");
+            }
+
             var model = new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
@@ -52,6 +58,11 @@ namespace Soapbox.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult NotFound()
+        {
+            return View();
         }
 
         [HttpGet]

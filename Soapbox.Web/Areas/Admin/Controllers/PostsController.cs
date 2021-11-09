@@ -7,7 +7,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Extensions;
-    using Soapbox.Domain.Abstractions;
+    using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Posts;
     using Soapbox.Web.Identity.Attributes;

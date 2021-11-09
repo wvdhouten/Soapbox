@@ -5,7 +5,7 @@ namespace Soapbox.Web.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
-    using Soapbox.Domain.Abstractions;
+    using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
 
