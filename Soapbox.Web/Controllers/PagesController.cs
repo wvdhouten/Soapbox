@@ -41,7 +41,7 @@ namespace Soapbox.Web.Controllers
             switch (statusCode)
             {
                 case 404:
-                    return RedirectToAction("NotFound");
+                    return View("NotFound");
             }
 
             var model = new ErrorViewModel
@@ -58,11 +58,6 @@ namespace Soapbox.Web.Controllers
             }
 
             return View(model);
-        }
-
-        public IActionResult NotFound()
-        {
-            return View();
         }
 
         [HttpGet]
