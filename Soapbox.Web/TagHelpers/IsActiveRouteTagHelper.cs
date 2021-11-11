@@ -16,7 +16,7 @@ namespace Soapbox.Web.TagHelpers
         Area
     }
 
-    [HtmlTargetElement(Attributes = IsActiveRouteAttributeName + "*")]
+    [HtmlTargetElement(Attributes = IsActiveRouteAttributeName)]
     public class IsActiveRouteTagHelper : TagHelper
     {
         private const string IsActiveRouteAttributeName = "is-active-route";
