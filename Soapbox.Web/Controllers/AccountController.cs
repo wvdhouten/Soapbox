@@ -13,17 +13,17 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Web.Models.Account;
-    using Soapbox.Web.Services;
     using Soapbox.Core.Email;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
+    using Soapbox.Web.Models.Account;
+    using Soapbox.Web.Services;
 
     [Authorize]
     public partial class AccountController : Controller
     {
         private readonly SiteSettings _siteSettings;
-        private readonly IAccountService _accountService;
+        private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly SignInManager<SoapboxUser> _signInManager;
         private readonly IEmailClient _emailClient;
@@ -38,8 +38,8 @@ namespace Soapbox.Web.Controllers
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public AccountController(IOptionsSnapshot<SiteSettings> siteSettings, 
-            IAccountService accountService,
+        public AccountController(IOptionsSnapshot<SiteSettings> siteSettings,
+            AccountService accountService,
             UserManager<SoapboxUser> userManager,
             SignInManager<SoapboxUser> signInManager,
             IEmailClient emailClient,

@@ -50,9 +50,9 @@ namespace Soapbox.Web.Controllers
             builder.AddCopyright(_settings.Owner);
             var feed = builder.GetFeed(_settings.AdminEmail);
 
-            var posts = await _blogService.GetPostsAsync(15, 0);
+            var page = await _blogService.GetPostsPageAsync(0, 15);
 
-            await feed.WithItemsAsync(posts, post =>
+            feed.WithItems(page.Items, post =>
             {
                 var item = new SyndicationItem()
                     .WithTitle(post.Title)

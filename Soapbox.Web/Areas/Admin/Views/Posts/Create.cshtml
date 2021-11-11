@@ -1,6 +1,7 @@
 @model Soapbox.Web.Areas.Admin.Models.Posts.PostViewModel
 @{
-  ViewData[Constants.Title] = "Create new post";
+    var title = "Create post";
+    ViewData[Constants.Title] = title;
 }
 
 <style>
@@ -14,9 +15,9 @@
 </style>
 
 <div class="container content">
-  <form method="post">
+  <form method="post" autocomplete="off">
     <header>
-      <h2>Create Post</h2>
+      <h2>@title</h2>
     </header>
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
@@ -25,7 +26,13 @@
     </div>
     <div class="form-group horizontal">
       <label asp-for="Slug"></label>
-      <input asp-for="Slug" />
+      <div class="input-group">
+        <input asp-for="Slug" />
+        <div class="input-addon">
+          <input asp-for="GenerateSlugFromTitle" />
+          <label asp-for="GenerateSlugFromTitle">Generate from title</label>
+        </div>
+      </div>
     </div>
     <div class="form-group horizontal">
       <label asp-for="Categories"></label>
@@ -37,9 +44,9 @@
               <span>
                 <input asp-for="@Model.AllCategories[i].Id" type="hidden" />
                 <input asp-for="@Model.AllCategories[i].Name" type="hidden" />
-                <input asp-for="@Model.AllCategories[i].Checked" type="checkbox" />
+                <input asp-for="@Model.AllCategories[i].Selected" type="checkbox" />
               </span>
-              <span><label asp-for="@Model.AllCategories[i].Checked">@Model.AllCategories[i].Name</label></span>
+              <span><label asp-for="@Model.AllCategories[i].Selected">@Model.AllCategories[i].Name</label></span>
             </div>
           }
         </div>

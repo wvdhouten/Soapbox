@@ -21,3 +21,7 @@ a:active {
 a:focus {
   outline-width: 4px;
 }
+
+a[disabled] {
+  pointer-events: none;
+}

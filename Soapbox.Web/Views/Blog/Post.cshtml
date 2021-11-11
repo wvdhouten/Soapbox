@@ -1,3 +1,4 @@
+@using Identity.Extensions
 @model Post
 @inject Soapbox.Core.Markdown.IMarkdownParser Parser
 @{
@@ -8,8 +9,12 @@
 
 <article class="post">
   <header>
-    <div class="container">
+    <div class="container relative">
       <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
+      @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
+      {
+        <a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="top-right"><i class="fa fa-edit"></i></a>
+      }
     </div>
   </header>
   <section class="sub-header">

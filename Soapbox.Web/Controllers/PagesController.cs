@@ -1,12 +1,12 @@
 namespace Soapbox.Web.Controllers
 {
+    using System;
+    using System.Diagnostics;
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Common;
     using Soapbox.Web.Models;
-    using System;
-    using System.Diagnostics;
 
     [Route("[controller]/[action]")]
     public class PagesController : Controller

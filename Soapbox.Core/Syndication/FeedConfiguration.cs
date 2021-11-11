@@ -1,7 +1,6 @@
 namespace Soapbox.Core.Syndication
 {
     using System;
-    using System.ServiceModel.Syndication;
 
     public class FeedConfiguration<T>
     {

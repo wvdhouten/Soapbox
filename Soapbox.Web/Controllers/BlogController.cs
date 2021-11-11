@@ -22,13 +22,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet("{page:int?}")]
         public async Task<IActionResult> Index(int page = 0)
         {
-            var posts = await _blogService.GetPostsAsync(5, page);
+            var posts = await _blogService.GetPostsPageAsync(page, 5);
 
             ViewData[Constants.Title] = "Blog";
 
             return View(posts);
         }
-        
+
         [HttpGet("{slug}")]
         public async Task<IActionResult> Post(string slug)
         {

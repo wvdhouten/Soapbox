@@ -8,9 +8,7 @@ namespace Soapbox.DataAccess.Abstractions
 
     public interface IBlogService
     {
-        Task<IAsyncEnumerable<Post>> GetAllPostsAsync();
-
-        Task<IAsyncEnumerable<Post>> GetPostsAsync(int count, int skip = 0);
+        Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25);
 
         Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
@@ -18,7 +16,9 @@ namespace Soapbox.DataAccess.Abstractions
 
         Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId);
 
-        Task CreateOrUpdatePostAsync(Post post);
+        Task CreatePostAsync(Post post);
+
+        Task UpdatePostAsync(Post post);
 
         Task<Post> GetPostByIdAsync(string id);
 
@@ -28,7 +28,15 @@ namespace Soapbox.DataAccess.Abstractions
 
         Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
 
+        Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false);
+
+        Task CreateCategoryAsync(PostCategory category);
+
+        Task<PostCategory> GetCategoryByIdAsync(long id, bool includePosts = false);
+
         Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false);
+
+        Task DeleteCategoryByIdAsync(long id);
 
         Task<SoapboxUser> GetAuthorByIdAsync(string id);
     }

@@ -1,20 +1,21 @@
-@model IEnumerable<SoapboxUser>;
+@model IPagedList<SoapboxUser>;
 @{
-  ViewData[Constants.Title] = "Users";
+    var title = "Users";
+    ViewData[Constants.Title] = title;
 }
 
 <div class="container content">
   <header class="has-actions">
-    <h1>Users</h1>
+    <h1>@title</h1>
     <div>
       <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>
   </header>
 
-  <table>
+  <table class="data-grid">
     <thead>
       <tr>
-        <th>Username</th>
+        <th width="99%">Username</th>
         <th>Name</th>
         <th>Email</th>
         <th>Role</th>
@@ -22,7 +23,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach (var user in Model)
+      @foreach (var user in Model.Items)
       {
         <tr>
           <td><a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id">@user.UserName</a></td>
@@ -38,4 +39,5 @@
       }
     </tbody>
   </table>
+  <partial name="../Shared/_Paging.cshtml" model="Model" />
 </div>

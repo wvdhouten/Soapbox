@@ -1,29 +1,29 @@
-@model IAsyncEnumerable<Post>;
+@model IPagedList<Post>;
 @{
-  ViewData[Constants.Title] = "Posts";
+    var title = "Posts";
+    ViewData[Constants.Title] = title;
 }
 
 <section class="container content">
   <header class="has-actions">
-    <h1>Posts</h1>
+    <h1>@title</h1>
     <div>
       <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>
   </header>
 
-  <table>
+  <table class="data-grid">
     <thead>
       <tr>
-        <th>Title</th>
+        <th width="99%">Title</th>
         <th>Author</th>
         <th>Date</th>
         <th>Categories</th>
-        <th>Tags</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      @await foreach (var post in Model)
+      @foreach (var post in Model.Items)
       {
         <tr>
           <td><a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a></td>
@@ -49,4 +49,5 @@
       }
     </tbody>
   </table>
+  <partial name="../Shared/_Paging.cshtml" model="Model" />
 </section>

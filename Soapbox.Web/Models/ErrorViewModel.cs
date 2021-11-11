@@ -21,6 +21,12 @@ namespace Soapbox.Web.Models
         /// </value>
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+        /// <summary>
+        /// Gets or sets the error message.
+        /// </summary>
+        /// <value>
+        /// The error message.
+        /// </value>
         public string Message { get; set; }
     }
 }

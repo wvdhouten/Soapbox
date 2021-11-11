@@ -29,7 +29,6 @@ namespace Soapbox.Web.Controllers
                 Indent = true
             };
 
-            // TODO: Nicer way of writing this?
             await using var writer = XmlWriter.Create(Response.Body, settings);
             writer.WriteStartDocument();
             writer.WriteStartElement("rsd");

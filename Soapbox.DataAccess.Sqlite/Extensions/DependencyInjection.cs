@@ -1,16 +1,16 @@
 namespace Soapbox.DataAccess.Sqlite
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Soapbox.DataAccess.Data;
     using Soapbox.DataAccess.Abstractions;
-    using Microsoft.AspNetCore.Identity;
-    using System.IO;
+    using Soapbox.DataAccess.Data;
 
     public static class DependencyInjection
     {

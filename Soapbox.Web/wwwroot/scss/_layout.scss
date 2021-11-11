@@ -34,6 +34,7 @@
 
 #site-nav ul {
   display: flex;
+  gap: 4px;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -43,7 +44,19 @@
   position: relative;
   display: inline-block;
   font-size: 1.1rem;
-  padding: .25rem;
+  padding: .25rem .5rem;
+  border-bottom: 2px solid transparent;
+
+  &:hover {
+    border-color: var(--accent1-200);
+  }
+
+  &.active {
+    border-color: var(--accent1-400);
+  }
+}
+
+#site-nav a.active {
 }
 
 #site-nav a.button {
@@ -258,4 +271,14 @@ header.has-actions {
 .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+
+.relative {
+  position: relative;
+}
+
+.top-right {
+  position: absolute;
+  top: 6px;
+  right: 6px;
 }

@@ -11,6 +11,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.Common;
     using Soapbox.Core.Email;
+    using Soapbox.DataAccess.Extensions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
@@ -21,12 +22,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     [RoleAuthorize(UserRole.Administrator)]
     public class UsersController : Controller
     {
-        private readonly IAccountService _accountService;
+        private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly IEmailClient _emailClient;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IAccountService accountService, UserManager<SoapboxUser> userManager, IEmailClient emailClient, ILogger<UsersController> logger)
+        public UsersController(AccountService accountService, UserManager<SoapboxUser> userManager, IEmailClient emailClient, ILogger<UsersController> logger)
         {
             _accountService = accountService;
             _userManager = userManager;
@@ -35,20 +36,16 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 25)
         {
-            ViewData[Constants.Title] = "Users";
+            var model = _userManager.Users.OrderBy(u => u.UserName).GetPaged(page, pageSize);
 
-            var users = _userManager.Users.AsEnumerable();
-
-            return View(users);
+            return View(model);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewData[Constants.Title] = "New user";
-
             return View();
         }
 
@@ -86,14 +83,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            ViewData[Constants.Title] = "Edit user";
-
             var user = await _accountService.FindUserByIdAsync(id);
             if (user is null)
             {
@@ -138,12 +133,14 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 }
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
+            // TODO: More checks
+
             var user = await _accountService.FindUserByIdAsync(id);
             if (user is null)
             {
@@ -156,7 +153,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 throw new InvalidOperationException("You cannot delete yourself.");
             }
 
-            await _accountService.DeleteUserAsync(user);
+            await _userManager.DeleteAsync(user);
 
             return RedirectToAction(nameof(Index));
         }

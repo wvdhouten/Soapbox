@@ -220,7 +220,7 @@ namespace Soapbox.Web.Controllers
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"User with ID '{user.Id}' logged in with 2fa.");
+                _logger.LogInformation("User with ID '{user.Id}' logged in with 2fa.", user.Id);
                 return LocalRedirect(returnUrl);
             }
             else if (result.IsLockedOut)

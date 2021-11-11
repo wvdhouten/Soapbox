@@ -13,7 +13,7 @@ namespace Soapbox.Web.Services
     using Soapbox.Core.Email;
     using Soapbox.Models;
 
-    public class AccountService : IAccountService
+    public class AccountService
     {
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly IEmailClient _emailClient;
@@ -49,11 +49,6 @@ namespace Soapbox.Web.Services
             var result = await _userManager.UpdateAsync(existing);
 
             return result;
-        }
-
-        public async Task DeleteUserAsync(SoapboxUser user)
-        {
-            await _userManager.DeleteAsync(user);
         }
 
         public async Task<string> GeneratePasswordResetCode(SoapboxUser user)

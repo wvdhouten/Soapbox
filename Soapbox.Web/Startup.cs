@@ -9,9 +9,9 @@ namespace Soapbox.Web
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Soapbox.Core.Email;
+    using Soapbox.Core.FileManagement;
     using Soapbox.Core.Markdown;
     using Soapbox.Core.Settings;
-    using Soapbox.DataAccess.Abstractions;
     using Soapbox.DataAccess.Sqlite;
     using Soapbox.Models;
     using Soapbox.Web.Identity;
@@ -41,7 +41,7 @@ namespace Soapbox.Web
             services.AddScoped<IEmailClient, SmtpEmailClient>();
 
             services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<AccountService>();
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
 
             var auth = services.AddAuthentication(o =>
@@ -66,6 +66,7 @@ namespace Soapbox.Web
             });
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
+            services.AddScoped<ConfigFileService>();
 
             services.AddSingleton<IMarkdownParser, MarkdownParser>();
 

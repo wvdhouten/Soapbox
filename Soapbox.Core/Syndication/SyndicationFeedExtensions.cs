@@ -52,6 +52,7 @@ namespace Soapbox.Core.Syndication
             {
                 feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
             }
+
             feed.Items = syndicationItems;
 
             return feed;

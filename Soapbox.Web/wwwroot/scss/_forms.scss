@@ -39,6 +39,11 @@ form .form-group > .input {
   padding: .5rem 0;
 }
 
+form .form-group .input-addon {
+  margin-left: .5rem;
+  padding: .5rem 0;
+}
+
 .input-group {
   display: flex;
   align-items: stretch;

@@ -1,8 +1,8 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace Soapbox.Web.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class AddPosts : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
