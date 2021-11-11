@@ -73,7 +73,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             post.Author = new SoapboxUser { Id = User.GetUserId() };
-            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Slug) : post.Slug;
+            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
             SetSelectedCategories(post);
 
             await _blogService.CreatePostAsync(post);
@@ -116,7 +116,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
-            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Slug) : post.Slug;
+            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
             SetSelectedCategories(post);
 
             await _blogService.UpdatePostAsync(post);

@@ -43,11 +43,11 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] PostCategoryViewModel post)
+        public async Task<IActionResult> Create([FromForm] PostCategoryViewModel category)
         {
-            post.Slug = post.GenerateSlugFromName || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Slug) : post.Slug;
+            category.Slug = category.GenerateSlugFromName || string.IsNullOrWhiteSpace(category.Slug) ? CreateSlug(category.Name) : category.Slug;
 
-            await _blogService.CreateCategoryAsync(post);
+            await _blogService.CreateCategoryAsync(category);
 
             return RedirectToAction(nameof(Index));
         }
@@ -66,13 +66,13 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] PostCategoryViewModel post)
+        public async Task<IActionResult> Edit([FromForm] PostCategoryViewModel category)
         {
-            post.Slug = post.GenerateSlugFromName || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Slug) : post.Slug;
+            category.Slug = category.GenerateSlugFromName || string.IsNullOrWhiteSpace(category.Slug) ? CreateSlug(category.Name) : category.Slug;
 
-            await _blogService.CreateCategoryAsync(post);
+            await _blogService.CreateCategoryAsync(category);
 
-            return RedirectToAction(nameof(Edit), new { id = post.Id });
+            return RedirectToAction(nameof(Edit), new { id = category.Id });
         }
 
         [HttpPost]

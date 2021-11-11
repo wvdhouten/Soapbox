@@ -37,6 +37,7 @@
     <div class="form-group horizontal">
       <label asp-for="Categories"></label>
       <div class="input-container">
+        @if (Model.AllCategories.Any()) {
         <div class="pillbox">
           @for (int i = 0; i < Model.AllCategories.Count; i++)
           {
@@ -50,6 +51,7 @@
             </div>
           }
         </div>
+        }
         <div class="input-group">
           <input asp-for="NewCategory" />
           <button type="submit" name="action" value="AddCategory"><i class="fa fa-plus"></i></button>

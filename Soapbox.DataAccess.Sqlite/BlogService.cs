@@ -48,7 +48,8 @@ namespace Soapbox.DataAccess.Sqlite
 
             post.Id = Guid.NewGuid().ToString();
             await _context.Posts.AddAsync(post);
-            AttachPostRelationships(post);
+            _context.Users.Attach(post.Author);
+            AttachCategories(post);
 
             await _context.SaveChangesAsync();
         }
@@ -67,10 +68,25 @@ namespace Soapbox.DataAccess.Sqlite
         {
             CleanPostValues(post);
 
-            var existing = await _context.Posts.Include(p => p.Author).Include(p => p.Categories).SingleAsync(p => p.Id == post.Id);
-            existing.Categories = post.Categories;
+            var existing = await _context.Posts.Include(p => p.Categories).SingleAsync(p => p.Id == post.Id);
             _context.Entry(existing).CurrentValues.SetValues(post);
-            AttachPostRelationships(existing);
+
+            foreach(var category in existing.Categories.ToList())
+            {
+                if (!post.Categories.Any(c => c.Id == category.Id))
+                {
+                    existing.Categories.Remove(category);
+                }
+            }
+            foreach (var category in post.Categories.ToList())
+            {
+                if (category.Id == default || !existing.Categories.Any(c => c.Id == category.Id))
+                {
+                    existing.Categories.Add(category);
+                }
+            }
+
+            AttachCategories(existing);
 
             await _context.SaveChangesAsync();
         }
@@ -93,16 +109,15 @@ namespace Soapbox.DataAccess.Sqlite
             post.Excerpt = post.Excerpt?.Trim() ?? string.Empty;
         }
 
-        private void AttachPostRelationships(Post post)
+        private void AttachCategories(Post post)
         {
-            _context.Users.Attach(post.Author);
             foreach (var category in post.Categories)
             {
                 if (category.Id == default)
                 {
                     _context.PostCategories.Add(category);
                 }
-                else
+                else if(!_context.PostCategories.Local.Any(c => c.Id == category.Id))
                 {
                     _context.PostCategories.Attach(category);
                 }
