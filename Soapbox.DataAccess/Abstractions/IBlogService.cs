@@ -36,6 +36,8 @@ namespace Soapbox.DataAccess.Abstractions
 
         Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false);
 
+        Task UpdateCategoryAsync(PostCategory category);
+
         Task DeleteCategoryByIdAsync(long id);
 
         Task<SoapboxUser> GetAuthorByIdAsync(string id);

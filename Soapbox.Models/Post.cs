@@ -2,6 +2,7 @@ namespace Soapbox.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Represents a blog post.
@@ -51,7 +52,9 @@ namespace Soapbox.Models
         /// <summary>
         /// Gets or sets the publication date.
         /// </summary>
-        public DateTime? PublishedOn { get; set; } = null;
+        [Display(Name = "Published on")]
+        [DataType(DataType.Date)]
+        public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Gets or sets the categories.

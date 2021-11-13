@@ -8,7 +8,7 @@
   <header class="has-actions">
     <h1>@title</h1>
     <div>
-      <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
+      <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>
   </header>
 
@@ -29,8 +29,8 @@
           <td><a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a></td>
           <td>@post.Author</td>
           <td>
-            @((post.PublishedOn ?? post.ModifiedOn).ToString("yyyy-MM-dd HH:mm"))
-            @if (post.Status == PostStatus.Published && post.PublishedOn.HasValue)
+            @post.PublishedOn.ToString("yyyy-MM-dd")
+            @if (post.Status == PostStatus.Published)
             {
               <i class="fa fa-check" aria-hidden="true"></i>
             }
@@ -42,7 +42,7 @@
           </td>
           <td>
             <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" method="post">
-              <button type="submit">Delete</button>
+              <button type="submit" class="small"><i class="fa fa-trash"></i></button>
             </form>
           </td>
         </tr>

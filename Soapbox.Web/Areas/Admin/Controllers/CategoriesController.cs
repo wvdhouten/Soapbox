@@ -62,6 +62,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             var model = _mapper.Map<PostCategoryViewModel>(category);
+            model.GenerateSlugFromName = category.Slug == CreateSlug(category.Name);
+
             return View(model);
         }
 
@@ -70,7 +72,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         {
             category.Slug = category.GenerateSlugFromName || string.IsNullOrWhiteSpace(category.Slug) ? CreateSlug(category.Name) : category.Slug;
 
-            await _blogService.CreateCategoryAsync(category);
+            await _blogService.UpdateCategoryAsync(category);
 
             return RedirectToAction(nameof(Edit), new { id = category.Id });
         }

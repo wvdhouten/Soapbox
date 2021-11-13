@@ -180,11 +180,12 @@ namespace Soapbox.DataAccess.Sqlite
             return Task.FromResult(query.FirstOrDefault(c => c.Slug == slug));
         }
 
-        public Task<SoapboxUser> GetAuthorByIdAsync(string id)
+        public async Task UpdateCategoryAsync(PostCategory category)
         {
-            IQueryable<SoapboxUser> query = _context.Users.Include(u => u.Posts);
+            var existing = _context.PostCategories.Find(category.Id);
+            _context.Entry(existing).CurrentValues.SetValues(category);
 
-            return Task.FromResult(query.FirstOrDefault(u => u.Id == id));
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteCategoryByIdAsync(long id)
@@ -194,6 +195,13 @@ namespace Soapbox.DataAccess.Sqlite
             _context.PostCategories.Remove(category);
 
             await _context.SaveChangesAsync();
+        }
+
+        public Task<SoapboxUser> GetAuthorByIdAsync(string id)
+        {
+            IQueryable<SoapboxUser> query = _context.Users.Include(u => u.Posts);
+
+            return Task.FromResult(query.FirstOrDefault(u => u.Id == id));
         }
     }
 }

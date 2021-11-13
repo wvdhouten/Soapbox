@@ -59,12 +59,12 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="Status"></label>
-      <select asp-for="Status" asp-items="Html.GetEnumSelectList<PostStatus>()"></select>
-    </div>
-    <div class="form-group horizontal">
       <label asp-for="PublishedOn"></label>
       <input asp-for="PublishedOn" value="@DateTime.UtcNow" />
+    </div>
+    <div class="form-group horizontal">
+      <label asp-for="Status"></label>
+      <select asp-for="Status" asp-items="Html.GetEnumSelectList<PostStatus>()"></select>
     </div>
     <div class="form-group">
       <label asp-for="Excerpt"></label>
