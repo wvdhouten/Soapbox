@@ -1,9 +1,90 @@
-<form class="horizontal-form" method="post">
+@model Models.Account.ProfileModel
+
+<style>
+  .flex {
+    display: flex;
+    gap: 6px;
+  }
+
+  .xxx {
+    display: flex;
+    gap: 6px;
+  }
+
+  .xxx-item {
+    display: flex;
+    align-items: center;
+    margin: .25rem 0;
+  }
+
+  .xxx-item label {
+    padding: .5rem .25rem;
+    border: 1px solid var(--accent1-400);
+    border-right-width: 0;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    line-height: 1;
+  }
+
+  .xxx-item button {
+    padding: .5rem .75rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    line-height: 1;
+  }
+</style>
+
+<div class="horizontal-form">
   <h2>Security</h2>
+  <form method="post">
+    <div class="form-group">
+      <label>Password</label>
+      <div class="static-value">
+        <a asp-controller="Account" asp-action="UpdatePassword">Update password</a>
+      </div>
+    </div>
+  </form>
   <div class="form-group">
-    <label>Password</label>
-    <div class="static-value">
-      <a asp-controller="Account" asp-action="UpdatePassword">Update password</a>
+    <label>External logins</label>
+    <div>
+      @if (Model.CurrentLogins?.Count > 0)
+      {
+        <div class="xxx">
+          @foreach (var login in Model.CurrentLogins)
+          {
+            <div class="xxx-item">
+              <label>@login.ProviderDisplayName</label>
+              <form asp-area="" asp-controller="Account" asp-action="RemoveLogin" method="post">
+                <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                <button type="submit" title="Remove this @login.ProviderDisplayName login from your account"><i class="fa fa-trash"></i></button>
+              </form>
+            </div>
+          }
+        </div>
+      }
+      else
+      {
+        <text>N/A</text>
+      }
+      @if (Model.OtherLogins?.Count > 0)
+      {
+        <form asp-area="" asp-controller="Account" asp-action="AddLogin" method="post">
+          <div class="xxx">
+            @foreach (var provider in Model.OtherLogins)
+            {
+              <div class="xxx-item">
+                <label>@provider.DisplayName</label>
+                <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-plus"></i></button>
+              </div>
+            }
+          </div>
+        </form>
+      }
+      else
+      {
+        <text>N/A</text>
+      }
     </div>
   </div>
   <div class="form-group">
@@ -20,4 +101,4 @@
       }
     </div>
   </div>
-</form>
+</div>

@@ -65,14 +65,21 @@ namespace Soapbox.Web.Controllers
             }
 
             var email = await _userManager.GetEmailAsync(user);
+            var currentLogins = await _userManager.GetLoginsAsync(user);
+            var otherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
+                .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
+                .ToList();
+
             var model = new ProfileModel
             {
                 Username = user.UserName,
+                DisplayName = user.DisplayName,
                 Email = email,
                 IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user),
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                DisplayName = user.DisplayName,
-                NewEmail = email
+                NewEmail = email,
+                CurrentLogins = currentLogins,
+                OtherLogins = otherLogins,
+                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null
             };
 
             return View(model);
@@ -188,13 +195,14 @@ namespace Soapbox.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                StatusMessage = "User not found.";
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -204,7 +212,7 @@ namespace Soapbox.Web.Controllers
             var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
             await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            StatusMessage = "Verification email sent. Please check your email.";
 
             return RedirectToAction(nameof(Index));
         }

@@ -1,6 +1,9 @@
 namespace Soapbox.Web.Models.Account
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Identity;
 
     public class ProfileModel
     {
@@ -16,6 +19,10 @@ namespace Soapbox.Web.Models.Account
         public string NewEmail { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
+
+        public IList<UserLoginInfo> CurrentLogins { get; set; }
+
+        public IList<AuthenticationScheme> OtherLogins { get; set; }
 
         public bool HasAuthenticator { get; set; }
     }

@@ -18,7 +18,7 @@
 
 @media(min-width:768px) {
 
-  form.horizontal-form .form-group,
+  .horizontal-form .form-group,
   .form-group.horizontal {
     flex-direction: row;
 
@@ -34,12 +34,12 @@
 }
 
 
-form .form-group > .static-value,
-form .form-group > .input {
+.form-group > .static-value,
+.form-group > .input {
   padding: .5rem 0;
 }
 
-form .form-group .input-addon {
+.form-group .input-addon {
   margin-left: .5rem;
   padding: .5rem 0;
 }
@@ -89,6 +89,9 @@ textarea:focus {
 
 input:not([type="checkbox"]):not([type="radio"]):disabled,
 select:disabled,
-textarea:disabled {
+textarea:disabled,
+input:not([type="checkbox"]):not([type="radio"])[readonly],
+select[readonly],
+textarea[readonly] {
   background: var(--input-disabled-background);
 }

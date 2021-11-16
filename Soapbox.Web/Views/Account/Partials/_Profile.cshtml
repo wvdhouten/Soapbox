@@ -24,7 +24,7 @@
     else
     {
       <div class="input-group">
-        <input asp-for="Email" disabled />
+        <input asp-for="Email" readonly />
         <button type="submit" asp-controller="Account" asp-action="ResendEmailConfirmation">Send verification email</button>
       </div>
     }
