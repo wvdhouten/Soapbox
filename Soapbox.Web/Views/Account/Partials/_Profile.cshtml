@@ -1,0 +1,38 @@
+@model Models.Account.ProfileModel
+
+<form class="horizontal-form" method="post">
+  <h2>Profile</h2>
+  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  <div class="form-group">
+    <label asp-for="Username"></label>
+    <input asp-for="Username" disabled />
+  </div>
+  <div class="form-group">
+    <label asp-for="DisplayName"></label>
+    <input asp-for="DisplayName" />
+    <span asp-validation-for="DisplayName" class="text-danger"></span>
+  </div>
+  <div class="form-group">
+    <label asp-for="Email"></label>
+    @if (Model.IsEmailConfirmed)
+    {
+      <div class="input-group">
+        <input asp-for="Email" disabled />
+        <div class="input-group-addon"><span>✓</span></div>
+      </div>
+    }
+    else
+    {
+      <div class="input-group">
+        <input asp-for="Email" disabled />
+        <button type="submit" asp-controller="Account" asp-action="ResendEmailConfirmation">Send verification email</button>
+      </div>
+    }
+  </div>
+  <div class="form-group">
+    <label asp-for="NewEmail"></label>
+    <input asp-for="NewEmail" class="form-control" />
+    <span asp-validation-for="NewEmail" class="text-danger"></span>
+  </div>
+  <button type="submit">Update</button>
+</form>

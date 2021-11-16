@@ -6,21 +6,16 @@ namespace Soapbox.Web.Models.Account
     {
         public string Username { get; set; }
 
+        [Display(Name = "Display name")]
+        public string DisplayName { get; set; }
+
         public string Email { get; set; }
 
+        [EmailAddress]
+        [Display(Name = "New email")]
+        public string NewEmail { get; set; }
+
         public bool IsEmailConfirmed { get; set; }
-
-        public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Display(Name = "Display name")]
-            public string DisplayName { get; set; }
-
-            [EmailAddress]
-            [Display(Name = "New email")]
-            public string NewEmail { get; set; }
-        }
 
         public bool HasAuthenticator { get; set; }
     }

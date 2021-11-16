@@ -59,7 +59,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -71,11 +71,8 @@ namespace Soapbox.Web.Controllers
                 Email = email,
                 IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user),
                 HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Input = new ProfileModel.InputModel
-                {
-                    DisplayName = user.DisplayName,
-                    NewEmail = email,
-                }
+                DisplayName = user.DisplayName,
+                NewEmail = email
             };
 
             return View(model);
@@ -85,37 +82,38 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Index([FromForm] ProfileModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
 
-            var displayName = user.DisplayName;
-            if (model.Input.DisplayName != displayName)
+            if (user.DisplayName != model.DisplayName)
             {
-                user.DisplayName = model.Input.DisplayName;
+                user.DisplayName = model.DisplayName;
                 await _userManager.UpdateAsync(user);
             }
 
             var email = await _userManager.GetEmailAsync(user);
-            if (model.Input.NewEmail != email)
+            if (model.NewEmail != email)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.Input.NewEmail);
+                var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Action(nameof(ConfirmEmailChange), "Account", values: new { userId, email = model.Input.NewEmail, code }, protocol: Request.Scheme);
-                await _emailClient.SendEmailAsync(model.Input.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var callbackUrl = Url.Action(nameof(ConfirmEmailChange), "Account", values: new { userId, email = model.NewEmail, code }, protocol: Request.Scheme);
+                await _emailClient.SendEmailAsync(model.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+
+            StatusMessage = "Your profile has been updated.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -123,7 +121,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> DownloadPersonalData()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -136,13 +134,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code)
         {
-            if (userId == null || code == null)
+            if (userId is null || code is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
@@ -150,20 +148,21 @@ namespace Soapbox.Web.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
-            // TODO: Push status message to next page.
+            StatusMessage = "Your email has been confirmed.";
+
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
+        public async Task<IActionResult> ConfirmEmailChange([FromQuery] string userId, [FromQuery] string email, [FromQuery] string code)
         {
-            if (userId == null || email == null || code == null)
+            if (userId is null || email is null || code is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
@@ -172,13 +171,15 @@ namespace Soapbox.Web.Controllers
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                // TODO: Push status message to next page.
+                StatusMessage = "Updating your email failed. The email or code was incorrect.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             await _signInManager.RefreshSignInAsync(user);
 
-            // TODO: Push status message to next page.
+            StatusMessage = "Your email has been changed.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -191,7 +192,7 @@ namespace Soapbox.Web.Controllers
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user is null)
             {
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
                 return RedirectToAction(nameof(Index));
@@ -224,41 +225,43 @@ namespace Soapbox.Web.Controllers
         {
             returnUrl ??= Url.Content("~/");
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
             {
-                var hasUsers = _userManager.Users.Any();
+                return View(model);
+            }
 
-                var user = new SoapboxUser
+            var hasUsers = _userManager.Users.Any();
+            var user = new SoapboxUser
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
+
+                await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    UserName = model.Username,
-                    Email = model.Email,
-                    Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
-                };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
-
-                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToAction(nameof(RegisterConfirmation), new { email = model.Email, returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToAction(nameof(RegisterConfirmation), new { email = model.Email, returnUrl });
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
             }
 
             // If we got this far, something failed, redisplay form
@@ -268,13 +271,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> RegisterConfirmation([FromQuery] string email, [FromQuery] string returnUrl = null)
         {
-            if (email == null)
+            if (email is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with email '{email}'.");
             }
@@ -286,7 +289,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Delete()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -302,7 +305,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Delete([FromForm] DeleteModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -429,7 +432,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> RecoveryCodes()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -449,7 +452,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> RecoveryCodes(RecoveryCodesModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -469,6 +472,12 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult UpdatePassword()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
         {
@@ -478,7 +487,7 @@ namespace Soapbox.Web.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -522,7 +531,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> EnableAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -537,7 +546,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -599,7 +608,7 @@ namespace Soapbox.Web.Controllers
             var currentPosition = 0;
             while (currentPosition + 4 < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(' ');
+                result.Append(unformattedKey.AsSpan(currentPosition, 4)).Append(' ');
                 currentPosition += 4;
             }
             if (currentPosition < unformattedKey.Length)
@@ -650,9 +659,9 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> ExternalLogins()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
-                return NotFound($"Unable to load user with ID 'user.Id'.");
+                return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
             var currentLogins = await _userManager.GetLoginsAsync(user);
@@ -671,9 +680,9 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> RemoveExternalLogin(string loginProvider, string providerKey)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
-                return NotFound($"Unable to load user with ID 'user.Id'.");
+                return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
@@ -702,13 +711,13 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> AddExternalLoginCallback()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync(user.Id);
-            if (info == null)
+            if (info is null)
             {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
             }

@@ -1,0 +1,23 @@
+<form class="horizontal-form" method="post">
+  <h2>Security</h2>
+  <div class="form-group">
+    <label>Password</label>
+    <div class="static-value">
+      <a asp-controller="Account" asp-action="UpdatePassword">Update password</a>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Authenticator app</label>
+    <div class="static-value">
+      @if (!Model.HasAuthenticator)
+      {
+        <a asp-controller="Account" asp-action="EnableAuthenticator">Add</a>
+      }
+      else
+      {
+        <a asp-controller="Account" asp-action="EnableAuthenticator">Setup</a>
+        <a asp-controller="Account" asp-action="ResetAuthenticator">Reset</a>
+      }
+    </div>
+  </div>
+</form>
