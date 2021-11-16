@@ -6,18 +6,18 @@
     gap: 6px;
   }
 
-  .xxx {
+  .providers {
     display: flex;
     gap: 6px;
   }
 
-  .xxx-item {
+  .provider {
     display: flex;
     align-items: center;
     margin: .25rem 0;
   }
 
-  .xxx-item label {
+  .provider label {
     padding: .5rem .25rem;
     border: 1px solid var(--accent1-400);
     border-right-width: 0;
@@ -26,7 +26,7 @@
     line-height: 1;
   }
 
-  .xxx-item button {
+  .provider button {
     padding: .5rem .75rem;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -40,19 +40,20 @@
     <div class="form-group">
       <label>Password</label>
       <div class="static-value">
-        <a asp-controller="Account" asp-action="UpdatePassword">Update password</a>
+        <a asp-controller="Account" asp-action="ChangePassword">Change password</a>
       </div>
     </div>
   </form>
+  @if (Model.CurrentLogins?.Count > 0 || Model.OtherLogins?.Count > 0){
   <div class="form-group">
     <label>External logins</label>
     <div>
       @if (Model.CurrentLogins?.Count > 0)
       {
-        <div class="xxx">
+        <div class="providers">
           @foreach (var login in Model.CurrentLogins)
           {
-            <div class="xxx-item">
+            <div class="provider">
               <label>@login.ProviderDisplayName</label>
               <form asp-area="" asp-controller="Account" asp-action="RemoveLogin" method="post">
                 <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
@@ -63,17 +64,13 @@
           }
         </div>
       }
-      else
-      {
-        <text>N/A</text>
-      }
       @if (Model.OtherLogins?.Count > 0)
       {
         <form asp-area="" asp-controller="Account" asp-action="AddLogin" method="post">
-          <div class="xxx">
+          <div class="provider">
             @foreach (var provider in Model.OtherLogins)
             {
-              <div class="xxx-item">
+              <div class="provider">
                 <label>@provider.DisplayName</label>
                 <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-plus"></i></button>
               </div>
@@ -81,23 +78,23 @@
           </div>
         </form>
       }
-      else
-      {
-        <text>N/A</text>
-      }
     </div>
   </div>
+  }
   <div class="form-group">
     <label>Authenticator app</label>
     <div class="static-value">
       @if (!Model.HasAuthenticator)
       {
-        <a asp-controller="Account" asp-action="EnableAuthenticator">Add</a>
+        <a asp-controller="Account" asp-action="AddAuthenticator">Add</a>
       }
       else
       {
-        <a asp-controller="Account" asp-action="EnableAuthenticator">Setup</a>
-        <a asp-controller="Account" asp-action="ResetAuthenticator">Reset</a>
+        <a asp-controller="Account" asp-action="AddAuthenticator">Configure</a>
+        <text>|</text>
+        <a asp-controller="Account" asp-action="RecoveryCodes">Recovery Codes</a>
+        <text>|</text>
+        <a asp-controller="Account" asp-action="RemoveAuthenticator">Remove</a>
       }
     </div>
   </div>

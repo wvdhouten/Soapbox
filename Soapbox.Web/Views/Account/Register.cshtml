@@ -1,6 +1,6 @@
 @model Models.Account.RegisterModel
 @{
-  ViewData["Title"] = "Register";
+  ViewData[Constants.Title] = "Register";
 }
 
 <style>
@@ -24,7 +24,7 @@
 
 <div class="card">
   <header class="centered">
-    <h1>@ViewData["Title"]</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
 
   <form id="register" asp-route-returnUrl="@Model.ReturnUrl" method="post">

@@ -223,7 +223,7 @@ namespace Soapbox.Web.Controllers
             var model = new RegisterModel()
             {
                 ReturnUrl = returnUrl ?? Url.Content("~/"),
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                ExternalLogins = await GetExternalLogins()
             };
             return View(model);
         }
@@ -232,7 +232,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Register([FromForm] RegisterModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            model.ExternalLogins = await GetExternalLogins();
 
             if (!ModelState.IsValid)
             {
@@ -452,7 +452,11 @@ namespace Soapbox.Web.Controllers
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' because they do not have 2FA enabled.");
             }
 
-            var model = new RecoveryCodesModel();
+            var model = new RecoveryCodesModel
+            {
+                RecoveryCodes = (string[])TempData["RecoveryCodes"]
+            };
+
             return View(model);
         }
 
@@ -476,18 +480,31 @@ namespace Soapbox.Web.Controllers
             model.RecoveryCodes = recoveryCodes.ToArray();
 
             _logger.LogInformation($"User with ID '{userId}' has generated new 2FA recovery codes.");
+
             StatusMessage = "You have generated new recovery codes.";
+
             return View(model);
         }
 
         [HttpGet]
-        public IActionResult UpdatePassword()
+        public async Task<IActionResult> ChangePassword()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new ChangePasswordModel
+            {
+                HasPassword = await _userManager.HasPasswordAsync(user)
+            };
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -529,14 +546,15 @@ namespace Soapbox.Web.Controllers
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your password has been set.";
 
-            return View(model);
+            await _signInManager.RefreshSignInAsync(user);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> EnableAuthenticator()
+        public async Task<IActionResult> AddAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
@@ -551,7 +569,7 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorModel model)
+        public async Task<IActionResult> AddAuthenticator(EnableAuthenticatorModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
@@ -565,8 +583,7 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
-            // Strip spaces and hypens
-            var verificationCode = model.Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
             var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
             if (!is2faTokenValid)
@@ -585,8 +602,10 @@ namespace Soapbox.Web.Controllers
             if (await _userManager.CountRecoveryCodesAsync(user) == 0)
             {
                 var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-                model.RecoveryCodes = recoveryCodes.ToArray();
-                return RedirectToAction(nameof(recoveryCodes));
+
+                TempData.Add("RecoveryCodes", recoveryCodes.ToArray());
+
+                return RedirectToAction(nameof(RecoveryCodes));
             }
             else
             {
@@ -633,7 +652,7 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ResetAuthenticator()
+        public async Task<IActionResult> RemoveAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -644,8 +663,8 @@ namespace Soapbox.Web.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("ResetAuthenticator")]
-        public async Task<IActionResult> ResetAuthenticator_Post()
+        [HttpPost, ActionName("RemoveAuthenticator")]
+        public async Task<IActionResult> RemoveAuthenticator_Post()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -654,69 +673,31 @@ namespace Soapbox.Web.Controllers
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, false);
-            await _userManager.ResetAuthenticatorKeyAsync(user);
+
+            await _userManager.RemoveAuthenticationTokenAsync(user, "[AspNetUserStore]", "AuthenticatorKey");
+            await _userManager.RemoveAuthenticationTokenAsync(user, "[AspNetUserStore]", "RecoveryCodes");
+
             _logger.LogInformation($"User with ID '{user.Id}' has reset their authentication app key.");
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.";
+
+            StatusMessage = "Your authenticator app key has been reset.";
 
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ExternalLogins()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user is null)
-            {
-                return NotFound($"Unable to load user with ID '{user.Id}'.");
-            }
-
-            var currentLogins = await _userManager.GetLoginsAsync(user);
-            var model = new ExternalLoginsModel
-            {
-                CurrentLogins = currentLogins,
-                OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
-                .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
-                .ToList(),
-                ShowRemoveButton = user.PasswordHash != null || currentLogins.Count > 1
-            };
-            return View(model);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> RemoveExternalLogin(string loginProvider, string providerKey)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user is null)
-            {
-                return NotFound($"Unable to load user with ID '{user.Id}'.");
-            }
-
-            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
-            if (!result.Succeeded)
-            {
-                StatusMessage = "The external login was not removed.";
-                return RedirectToAction(nameof(ExternalLogins));
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "The external login was removed.";
-            return RedirectToAction(nameof(ExternalLogins));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddExternalLogin(string provider)
+        public async Task<IActionResult> AddLogin(string provider)
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            var redirectUrl = Url.Action(nameof(AddExternalLoginCallback));
+            var redirectUrl = Url.Action(nameof(AddLoginCallback));
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return new ChallengeResult(provider, properties);
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddExternalLoginCallback()
+        public async Task<IActionResult> AddLoginCallback()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
@@ -734,13 +715,34 @@ namespace Soapbox.Web.Controllers
             if (!result.Succeeded)
             {
                 StatusMessage = "The external login was not added. External logins can only be associated with one account.";
-                return RedirectToAction(nameof(ExternalLogins));
+                return RedirectToAction(nameof(Index));
             }
 
             await ClearExternalCookie();
 
             StatusMessage = "The external login was added.";
-            return RedirectToAction(nameof(ExternalLogins));
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveLogin([FromForm] string loginProvider, [FromForm] string providerKey)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return NotFound($"Unable to load user with ID '{user.Id}'.");
+            }
+
+            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "The external login was not removed.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "The external login was removed.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,11 +1,11 @@
 @model Models.Account.LoginExternalModel
 @{
-  ViewData["Title"] = "Register";
+  ViewData[Constants.Title] = "Register";
 }
 
 <div class="card">
   <header class="centered">
-    <h1>@ViewData["Title"]</h1>
+    <h1>@ViewData[Constants.Title]</h1>
     <h4>Associate your @Model.ProviderDisplayName account.</h4>
   </header>
 

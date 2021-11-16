@@ -1,6 +1,6 @@
 @model Models.Account.EnableAuthenticatorModel
 @{
-  ViewData["Title"] = "Configure authenticator app";
+    ViewData[Constants.Title] = "Configure authenticator app";
 }
 
 <style>
@@ -21,7 +21,7 @@
 
 <div class="card">
   <header class="centered">
-    <h1>@ViewData["Title"]</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
   <div>
     <p>Download a 2FA app:</p>
@@ -34,12 +34,11 @@
     <p>Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below.</p>
     <form id="send-code" method="post">
       <div class="form-group">
-        <label asp-for="Input.Code">Verification Code</label>
-        <input asp-for="Input.Code" autocomplete="off" />
-        <span asp-validation-for="Input.Code" class="text-danger"></span>
+        <label asp-for="Code">Verification Code</label>
+        <input asp-for="Code" autocomplete="off" />
       </div>
       <button type="submit">Verify</button>
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div asp-validation-summary="All"></div>
     </form>
   </div>
 </div>

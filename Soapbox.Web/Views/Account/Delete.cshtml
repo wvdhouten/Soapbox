@@ -1,25 +1,22 @@
 @model Models.Account.DeleteModel
 @{
-  ViewData["Title"] = "Delete Personal Data";
+    ViewData[Constants.Title] = "Delete Personal Data";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData[Constants.Title]</h1>
 
 <div role="alert">
   <p>Deleting your account will destroy the account and the attached personal data. This action is permanent, and it cannot be reversed.</p>
 </div>
 
-<form id="delete-user" method="post">
-  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form method="post">
+  <div asp-validation-summary="All"></div>
   @if (Model.RequirePassword)
   {
     <div class="form-group">
       <label asp-for="Input.Password"></label>
       <input asp-for="Input.Password" />
-      <span asp-validation-for="Input.Password" class="text-danger"></span>
     </div>
   }
-  <div class="button-container">
-    <button type="submit">Delete data and close my account</button>
-  </div>
+  <button type="submit">Delete data and close my account</button>
 </form>

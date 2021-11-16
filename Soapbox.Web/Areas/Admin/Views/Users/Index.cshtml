@@ -1,12 +1,11 @@
 @model IPagedList<SoapboxUser>;
 @{
-    var title = "Users";
-    ViewData[Constants.Title] = title;
+    ViewData[Constants.Title] = "Users";
 }
 
 <div class="container content">
   <header class="has-actions">
-    <h1>@title</h1>
+    <h1>@ViewData[Constants.Title]</h1>
     <div>
       <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>

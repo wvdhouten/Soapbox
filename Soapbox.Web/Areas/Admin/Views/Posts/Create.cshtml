@@ -1,7 +1,6 @@
 @model Soapbox.Web.Areas.Admin.Models.Posts.PostViewModel
 @{
-    var title = "Create post";
-    ViewData[Constants.Title] = title;
+    ViewData[Constants.Title] = "Create post";
 }
 
 <style>
@@ -17,7 +16,7 @@
 <div class="container content">
   <form method="post" autocomplete="off">
     <header>
-      <h2>@title</h2>
+      <h2>@ViewData[Constants.Title]</h2>
     </header>
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">

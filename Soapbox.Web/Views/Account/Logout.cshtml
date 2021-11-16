@@ -1,9 +1,9 @@
 @{
-  ViewData["Title"] = "Log out";
+  ViewData[Constants.Title] = "Log out";
 }
 
 <header>
-  <h1>@ViewData["Title"]</h1>
+  <h1>@ViewData[Constants.Title]</h1>
   @{
     if (User.Identity.IsAuthenticated)
     {

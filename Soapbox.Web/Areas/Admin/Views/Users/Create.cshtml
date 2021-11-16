@@ -1,12 +1,11 @@
 @model Soapbox.Web.Areas.Admin.Models.Users.CreateUserViewModel
 @{
-    var title = "Create user";
-    ViewData[Constants.Title] = title;
+    ViewData[Constants.Title] = "Create user";
 }
 
 <div class="container">
   <header>
-    <h1>@title</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
 
   <form method="post">

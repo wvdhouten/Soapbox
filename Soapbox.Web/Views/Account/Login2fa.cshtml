@@ -1,9 +1,9 @@
 @model Models.Account.Login2faModel
 @{
-  ViewData["Title"] = "Two-factor authentication";
+  ViewData[Constants.Title] = "Two-factor authentication";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData[Constants.Title]</h1>
 <hr />
 <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
 <form method="post" asp-route-returnUrl="@Model.ReturnUrl">

@@ -1,12 +1,11 @@
 @model Soapbox.Web.Areas.Admin.Models.Users.EditUserViewModel
 @{
-    var title = "Edit user";
-    ViewData[Constants.Title] = title;
+    ViewData[Constants.Title] = "Edit user";
 }
 
 <div class="container">
   <header>
-    <h1>@title</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
 
   <form method="post">

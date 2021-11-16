@@ -1,9 +1,9 @@
 @model Models.Account.TwoFactorAuthenticationModel
 @{
-    ViewData["Title"] = "Two-factor authentication (2FA)";
+    ViewData[Constants.Title] = "Two-factor authentication (2FA)";
 }
 
-<h4>@ViewData["Title"]</h4>
+<h4>@ViewData[Constants.Title]</h4>
 @if (Model.Is2faEnabled)
 {
   if (Model.RecoveryCodesLeft == 0)
