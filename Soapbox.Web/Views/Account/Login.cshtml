@@ -29,6 +29,8 @@
     <h1>@ViewData[Constants.Title]</h1>
   </header>
 
+  <div class="separator"></div>
+
   <section>
     <form id="login" asp-route-returnUrl="@Model.ReturnUrl" method="post">
       <div asp-validation-summary="ModelOnly"></div>
@@ -48,11 +50,13 @@
           @Html.DisplayNameFor(m => m.Input.RememberMe)
         </label>
       </div>
-      <div id="submit" class="centered">
-        <button class="large" type="submit">Log in</button>
-      </div>
     </form>
   </section>
+
+  <div class="actions centered">
+    <button type="submit" form="login" class="large">Log in</button>
+  </div>
+
   @if ((Model.ExternalLogins?.Count ?? 0) > 0)
   {
     <div class="separator">or</div>
@@ -64,6 +68,7 @@
     </form>
   }
 </div>
+
 <div class="centered subtle">
   <a asp-controller="Account" asp-action="ForgotPassword">Forgot your password?</a>
   @if (settings.Value.AllowRegistration)

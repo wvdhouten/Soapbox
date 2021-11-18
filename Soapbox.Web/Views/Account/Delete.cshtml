@@ -1,22 +1,34 @@
 @model Models.Account.DeleteModel
 @{
-    ViewData[Constants.Title] = "Delete Personal Data";
+    ViewData[Constants.Title] = "Delete account";
 }
 
-<h1>@ViewData[Constants.Title]</h1>
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData[Constants.Title]</h1>
+  </header>
 
-<div role="alert">
-  <p>Deleting your account will destroy the account and the attached personal data. This action is permanent, and it cannot be reversed.</p>
-</div>
+  <div class="separator"></div>
 
-<form method="post">
-  <div asp-validation-summary="All"></div>
-  @if (Model.RequirePassword)
-  {
-    <div class="form-group">
-      <label asp-for="Input.Password"></label>
-      <input asp-for="Input.Password" />
+  <section>
+    <div role="alert">
+      <p>Deleting your account will destroy it and the attached personal data. This action is permanent, and cannot be reversed.</p>
     </div>
-  }
-  <button type="submit">Delete data and close my account</button>
-</form>
+
+    <form id="delete" method="post">
+      <div asp-validation-summary="All"></div>
+      @if (Model.RequirePassword)
+      {
+        <div class="form-group">
+          <label asp-for="Input.Password"></label>
+          <input asp-for="Input.Password" />
+        </div>
+      }
+    </form>
+  </section>
+
+  <div class="actions centered">
+    <button form="delete" type="submit" class="large">Delete data and close my account</button>
+    <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
+  </div>
+</div>

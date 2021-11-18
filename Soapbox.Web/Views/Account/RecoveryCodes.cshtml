@@ -11,6 +11,9 @@
   <header>
     <h1>@ViewData[Constants.Title]</h1>
   </header>
+
+  <div class="separator"></div>
+
   <section>
     <div class="alert alert-warning" role="alert">
       <p><i class="fa fa-warning" aria-hidden="true"></i><strong>Put these codes in a safe place.</strong></p>
@@ -39,6 +42,9 @@ else
       }
     </div>
     <p>If you lose your device and don't have the recovery codes you will lose access to your account.</p>
+    <div class="centered">
+      <a asp-area="" asp-controller="Account" asp-action="Index" class="button large">OK</a>
+    </div>
   </section>
 }
 </div>

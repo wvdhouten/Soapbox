@@ -90,11 +90,25 @@
       }
       else
       {
-        <a asp-controller="Account" asp-action="AddAuthenticator">Configure</a>
-        <text>|</text>
-        <a asp-controller="Account" asp-action="RecoveryCodes">Recovery Codes</a>
-        <text>|</text>
-        <a asp-controller="Account" asp-action="RemoveAuthenticator">Remove</a>
+        <div>
+          <a asp-controller="Account" asp-action="AddAuthenticator">Configure</a>
+          |
+          <a asp-controller="Account" asp-action="RecoveryCodes">Recovery Codes</a> <span class="subtle">(@Model.RecoveryCodesLeft left)</span>
+          |
+          <a asp-controller="Account" asp-action="RemoveAuthenticator">Remove</a>
+        </div>
+      }
+      @if (Model.Is2faEnabled)
+      {
+        <div>
+          @if (Model.IsMachineRemembered)
+            {
+              <form asp-area="" asp-controller="Account" asp-action="ForgetBrowser" method="post" style="display: inline-block">
+                <button type="submit">Forget this browser</button>
+              </form>
+            }
+            <a asp-controller="Account" asp-action="Disable2fa">Disable 2FA</a>
+        </div>         
       }
     </div>
   </div>

@@ -79,7 +79,10 @@ namespace Soapbox.Web.Controllers
                 NewEmail = email,
                 CurrentLogins = currentLogins,
                 OtherLogins = otherLogins,
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null
+                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
+                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+                Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
+                IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
             };
 
             return View(model);
@@ -373,31 +376,11 @@ namespace Soapbox.Web.Controllers
 
             _logger.LogInformation($"User with ID '{_userManager.GetUserId(User)}' has disabled 2fa.");
             StatusMessage = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app";
-            return RedirectToAction(nameof(TwoFactorAuthentication));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> TwoFactorAuthentication()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var model = new TwoFactorAuthenticationModel
-            {
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
-                IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
-                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user)
-            };
-
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> TwoFactorAuthentication(TwoFactorAuthenticationModel model)
+        public async Task<IActionResult> ForgetBrowser()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -407,7 +390,7 @@ namespace Soapbox.Web.Controllers
 
             await _signInManager.ForgetTwoFactorClientAsync();
             StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -609,7 +592,7 @@ namespace Soapbox.Web.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
+                return RedirectToAction(nameof(Index));
             }
         }
 

@@ -17,31 +17,45 @@ a.button {
   border-radius: 2px;
   padding: .5rem 1rem;
   cursor: pointer;
-}
 
-button:hover,
-a.button:hover {
-  background: var(--button-hover-background-color);
-}
+  &:hover {
+    background: var(--button-hover-background-color);
+  }
 
-button:active,
-a.button:active {
-  background: var(--button-active-background-color);
-}
+  &:active {
+    background: var(--button-active-background-color);
+  }
 
-button:disabled,
-a.button:disabled {
-  background: var(--button-disabled-background-color);
-  color: var(--button-disabled-text-color);
-  cursor: default;
-}
+  &:disabled {
+    background: var(--button-disabled-background-color);
+    color: var(--button-disabled-text-color);
+    cursor: default;
+  }
 
-button.large,
-a.button.large {
-  width: 80%;
-}
+  &.outline {
+    background: transparent;
+    border-width: 2px;
 
-button.small,
-a.button.small {
-  padding: .3rem .5rem;
+    &:hover {
+      border-color: var(--button-hover-background-color);
+    }
+
+    &:active {
+      border-color: var(--button-active-background-color);
+    }
+
+    &:disabled {
+      border-color: var(--button-disabled-background-color);
+      color: var(--button-disabled-text-color);
+      cursor: default;
+    }
+  }
+
+  &.small {
+    padding: .3rem .5rem;
+  }
+
+  &.large {
+    width: 80%;
+  }
 }

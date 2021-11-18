@@ -167,14 +167,18 @@
   background: rgba(255,255,255, .1);
   border-radius: 4px;
   margin: 0 auto 20px;
-}
 
-.card > *:not(:last-child) {
-  margin-bottom: 16px;
-}
+  > *:not(:last-child) {
+    margin-bottom: 16px;
+  }
 
-.card > header > h1 {
-  margin: 0;
+  > header > h1 {
+    margin: 0;
+  }
+
+  .actions > * + * {
+    margin-top: 6px;
+  }
 }
 
 /* SEPARATOR */
