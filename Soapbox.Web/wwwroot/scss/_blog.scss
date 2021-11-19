@@ -25,13 +25,23 @@
       display: flex;
       background: var(--accent2-medium);
       font-size: .8rem;
-      padding: 0 4px;
 
       > * {
         padding: 4px 8px;
-        margin: 0 4px;
         background: var(--accent2-x-dark);
+
+        + * {
+          margin-left: 8px;
+        }
       }
+    }
+
+    .quick-actions {
+      position: absolute;
+      background: var(--accent2-x-dark);
+      padding: 6px 10px;
+      top: 0;
+      right: 16px;
     }
 
     .tag-list {
