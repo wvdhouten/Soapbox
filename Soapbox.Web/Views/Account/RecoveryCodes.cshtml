@@ -1,7 +1,4 @@
 @model Models.Account.RecoveryCodesModel
-@{
-  ViewData[Constants.Title] = "Recovery codes";
-}
 
 <div class="card centered">
 @if (Model.RecoveryCodes == null || Model.RecoveryCodes.Length == 0)
@@ -20,16 +17,24 @@
     </div>
     <p>If you lose your device and don't have the recovery codes you will lose access to your account.</p>
     <p>Generating new recovery codes does not change the keys used in authenticator apps. To change the authenticator key, you should remove and re-add the authenticator.</p>
-    <form method="post">
-      <button type="submit" class="wide">Generate Recovery Codes</button>
-    </form>
   </section>
+
+  <div class="actions centered">
+    <form method="post">
+      <button type="submit" class="large">Generate Recovery Codes</button>
+    </form>
+  </div>
 }
 else
 {
+  ViewData[Constants.Title] = "Recovery codes";
+
   <header>
     <h1>@ViewData[Constants.Title]</h1>
   </header>
+
+  <div class="separator"></div>
+
   <section>
     <div class="alert alert-warning" role="alert">
       <p><strong>Put these codes in a safe place.</strong></p>
@@ -42,9 +47,10 @@ else
       }
     </div>
     <p>If you lose your device and don't have the recovery codes you will lose access to your account.</p>
-    <div class="centered">
-      <a asp-area="" asp-controller="Account" asp-action="Index" class="button large">OK</a>
-    </div>
   </section>
+
+  <div class="actions centered">
+    <a asp-area="" asp-controller="Account" asp-action="Index" class="button large">OK</a>
+  </div>
 }
 </div>

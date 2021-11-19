@@ -1,68 +1,61 @@
-$dark-h: 0;
-$dark-s: 23%;
-
 :root {
-  --accent1-hue: 320;
-  --accent2-hue: 200;
-  --dark-hue: 210;
-  --dark-saturation: 15%;
-
-  @for $i from 1 through 9 {
-    --accent1-#{$i * 100}: hsl(var(--accent1-hue), 100%, #{$i * 10}%)
-  }
-
-  @for $i from 1 through 9 {
-    --accent2-#{$i * 100}: hsl(var(--accent2-hue), 100%, #{$i * 10}%)
-  }
-
-  @for $i from 1 through 9 {
-    --dark-#{$i * 100}: hsl(var(--dark-hue), var(--dark-saturation), #{10 + $i}%)
-  }
+  --accent1-x-light: #ff33bb;
+  --accent1-light: #ff00aa;
+  --accent1-medium: #cc0088;
+  --accent1-dark: #990066;
+  --accent1-x-dark: #660044;
+  --accent1-contrast: #ffffff;
+  --accent2-x-light: #33bbff;
+  --accent2-light: #00aaff;
+  --accent2-medium: #0088cc;
+  --accent2-dark: #006699;
+  --accent2-x-dark: #002233;
+  --accent2-contrast: #ffffff;
+  --grey-medium: #999;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: var(--dark-100);
+    --background-color: #181c20;
     --text-color: #f8f9fa;
-    --subtle-color: #c6c7c8;
-    --hover-color: #c6c7c8;
-    --hover-outline-color: #000;
-    --focus-color: #959596;
-    --focus-outline-color: #000;
+    --background-raised-color: #101418;
+    --text-subtle-color: #c6c7c8;
   }
 }
 
 body.dark {
-  --background-color: var(--dark-100);
+  --background-color: #181c20;
   --text-color: #f8f9fa;
-  --subtle-color: #c6c7c8;
-  --hover-color: #c6c7c8;
-  --hover-outline-color: #000;
-  --focus-color: #959596;
-  --focus-outline-color: #000;
+  --background-raised-color: #101418;
+  --text-subtle-color: #c6c7c8;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background-color: #eee;
-    --text-color: #000;
-    --subtle-color: #333333;
-    --hover-color: #333333;
-    --focus-color: #4d4d4d;
+    --background-color: #f8f9fa;
+    --text-color: #181c20;
+    --background-raised-color: #f0f1f2;
+    --text-subtle-color: #393837;
   }
 }
 
 body.light {
-  --background-color: #eee;
-  --text-color: #000;
-  --subtle-color: #333333;
-  --hover-color: #333333;
-  --focus-color: #4d4d4d;
+  --background-color: #f8f9fa;
+  --text-color: #181c20;
+  --background-raised-color: #f0f1f2;
+  --text-subtle-color: #393837;
 }
 
 body {
-  background: var(--background-color, #343a40);
-  color: var(--text-color, #f8f9fa);
+  background: var(--background-raised-color);
+  color: var(--text-color);
+}
+
+main {
+  background: var(--background-color);
+}
+
+* {
   transition: all 200ms ease;
   transition-property: background, color;
 }

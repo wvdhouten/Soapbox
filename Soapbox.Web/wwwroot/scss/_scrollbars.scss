@@ -4,7 +4,7 @@ html {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--accent1-400) var(--accent1-200);
+  scrollbar-color: var(--accent1-medium) var(--accent1-x-dark);
 }
 
 *::-webkit-scrollbar {
@@ -12,10 +12,10 @@ html {
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--accent1-500);
+  background: var(--accent1-x-dark);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--accent1-300);
+  background-color: var(--accent1-medium);
   border-radius: 5px;
 }

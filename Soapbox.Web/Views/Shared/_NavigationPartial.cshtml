@@ -1,10 +1,13 @@
 @using Identity.Extensions
-<ul>
-  <li>
-    <a asp-area="" asp-controller="Blog" asp-action="Index" is-active-route="Controller">Blog</a>
-    @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
-    {
-      <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small">New Post</a>
-    }
-  </li>
-</ul>
+<nav id="site-nav">
+  <ul>
+    <li>
+      <a asp-area="" asp-controller="Blog" asp-action="Index" is-active-route="Controller">Blog</a>
+    </li>
+  </ul>
+</nav>
+
+@if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
+{
+  <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small">New Post</a>
+}
