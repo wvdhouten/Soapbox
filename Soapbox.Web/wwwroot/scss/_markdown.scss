@@ -14,7 +14,7 @@
 */
 
 @media (prefers-color-scheme: dark) {
-  .markdown-body {
+  .markdown-content {
     --markdown-font: inherit;
     --markdown-monospace-font: inherit;
     --md-color-subtle: hsla(220, 30%, 90%);
@@ -25,7 +25,7 @@
   }
 }
 
-body.dark .markdown-body {
+body.dark .markdown-content {
   --markdown-font: inherit;
   --markdown-monospace-font: inherit;
   --md-color-subtle: hsla(220, 30%, 90%);
@@ -36,7 +36,7 @@ body.dark .markdown-body {
 }
 
 @media (prefers-color-scheme: light) {
-  .markdown-body {
+  .markdown-content {
     --markdown-font: inherit;
     --markdown-monospace-font: inherit;
     --md-color-subtle: hsla(220, 30%, 90%);
@@ -47,7 +47,7 @@ body.dark .markdown-body {
   }
 }
 
-body.light .markdown-body {
+body.light .markdown-content {
   --markdown-font: inherit;
   --markdown-monospace-font: inherit;
   --md-color-subtle: hsla(220, 30%, 90%);
@@ -57,7 +57,7 @@ body.light .markdown-body {
   --md-code-border: hsl(0, 0%, 12%);
 }
 
-.markdown-body {
+.markdown-content {
   /* DEFAULT VALUES */
   h1, h2, h3, h4, h5, h6, p, hr,
   table, ul, ol, blockquote, pre {

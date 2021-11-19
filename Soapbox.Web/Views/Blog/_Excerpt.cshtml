@@ -1,67 +1,16 @@
-@using Identity.Extensions
 @model Post
 @inject Soapbox.Core.Markdown.IMarkdownParser Parser
 @{
   var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
-
-  var content = !isFullPost
-    ? Model.Excerpt
-    : Model.Content;
+  var content = !isFullPost ? Model.Excerpt : Model.Content;
 }
 
-<style>
-  .tag-list {
-    display: inline-flex;
-  }
-
-  .tag + *.tag::before {
-    display: inline-block;
-    content: "|";
-    margin: 0 6px;
-  }
-</style>
-
 <article class="post excerpt">
-  <header>
-    <div class="container relative">
-      <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
-      @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
-      {
-        <div class="quick-actions">
-        <a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="top-right"><i class="fa fa-edit"></i></a>
-        </div>
-      }
-    </div>
-  </header>
-  <section class="sub-header">
-    <div class="container">
-      <span><i class="fa fa-calendar"></i> <time datetime="@Model.PublishedOn.ToString("s")">@Model.PublishedOn.ToString("MMM d, yyyy")</time></span>
-      <span>
-        <i class="fa fa-user-circle"></i>
-        <a asp-area="" asp-controller="Blog" asp-action="Author" asp-route-id="@Model.Author.Id">@(!string.IsNullOrEmpty(Model.Author.DisplayName) ? Model.Author.DisplayName : Model.Author.UserName)</a>
-      </span>
-      <span>
-        <span><i class="fa fa-tags"></i></span>
-        <span class="tag-list">
-        @foreach(var category in Model.Categories)
-        {
-          <span class="tag"><a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a></span>
-        }
-        </span>
-      </span>
-    </div>
-  </section>
-  <section>
-    <div class="container body markdown-body">
+  <partial name="_PostHeader" model="Model"></partial>
+  <section class="body">
+    <div class="container markdown-content">
       @Html.Raw(Parser.Parse(content))
     </div>
   </section>
-  <footer>
-    <div class="container">
-      @if (!isFullPost)
-      {
-        <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">Read More</a>
-      }
-    </div>
-  </footer>
+<partial name="_PostFooter" model="Model"></partial>
 </article>
