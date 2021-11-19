@@ -1,67 +1,10 @@
 @model Models.Account.ProfileModel
 @{
-  ViewData["Title"] = "Manage account";
+  ViewData[Constants.Title] = "Manage account";
 }
 
-<form class="horizontal-form" method="post">
-  <h2>Profile</h2>
-  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-  <div class="form-group">
-    <label asp-for="Username"></label>
-    <input asp-for="Username" disabled />
-  </div>
-  <div class="form-group">
-    <label asp-for="Input.DisplayName"></label>
-    <input asp-for="Input.DisplayName" />
-    <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
-  </div>
-  <div class="form-group">
-    <label asp-for="Email"></label>
-    @if (Model.IsEmailConfirmed)
-    {
-      <div class="input-group">
-        <input asp-for="Email" disabled />
-        <div class="input-group-addon"><span>✓</span></div>
-      </div>
-    }
-    else
-    {
-      <div class="input-group">
-        <input asp-for="Email" disabled />
-        <button type="submit" asp-controller="Account" asp-action="ResendEmailConfirmation">Send verification email</button>
-      </div>
-    }
-  </div>
-  <div class="form-group">
-    <label asp-for="Input.NewEmail"></label>
-    <input asp-for="Input.NewEmail" class="form-control" />
-    <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
-  </div>
-  <button type="submit">Update</button>
-</form>
+<partial name="Partials/_Profile" model="Model" />
 
-<form class="horizontal-form" method="post">
-  <h2>Security</h2>
-  <div class="form-group">
-    <label>Password</label>
-    <div class="static-value">
-      <a asp-controller="Account" asp-action="UpdatePassword">Update password</a>
-    </div>
-  </div>
-  <div class="form-group">
-    <label>Authenticator app</label>
-    <div class="static-value">
-      @if (!Model.HasAuthenticator)
-      {
-        <a asp-controller="Account" asp-action="EnableAuthenticator">Add</a>
-      }
-      else
-      {
-        <a asp-controller="Account" asp-action="EnableAuthenticator">Setup</a>
-        <a asp-controller="Account" asp-action="ResetAuthenticator">Reset</a>
-      }
-    </div>
-  </div>
-</form>
+<partial name="Partials/_Security" />
 
-<partial name="Partials/_PersonalData" />
+<partial name="Partials/_Account" />

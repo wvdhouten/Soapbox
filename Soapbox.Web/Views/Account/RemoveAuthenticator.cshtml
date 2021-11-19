@@ -1,0 +1,27 @@
+@{
+  ViewData[Constants.Title] = "Remove authenticator key";
+}
+
+<div class="card">
+  <header class="centered">
+    <h1>@ViewData[Constants.Title]</h1>
+  </header>
+
+  <div class="separator"></div>
+
+  <section>
+    <div class="alert alert-warning" role="alert">
+      <p>
+        <i class="fa fa-warning" aria-hidden="true"></i>
+        <strong>If you remove your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+      </p>
+      <p>This process disables 2FA until you verify your authenticator app. If you do not complete your authenticator app configuration you may lose access to your account.</p>
+    </div>
+  </section>
+
+  <div class="actions centered">
+    <form method="post">
+      <button type="submit" class="large">Reset authenticator key</button>
+    </form>
+  </div>
+</div>

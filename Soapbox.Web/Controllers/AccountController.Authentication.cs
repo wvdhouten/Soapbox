@@ -91,17 +91,21 @@ namespace Soapbox.Web.Controllers
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            if (info is null)
             {
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
 
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
             if (result.Succeeded)
             {
                 _logger.LogInformation($"{info.Principal.Identity.Name} logged in with {info.LoginProvider} provider.");
                 return LocalRedirect(returnUrl);
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction(nameof(Login2fa), new { ReturnUrl = returnUrl });
             }
             if (result.IsLockedOut)
             {
@@ -131,7 +135,7 @@ namespace Soapbox.Web.Controllers
         {
             returnUrl ??= Url.Content("~/");
             var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            if (info is null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
@@ -186,7 +190,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Login2fa([FromQuery] bool rememberMe, [FromQuery] string returnUrl = null)
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
+            if (user is null)
             {
                 throw new InvalidOperationException("Unable to load two-factor authentication user.");
             }
@@ -210,13 +214,13 @@ namespace Soapbox.Web.Controllers
             }
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
+            if (user is null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var authenticatorCode = model.Input.AuthenticatorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.Input.RememberMachine);
+            var authenticatorCode = model.AuthenticatorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.RememberMachine);
 
             if (result.Succeeded)
             {
@@ -241,7 +245,7 @@ namespace Soapbox.Web.Controllers
         {
             returnUrl ??= Url.Content("~/");
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
+            if (user is null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
@@ -264,7 +268,7 @@ namespace Soapbox.Web.Controllers
             }
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
+            if (user is null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
@@ -310,31 +314,26 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
+            StatusMessage = "Please check your email to reset your password.";
+
             var user = await _userManager.FindByEmailAsync(model.Input.Email);
-            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+            if (user is null || !await _userManager.IsEmailConfirmedAsync(user))
             {
-                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                return RedirectToAction(nameof(Index));
             }
 
             var code = await _accountService.GeneratePasswordResetCode(user);
             var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, Request.Scheme);
             await _emailClient.SendEmailAsync(model.Input.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            return RedirectToAction(nameof(ForgotPasswordConfirmation));
-        }
-
-        [HttpGet, AllowAnonymous]
-        public IActionResult ForgotPasswordConfirmation()
-        {
-            // TODO: Consider status message and redirect.
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet, AllowAnonymous]
         public IActionResult ResetPassword([FromQuery] string code = null)
         {
             var model = new ResetPasswordModel();
-            if (code == null)
+            if (code is null)
             {
                 return BadRequest("A code must be supplied for password reset.");
             }
@@ -353,17 +352,19 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
+            StatusMessage = "Your password has been reset.";
+
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user is null)
             {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                return RedirectToAction(nameof(Index));
             }
 
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Code));
             var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                return RedirectToAction(nameof(Index));
             }
 
             foreach (var error in result.Errors)
@@ -374,22 +375,14 @@ namespace Soapbox.Web.Controllers
             return View(model);
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> ResetPasswordConfirmation()
-        {
-            await _signInManager.SignOutAsync();
-
-            // TODO: Consider status message and redirect.
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Logout([FromQuery] string returnUrl = null)
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-
             returnUrl ??= Url.Content("~/");
+
+            await _signInManager.SignOutAsync();
+
+            _logger.LogInformation("User logged out.");
 
             return LocalRedirect(returnUrl);
         }

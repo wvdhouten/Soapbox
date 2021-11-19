@@ -1,12 +1,13 @@
 @model Models.Account.RegisterModel
 @{
-  ViewData["Title"] = "Register";
+  ViewData[Constants.Title] = "Register";
 }
 
 <style>
   #external-account {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 6px;
   }
 
     #external-account button {
@@ -23,35 +24,41 @@
 
 <div class="card">
   <header class="centered">
-    <h1>@ViewData["Title"]</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
 
-  <form id="register" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-      <label asp-for="Username"></label>
-      <input asp-for="Username" />
-      <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-      <label asp-for="Email"></label>
-      <input asp-for="Email" />
-      <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-      <label asp-for="Password"></label>
-      <input asp-for="Password" />
-      <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-      <label asp-for="ConfirmPassword"></label>
-      <input asp-for="ConfirmPassword" />
-      <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-    <div id="submit" class="centered">
-      <button class="large" type="submit">Register</button>
-    </div>
-  </form>
+  <div class="separator"></div>
+
+  <section>
+    <form id="register" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+      </div>
+    </form>
+  </section>
+
+  <div id="submit" class="actions centered">
+    <button form="register" type="submit" class="large">Register</button>
+  </div>
+
   @if ((Model.ExternalLogins?.Count ?? 0) > 0)
   {
     <div class="separator">or</div>

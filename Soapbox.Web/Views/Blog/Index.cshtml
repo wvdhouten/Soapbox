@@ -1,6 +1,6 @@
-@model IAsyncEnumerable<Post>
+@model IPagedList<Post>
 
-@await foreach (var post in Model)
+@foreach (var post in Model.Items)
 {
   <partial name="_Excerpt" model="post" />
 }

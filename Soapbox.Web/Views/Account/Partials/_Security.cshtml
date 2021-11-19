@@ -1,0 +1,115 @@
+@model Models.Account.ProfileModel
+
+<style>
+  .flex {
+    display: flex;
+    gap: 6px;
+  }
+
+  .providers {
+    display: flex;
+    gap: 6px;
+  }
+
+  .provider {
+    display: flex;
+    align-items: center;
+    margin: .25rem 0;
+  }
+
+  .provider label {
+    padding: .5rem .25rem;
+    border: 1px solid var(--accent1-medium);
+    border-right-width: 0;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    line-height: 1;
+  }
+
+  .provider button {
+    padding: .5rem .75rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    line-height: 1;
+  }
+</style>
+
+<div class="horizontal-form">
+  <h2>Security</h2>
+  <form method="post">
+    <div class="form-group">
+      <label>Password</label>
+      <div class="static-value">
+        <a asp-controller="Account" asp-action="ChangePassword">Change password</a>
+      </div>
+    </div>
+  </form>
+  @if (Model.CurrentLogins?.Count > 0 || Model.OtherLogins?.Count > 0){
+  <div class="form-group">
+    <label>External logins</label>
+    <div>
+      @if (Model.CurrentLogins?.Count > 0)
+      {
+        <div class="providers">
+          @foreach (var login in Model.CurrentLogins)
+          {
+            <div class="provider">
+              <label>@login.ProviderDisplayName</label>
+              <form asp-area="" asp-controller="Account" asp-action="RemoveLogin" method="post">
+                <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                <button type="submit" title="Remove this @login.ProviderDisplayName login from your account"><i class="fa fa-trash"></i></button>
+              </form>
+            </div>
+          }
+        </div>
+      }
+      @if (Model.OtherLogins?.Count > 0)
+      {
+        <form asp-area="" asp-controller="Account" asp-action="AddLogin" method="post">
+          <div class="provider">
+            @foreach (var provider in Model.OtherLogins)
+            {
+              <div class="provider">
+                <label>@provider.DisplayName</label>
+                <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-plus"></i></button>
+              </div>
+            }
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+  }
+  <div class="form-group">
+    <label>Authenticator app</label>
+    <div class="static-value">
+      @if (!Model.HasAuthenticator)
+      {
+        <a asp-controller="Account" asp-action="AddAuthenticator">Add</a>
+      }
+      else
+      {
+        <div>
+          <a asp-controller="Account" asp-action="AddAuthenticator">Configure</a>
+          |
+          <a asp-controller="Account" asp-action="RecoveryCodes">Recovery Codes</a> <span class="subtle">(@Model.RecoveryCodesLeft left)</span>
+          |
+          <a asp-controller="Account" asp-action="RemoveAuthenticator">Remove</a>
+        </div>
+      }
+      @if (Model.Is2faEnabled)
+      {
+        <div>
+          @if (Model.IsMachineRemembered)
+            {
+              <form asp-area="" asp-controller="Account" asp-action="ForgetBrowser" method="post" style="display: inline-block">
+                <button type="submit">Forget this browser</button>
+              </form>
+            }
+            @*<a asp-controller="Account" asp-action="Disable2fa">Disable 2FA</a>*@
+        </div>         
+      }
+    </div>
+  </div>
+</div>

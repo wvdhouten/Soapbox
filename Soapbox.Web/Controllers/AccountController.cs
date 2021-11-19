@@ -13,17 +13,17 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Web.Models.Account;
-    using Soapbox.Web.Services;
     using Soapbox.Core.Email;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
+    using Soapbox.Web.Models.Account;
+    using Soapbox.Web.Services;
 
     [Authorize]
     public partial class AccountController : Controller
     {
         private readonly SiteSettings _siteSettings;
-        private readonly IAccountService _accountService;
+        private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly SignInManager<SoapboxUser> _signInManager;
         private readonly IEmailClient _emailClient;
@@ -38,8 +38,8 @@ namespace Soapbox.Web.Controllers
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public AccountController(IOptionsSnapshot<SiteSettings> siteSettings, 
-            IAccountService accountService,
+        public AccountController(IOptionsSnapshot<SiteSettings> siteSettings,
+            AccountService accountService,
             UserManager<SoapboxUser> userManager,
             SignInManager<SoapboxUser> signInManager,
             IEmailClient emailClient,
@@ -59,23 +59,30 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var email = await _userManager.GetEmailAsync(user);
+            var currentLogins = await _userManager.GetLoginsAsync(user);
+            var otherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
+                .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
+                .ToList();
+
             var model = new ProfileModel
             {
                 Username = user.UserName,
+                DisplayName = user.DisplayName,
                 Email = email,
                 IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user),
+                NewEmail = email,
+                CurrentLogins = currentLogins,
+                OtherLogins = otherLogins,
                 HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Input = new ProfileModel.InputModel
-                {
-                    DisplayName = user.DisplayName,
-                    NewEmail = email,
-                }
+                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+                Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
+                IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
             };
 
             return View(model);
@@ -85,37 +92,38 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Index([FromForm] ProfileModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
 
-            var displayName = user.DisplayName;
-            if (model.Input.DisplayName != displayName)
+            if (user.DisplayName != model.DisplayName)
             {
-                user.DisplayName = model.Input.DisplayName;
+                user.DisplayName = model.DisplayName;
                 await _userManager.UpdateAsync(user);
             }
 
             var email = await _userManager.GetEmailAsync(user);
-            if (model.Input.NewEmail != email)
+            if (model.NewEmail != email)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.Input.NewEmail);
+                var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Action(nameof(ConfirmEmailChange), "Account", values: new { userId, email = model.Input.NewEmail, code }, protocol: Request.Scheme);
-                await _emailClient.SendEmailAsync(model.Input.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var callbackUrl = Url.Action(nameof(ConfirmEmailChange), "Account", values: new { userId, email = model.NewEmail, code }, protocol: Request.Scheme);
+                await _emailClient.SendEmailAsync(model.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+
+            StatusMessage = "Your profile has been updated.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -123,7 +131,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> DownloadPersonalData()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -136,13 +144,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code)
         {
-            if (userId == null || code == null)
+            if (userId is null || code is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
@@ -150,20 +158,21 @@ namespace Soapbox.Web.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
-            // TODO: Push status message to next page.
+            StatusMessage = "Your email has been confirmed.";
+
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
+        public async Task<IActionResult> ConfirmEmailChange([FromQuery] string userId, [FromQuery] string email, [FromQuery] string code)
         {
-            if (userId == null || email == null || code == null)
+            if (userId is null || email is null || code is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
@@ -172,13 +181,15 @@ namespace Soapbox.Web.Controllers
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                // TODO: Push status message to next page.
+                StatusMessage = "Updating your email failed. The email or code was incorrect.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             await _signInManager.RefreshSignInAsync(user);
 
-            // TODO: Push status message to next page.
+            StatusMessage = "Your email has been changed.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -187,13 +198,14 @@ namespace Soapbox.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                StatusMessage = "User not found.";
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -203,7 +215,7 @@ namespace Soapbox.Web.Controllers
             var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
             await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            StatusMessage = "Verification email sent. Please check your email.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -214,7 +226,7 @@ namespace Soapbox.Web.Controllers
             var model = new RegisterModel()
             {
                 ReturnUrl = returnUrl ?? Url.Content("~/"),
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                ExternalLogins = await GetExternalLogins()
             };
             return View(model);
         }
@@ -223,42 +235,44 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Register([FromForm] RegisterModel model, [FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            model.ExternalLogins = await GetExternalLogins();
+
+            if (!ModelState.IsValid)
             {
-                var hasUsers = _userManager.Users.Any();
+                return View(model);
+            }
 
-                var user = new SoapboxUser
+            var hasUsers = _userManager.Users.Any();
+            var user = new SoapboxUser
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
+
+                await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    UserName = model.Username,
-                    Email = model.Email,
-                    Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
-                };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
-
-                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToAction(nameof(RegisterConfirmation), new { email = model.Email, returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToAction(nameof(RegisterConfirmation), new { email = model.Email, returnUrl });
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
             }
 
             // If we got this far, something failed, redisplay form
@@ -268,13 +282,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> RegisterConfirmation([FromQuery] string email, [FromQuery] string returnUrl = null)
         {
-            if (email == null)
+            if (email is null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with email '{email}'.");
             }
@@ -286,7 +300,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Delete()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -302,7 +316,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Delete([FromForm] DeleteModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -362,31 +376,11 @@ namespace Soapbox.Web.Controllers
 
             _logger.LogInformation($"User with ID '{_userManager.GetUserId(User)}' has disabled 2fa.");
             StatusMessage = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app";
-            return RedirectToAction(nameof(TwoFactorAuthentication));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> TwoFactorAuthentication()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var model = new TwoFactorAuthenticationModel
-            {
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
-                IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
-                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user)
-            };
-
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> TwoFactorAuthentication(TwoFactorAuthenticationModel model)
+        public async Task<IActionResult> ForgetBrowser()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -396,7 +390,7 @@ namespace Soapbox.Web.Controllers
 
             await _signInManager.ForgetTwoFactorClientAsync();
             StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -429,7 +423,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> RecoveryCodes()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -441,7 +435,11 @@ namespace Soapbox.Web.Controllers
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' because they do not have 2FA enabled.");
             }
 
-            var model = new RecoveryCodesModel();
+            var model = new RecoveryCodesModel
+            {
+                RecoveryCodes = (string[])TempData["RecoveryCodes"]
+            };
+
             return View(model);
         }
 
@@ -449,7 +447,7 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> RecoveryCodes(RecoveryCodesModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -465,12 +463,31 @@ namespace Soapbox.Web.Controllers
             model.RecoveryCodes = recoveryCodes.ToArray();
 
             _logger.LogInformation($"User with ID '{userId}' has generated new 2FA recovery codes.");
+
             StatusMessage = "You have generated new recovery codes.";
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new ChangePasswordModel
+            {
+                HasPassword = await _userManager.HasPasswordAsync(user)
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -478,7 +495,7 @@ namespace Soapbox.Web.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -512,17 +529,18 @@ namespace Soapbox.Web.Controllers
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your password has been set.";
 
-            return View(model);
+            await _signInManager.RefreshSignInAsync(user);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> EnableAuthenticator()
+        public async Task<IActionResult> AddAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -534,10 +552,10 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorModel model)
+        public async Task<IActionResult> AddAuthenticator(EnableAuthenticatorModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
@@ -548,8 +566,7 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
-            // Strip spaces and hypens
-            var verificationCode = model.Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
             var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
             if (!is2faTokenValid)
@@ -568,12 +585,14 @@ namespace Soapbox.Web.Controllers
             if (await _userManager.CountRecoveryCodesAsync(user) == 0)
             {
                 var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-                model.RecoveryCodes = recoveryCodes.ToArray();
-                return RedirectToAction(nameof(recoveryCodes));
+
+                TempData.Add("RecoveryCodes", recoveryCodes.ToArray());
+
+                return RedirectToAction(nameof(RecoveryCodes));
             }
             else
             {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -599,7 +618,7 @@ namespace Soapbox.Web.Controllers
             var currentPosition = 0;
             while (currentPosition + 4 < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(' ');
+                result.Append(unformattedKey.AsSpan(currentPosition, 4)).Append(' ');
                 currentPosition += 4;
             }
             if (currentPosition < unformattedKey.Length)
@@ -616,7 +635,7 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ResetAuthenticator()
+        public async Task<IActionResult> RemoveAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -627,8 +646,8 @@ namespace Soapbox.Web.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("ResetAuthenticator")]
-        public async Task<IActionResult> ResetAuthenticator_Post()
+        [HttpPost, ActionName("RemoveAuthenticator")]
+        public async Task<IActionResult> RemoveAuthenticator_Post()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -637,78 +656,40 @@ namespace Soapbox.Web.Controllers
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, false);
-            await _userManager.ResetAuthenticatorKeyAsync(user);
+
+            await _userManager.RemoveAuthenticationTokenAsync(user, "[AspNetUserStore]", "AuthenticatorKey");
+            await _userManager.RemoveAuthenticationTokenAsync(user, "[AspNetUserStore]", "RecoveryCodes");
+
             _logger.LogInformation($"User with ID '{user.Id}' has reset their authentication app key.");
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.";
+
+            StatusMessage = "Your authenticator app key has been reset.";
 
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ExternalLogins()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID 'user.Id'.");
-            }
-
-            var currentLogins = await _userManager.GetLoginsAsync(user);
-            var model = new ExternalLoginsModel
-            {
-                CurrentLogins = currentLogins,
-                OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
-                .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
-                .ToList(),
-                ShowRemoveButton = user.PasswordHash != null || currentLogins.Count > 1
-            };
-            return View(model);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> RemoveExternalLogin(string loginProvider, string providerKey)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID 'user.Id'.");
-            }
-
-            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
-            if (!result.Succeeded)
-            {
-                StatusMessage = "The external login was not removed.";
-                return RedirectToAction(nameof(ExternalLogins));
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "The external login was removed.";
-            return RedirectToAction(nameof(ExternalLogins));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddExternalLogin(string provider)
+        public async Task<IActionResult> AddLogin(string provider)
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            var redirectUrl = Url.Action(nameof(AddExternalLoginCallback));
+            var redirectUrl = Url.Action(nameof(AddLoginCallback));
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return new ChallengeResult(provider, properties);
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddExternalLoginCallback()
+        public async Task<IActionResult> AddLoginCallback()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync(user.Id);
-            if (info == null)
+            if (info is null)
             {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
             }
@@ -717,13 +698,34 @@ namespace Soapbox.Web.Controllers
             if (!result.Succeeded)
             {
                 StatusMessage = "The external login was not added. External logins can only be associated with one account.";
-                return RedirectToAction(nameof(ExternalLogins));
+                return RedirectToAction(nameof(Index));
             }
 
             await ClearExternalCookie();
 
             StatusMessage = "The external login was added.";
-            return RedirectToAction(nameof(ExternalLogins));
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveLogin([FromForm] string loginProvider, [FromForm] string providerKey)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return NotFound($"Unable to load user with ID '{user.Id}'.");
+            }
+
+            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "The external login was not removed.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "The external login was removed.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

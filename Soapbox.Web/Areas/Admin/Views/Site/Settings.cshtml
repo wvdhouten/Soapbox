@@ -1,12 +1,12 @@
 @model             SiteSettings
 @{
-  ViewData[Constants.Title] = "Site Configuration";
+    ViewData[Constants.Title] = "Site configuration";
 }
 
 <div class="container content">
   <form class="horizontal-form" asp-area="Admin" asp-controller="Site" asp-action="Settings" method="post">
     <header>
-      <h2>Site Configuration</h2>
+      <h2>@ViewData[Constants.Title]</h2>
     </header>
 
     <div asp-validation-summary="ModelOnly"></div>

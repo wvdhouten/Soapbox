@@ -1,23 +1,27 @@
 a {
-  color: var(--accent1-500, #f8f9fa);
-  fill: var(--accent1-500, #f8f9fa);
+  color: var(--accent1-light, #f8f9fa);
+  fill: var(--accent1-light, #f8f9fa);
   text-decoration: none;
   transition: all 150ms ease;
   transition-property: color;
 }
 
 a:hover {
-  color: var(--accent1-700, #f8f9fa);
-  fill: var(--accent1-700, #f8f9fa);
+  color: var(--accent1-medium, #f8f9fa);
+  fill: var(--accent1-medium, #f8f9fa);
   text-decoration: none;
 }
 
 a:active {
-  color: var(--accent1-800, #f8f9fa);
-  fill: var(--accent1-800, #f8f9fa);
+  color: var(--accent1-dark, #f8f9fa);
+  fill: var(--accent1-dark, #f8f9fa);
   text-decoration: none;
 }
 
 a:focus {
   outline-width: 4px;
+}
+
+a[disabled] {
+  pointer-events: none;
 }

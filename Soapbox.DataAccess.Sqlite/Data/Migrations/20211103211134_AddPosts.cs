@@ -1,8 +1,8 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace Soapbox.Web.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class AddPosts : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace Soapbox.Web.Migrations
                     Content = table.Column<string>(type: "TEXT", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    PublishedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    PublishedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

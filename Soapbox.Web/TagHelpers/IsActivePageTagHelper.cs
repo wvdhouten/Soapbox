@@ -8,7 +8,7 @@ namespace Soapbox.Web.TagHelpers
     using Microsoft.AspNetCore.Razor.TagHelpers;
 
     [HtmlTargetElement(Attributes = IsActiveRouteAttributeName)]
-    public class PageActiveTagHelper : TagHelper
+    public class IsActivePageTagHelper : TagHelper
     {
         private const string IsActiveRouteAttributeName = "is-active-page";
         private IDictionary<string, string> _routeValues;

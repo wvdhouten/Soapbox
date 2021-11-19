@@ -1,20 +1,20 @@
-@model IEnumerable<SoapboxUser>;
+@model IPagedList<SoapboxUser>;
 @{
-  ViewData[Constants.Title] = "Users";
+    ViewData[Constants.Title] = "Users";
 }
 
 <div class="container content">
   <header class="has-actions">
-    <h1>Users</h1>
+    <h1>@ViewData[Constants.Title]</h1>
     <div>
-      <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
+      <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>
   </header>
 
-  <table>
+  <table class="data-grid">
     <thead>
       <tr>
-        <th>Username</th>
+        <th width="99%">Username</th>
         <th>Name</th>
         <th>Email</th>
         <th>Role</th>
@@ -22,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach (var user in Model)
+      @foreach (var user in Model.Items)
       {
         <tr>
           <td><a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id">@user.UserName</a></td>
@@ -31,11 +31,12 @@
           <td>@user.Role</td>
           <td>
             <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post">
-              <button type="submit">Delete</button>
+              <button type="submit" class="small"><i class="fa fa-trash"></i></button>
             </form>
           </td>
         </tr>
       }
     </tbody>
   </table>
+  <partial name="../Shared/_Paging.cshtml" model="Model" />
 </div>

@@ -13,7 +13,7 @@
   <ul>
     @foreach (var post in Model.Posts)
     {
-      <li>@post.PublishedOn.Value.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></li>
+      <li>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></li>
     }
   </ul>
 </div>

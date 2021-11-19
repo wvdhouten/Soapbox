@@ -2,6 +2,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System.Threading;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Settings;
@@ -13,16 +14,19 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     public class SiteController : Controller
     {
         private readonly ConfigFileService _configFileService;
+        private readonly ILogger<SiteController> _logger;
 
-        public SiteController()
+        public SiteController(ConfigFileService configFileService, ILogger<SiteController> logger)
         {
-            // TODO: Dependency Injection
-            _configFileService = new ConfigFileService();
+            _configFileService = configFileService;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult Settings([FromServices] IOptionsSnapshot<SiteSettings> config)
         {
+            _logger.Log(LogLevel.Trace, "Loading site settings.");
+
             return View(config.Value);
         }
 
@@ -34,12 +38,15 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(settings);
             }
 
-            _configFileService.SaveToFile(settings, "site.json");
+            _logger.Log(LogLevel.Trace, "Updating site settings.");
 
-            // Wait for the settings to be written before redirecting.
+            // The redirect would happen before the file is fully updated, hence sleep.
+            _configFileService.SaveToFile(settings, "site.json");
             Thread.Sleep(250);
 
-            return RedirectToAction("Settings");
+            _logger.Log(LogLevel.Information, "Site settings updated.");
+
+            return RedirectToAction(nameof(Settings));
         }
     }
 }

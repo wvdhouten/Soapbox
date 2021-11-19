@@ -22,13 +22,13 @@ namespace Soapbox.Web.Controllers
         [HttpGet("{page:int?}")]
         public async Task<IActionResult> Index(int page = 0)
         {
-            var posts = await _blogService.GetPostsAsync(5, page);
+            var posts = await _blogService.GetPostsPageAsync(page, 5);
 
             ViewData[Constants.Title] = "Blog";
 
             return View(posts);
         }
-        
+
         [HttpGet("{slug}")]
         public async Task<IActionResult> Post(string slug)
         {
@@ -111,10 +111,10 @@ namespace Soapbox.Web.Controllers
                 model.Days.Add(startOfCalendar.AddDays(day).Date, new Collection<Post>());
             }
 
-            var posts = await _blogService.GetPostsAsync(post => post.PublishedOn.HasValue && post.PublishedOn.Value.Year == currentMonth.Year && post.PublishedOn.Value.Month == currentMonth.Month);
+            var posts = await _blogService.GetPostsAsync(post => post.PublishedOn.Year == currentMonth.Year && post.PublishedOn.Month == currentMonth.Month);
             await foreach (var post in posts)
             {
-                model.Days[post.PublishedOn.Value.Date].Add(post);
+                model.Days[post.PublishedOn.Date].Add(post);
             }
 
             return model;

@@ -5,7 +5,9 @@ namespace Soapbox.Web.Areas.Admin.Models.Posts
 
     public class PostViewModel : Post
     {
-        public IList<PostCategoryViewModel> AllCategories { get; set; } = new List<PostCategoryViewModel>();
+        public IList<SelectableCategoryViewModel> AllCategories { get; set; } = new List<SelectableCategoryViewModel>();
+
+        public bool GenerateSlugFromTitle { get; set; }
 
         public string NewCategory { get; set; }
     }

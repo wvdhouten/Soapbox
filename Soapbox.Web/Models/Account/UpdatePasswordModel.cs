@@ -2,7 +2,7 @@ namespace Soapbox.Web.Models.Account
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class UpdatePasswordModel
+    public class ChangePasswordModel
     {
         public bool HasPassword { get; set; }
 

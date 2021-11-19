@@ -1,6 +1,7 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -12,6 +13,15 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.Web.Areas.Admin.Models.Posts;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
+
+    public class PagingOptions
+    {
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }
+
+        public string OrderBy { get; set; }
+    }
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author, UserRole.Contributor)]
@@ -29,19 +39,21 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 25)
         {
-            var posts = await _blogService.GetAllPostsAsync();
+            var model = await _blogService.GetPostsPageAsync(page, pageSize);
 
-            return View(posts);
+            return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            var categories = await _blogService.GetAllCategoriesAsync();
             var model = new PostViewModel
             {
-                AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category => _mapper.Map<PostCategoryViewModel>(category)).ToListAsync()
+                AllCategories = await categories.Select(c => _mapper.Map<SelectableCategoryViewModel>(c)).ToListAsync(),
+                GenerateSlugFromTitle = true
             };
 
             return View(model);
@@ -61,16 +73,10 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             post.Author = new SoapboxUser { Id = User.GetUserId() };
-            foreach (var category in post.AllCategories.Where(c => c.Checked))
-            {
-                if (category.Id == default)
-                {
-                    category.Slug = CreateSlug(category.Name);
-                }
-                post.Categories.Add(category);
-            }
+            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
+            SetSelectedCategories(post);
 
-            await _blogService.CreateOrUpdatePostAsync(post);
+            await _blogService.CreatePostAsync(post);
 
             return RedirectToAction(nameof(Index));
         }
@@ -85,12 +91,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             var model = _mapper.Map<PostViewModel>(post);
-
+            model.GenerateSlugFromTitle = post.Slug == CreateSlug(post.Title);
             model.AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category =>
             {
-                return _mapper.Map<PostCategory, PostCategoryViewModel>(category, opts =>
+                return _mapper.Map<PostCategory, SelectableCategoryViewModel>(category, opts =>
                 {
-                    opts.AfterMap((source, destination) => { destination.Checked = post.Categories.Any(c => destination.Id == c.Id); });
+                    opts.AfterMap((source, destination) => { destination.Selected = post.Categories.Any(c => destination.Id == c.Id); });
                 });
             }).ToListAsync();
 
@@ -110,17 +116,10 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
-            foreach (var category in post.AllCategories.Where(c => c.Checked))
-            {
-                if (category.Id == default)
-                {
-                    category.Slug = CreateSlug(category.Name);
-                }
+            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
+            SetSelectedCategories(post);
 
-                post.Categories.Add(category);
-            }
-
-            await _blogService.CreateOrUpdatePostAsync(post);
+            await _blogService.UpdatePostAsync(post);
 
             return RedirectToAction(nameof(Edit), new { id = post.Id });
         }
@@ -149,16 +148,10 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var categoryName = model.NewCategory.Trim();
-            var newCategory = new PostCategoryViewModel
-            {
-                Name = categoryName,
-                Checked = true
-            };
-
+            var newCategory = new SelectableCategoryViewModel { Name = model.NewCategory.Trim(), Selected = true };
             if (model.AllCategories.Any(c => c.Name == newCategory.Name))
             {
-                ModelState.AddModelError(nameof(model.NewCategory), $"The category \"{model.NewCategory}\" already exists");
+                ModelState.AddModelError(nameof(model.NewCategory), $"The category '{model.NewCategory}' already exists");
             }
             else
             {
@@ -170,9 +163,21 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             return View(model);
         }
 
+        private static void SetSelectedCategories(PostViewModel post)
+        {
+            foreach (var category in post.AllCategories.Where(c => c.Selected))
+            {
+                if (category.Id == default)
+                {
+                    category.Slug = CreateSlug(category.Name);
+                }
+                post.Categories.Add(category);
+            }
+        }
+
         private static string CreateSlug(string title)
         {
-            title = title?.ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
+            title = title?.Trim().ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
             title = title.RemoveDiacritics();
             title = title.RemoveReservedUrlCharacters();
 

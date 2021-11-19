@@ -1,0 +1,31 @@
+@model Soapbox.Web.Areas.Admin.Models.Categories.PostCategoryViewModel
+@{
+    ViewData[Constants.Title] = "Edit category";
+}
+
+<div class="container content">
+  <form method="post" autocomplete="off">
+    <header>
+      <h2>@ViewData[Constants.Title]</h2>
+    </header>
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group horizontal">
+      <label asp-for="Name"></label>
+      <input asp-for="Name" />
+    </div>
+    <div class="form-group horizontal">
+      <div class="label">
+        <label asp-for="Slug"></label>
+      </div>
+      <div class="input-group">
+        <input asp-for="Slug" />
+        <div class="input-addon">
+          <input asp-for="GenerateSlugFromName" />
+          <label asp-for="GenerateSlugFromName">Generate from name</label>
+        </div>
+      </div>
+    </div>
+    <button type="submit">Save</button>
+  </form>
+</div>

@@ -31,4 +31,8 @@ table {
       }
     }
   }
+
+  &.data-grid td {
+    white-space: nowrap;
+  }
 }

@@ -19,6 +19,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            _logger.LogTrace("Redirecting to post administration.");
+
             return RedirectToAction("Index", "Posts");
         }
     }

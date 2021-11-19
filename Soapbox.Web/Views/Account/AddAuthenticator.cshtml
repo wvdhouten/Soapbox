@@ -1,6 +1,6 @@
 @model Models.Account.EnableAuthenticatorModel
 @{
-  ViewData["Title"] = "Configure authenticator app";
+    ViewData[Constants.Title] = "Configure authenticator app";
 }
 
 <style>
@@ -21,9 +21,12 @@
 
 <div class="card">
   <header class="centered">
-    <h1>@ViewData["Title"]</h1>
+    <h1>@ViewData[Constants.Title]</h1>
   </header>
-  <div>
+
+  <div class="separator"></div>
+
+  <section>
     <p>Download a 2FA app:</p>
     <div>Microsoft Authenticator (<a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> / <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a>)</div>
     <div>Google Authenticator (<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> / <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>)</div>
@@ -32,15 +35,18 @@
     <div id="qrCodeData" data-url="@Html.Raw(@Model.AuthenticatorUri)"></div>
     <kbd>@Model.SharedKey</kbd>
     <p>Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below.</p>
-    <form id="send-code" method="post">
+    <form id="verify" method="post">
       <div class="form-group">
-        <label asp-for="Input.Code">Verification Code</label>
-        <input asp-for="Input.Code" autocomplete="off" />
-        <span asp-validation-for="Input.Code" class="text-danger"></span>
+        <label asp-for="Code">Verification Code</label>
+        <input asp-for="Code" autocomplete="off" />
       </div>
-      <button type="submit">Verify</button>
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div asp-validation-summary="All"></div>
     </form>
+  </section>
+
+  <div class="actions centered">
+    <button form="verify" type="submit" class="large">Verify</button>
+    <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
   </div>
 </div>
 

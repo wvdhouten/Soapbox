@@ -17,7 +17,7 @@ namespace Soapbox.Web.TagHelpers
     }
 
     [HtmlTargetElement(Attributes = IsActiveRouteAttributeName)]
-    public class ControllerActiveTagHelper : TagHelper
+    public class IsActiveRouteTagHelper : TagHelper
     {
         private const string IsActiveRouteAttributeName = "is-active-route";
         private ActiveRoutePrecision _precision;
@@ -58,22 +58,14 @@ namespace Soapbox.Web.TagHelpers
         public ActiveRoutePrecision Precision
         {
             get => _precision;
-            set
+            set => _precision = value switch
             {
-                switch (value)
-                {
-                    case ActiveRoutePrecision.All:
-                    case ActiveRoutePrecision.Action:
-                    case ActiveRoutePrecision.Controller:
-                    case ActiveRoutePrecision.Area:
-                        _precision = value;
-                        break;
-
-                    default:
-                        //throw new ArgumentException(message: Resources.FormatInvalidEnumArgument(nameof(value), value, typeof(ValidationSummary).FullName), paramName: nameof(value));
-                        throw new Exception();
-                }
-            }
+                ActiveRoutePrecision.All
+                or ActiveRoutePrecision.Action
+                or ActiveRoutePrecision.Controller
+                or ActiveRoutePrecision.Area => value,
+                _ => throw new Exception(),
+            };
         }
 
         [HtmlAttributeNotBound]
@@ -94,7 +86,7 @@ namespace Soapbox.Web.TagHelpers
 
         private bool ShouldBeActive()
         {
-            var currentArea = ViewContext.RouteData.Values["Area"].ToString();
+            var currentArea = ViewContext.RouteData.Values["Area"]?.ToString() ?? string.Empty;
             var currentController = ViewContext.RouteData.Values["Controller"].ToString();
             var currentAction = ViewContext.RouteData.Values["Action"].ToString();
 
@@ -140,7 +132,7 @@ namespace Soapbox.Web.TagHelpers
             return true;
         }
 
-        private void MakeActive(TagHelperOutput output)
+        private static void MakeActive(TagHelperOutput output)
         {
             var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
             if (classAttr == null)

@@ -1,0 +1,13 @@
+@{
+  var message = (string)TempData["StatusMessage"];
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+  <section class="container centered">
+    <p class="alert" role="alert">
+      <i class="fa fa-info-circle"></i>
+      @message
+    </p>
+  </section>
+}

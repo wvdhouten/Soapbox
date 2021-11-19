@@ -1,3 +1,4 @@
+@using Identity.Extensions
 @model Post
 @inject Soapbox.Core.Markdown.IMarkdownParser Parser
 @{
@@ -8,21 +9,46 @@
     : Model.Content;
 }
 
+<style>
+  .tag-list {
+    display: inline-flex;
+  }
+
+  .tag + *.tag::before {
+    display: inline-block;
+    content: "|";
+    margin: 0 6px;
+  }
+</style>
+
 <article class="post excerpt">
   <header>
-    <div class="container">
+    <div class="container relative">
       <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
+      @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
+      {
+        <div class="quick-actions">
+        <a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="top-right"><i class="fa fa-edit"></i></a>
+        </div>
+      }
     </div>
   </header>
   <section class="sub-header">
     <div class="container">
-      <time datetime="@((Model.PublishedOn??Model.ModifiedOn).ToString("s"))">@((Model.PublishedOn??Model.ModifiedOn).ToString("MMM d, yyyy"))</time>
-      <div>
-        @foreach (var category in Model.Categories)
+      <span><i class="fa fa-calendar"></i> <time datetime="@Model.PublishedOn.ToString("s")">@Model.PublishedOn.ToString("MMM d, yyyy")</time></span>
+      <span>
+        <i class="fa fa-user-circle"></i>
+        <a asp-area="" asp-controller="Blog" asp-action="Author" asp-route-id="@Model.Author.Id">@(!string.IsNullOrEmpty(Model.Author.DisplayName) ? Model.Author.DisplayName : Model.Author.UserName)</a>
+      </span>
+      <span>
+        <span><i class="fa fa-tags"></i></span>
+        <span class="tag-list">
+        @foreach(var category in Model.Categories)
         {
-          <a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a>
+          <span class="tag"><a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a></span>
         }
-      </div>
+        </span>
+      </span>
     </div>
   </section>
   <section>

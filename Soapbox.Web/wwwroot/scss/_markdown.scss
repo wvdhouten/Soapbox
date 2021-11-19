@@ -13,16 +13,52 @@
     HTML: ???
 */
 
-.markdown-body {
+@media (prefers-color-scheme: dark) {
+  .markdown-body {
+    --markdown-font: inherit;
+    --markdown-monospace-font: inherit;
+    --md-color-subtle: hsla(220, 30%, 90%);
+    --md-background-subtle: #191919;
+    --md-border-subtle: hsla(220, 30%, 60%);
+    --md-code-background: hsl(0, 0%, 12%);
+    --md-code-border: hsl(0, 0%, 12%);
+  }
+}
+
+body.dark .markdown-body {
   --markdown-font: inherit;
   --markdown-monospace-font: inherit;
   --md-color-subtle: hsla(220, 30%, 90%);
-  --md-background-subtle: hsl(0, 0%, 12%);
+  --md-background-subtle: #191919;
   --md-border-subtle: hsla(220, 30%, 60%);
   --md-code-background: hsl(0, 0%, 12%);
   --md-code-border: hsl(0, 0%, 12%);
-  /* DEFAULT VALUES */
+}
 
+@media (prefers-color-scheme: light) {
+  .markdown-body {
+    --markdown-font: inherit;
+    --markdown-monospace-font: inherit;
+    --md-color-subtle: hsla(220, 30%, 90%);
+    --md-background-subtle: #e6e6e6;
+    --md-border-subtle: hsla(220, 30%, 60%);
+    --md-code-background: hsl(0, 0%, 12%);
+    --md-code-border: hsl(0, 0%, 12%);
+  }
+}
+
+body.light .markdown-body {
+  --markdown-font: inherit;
+  --markdown-monospace-font: inherit;
+  --md-color-subtle: hsla(220, 30%, 90%);
+  --md-background-subtle: #e6e6e6;
+  --md-border-subtle: hsla(220, 30%, 60%);
+  --md-code-background: hsl(0, 0%, 12%);
+  --md-code-border: hsl(0, 0%, 12%);
+}
+
+.markdown-body {
+  /* DEFAULT VALUES */
   h1, h2, h3, h4, h5, h6, p, hr,
   table, ul, ol, blockquote, pre {
     margin-top: 0;
@@ -39,7 +75,6 @@
     margin-bottom: 0;
   }
   /* TEXT BLOCKS */
-
   h1, h2, h3, h4, h5, h6 {
     margin-top: 1.25em;
     margin-bottom: 1em;
@@ -81,7 +116,6 @@
     margin-bottom: .75rem;
   }
   /* TEXT FORMATTING */
-
   strong, b {
     font-weight: 700;
   }
@@ -94,13 +128,11 @@
     text-decoration: line-through;
   }
   /* IMAGES */
-
   img {
     max-width: 100%;
     border-style: none;
   }
   /* HORIZONTAL RULES */
-
   hr {
     height: 0;
     border: 0;
@@ -108,7 +140,6 @@
     overflow: visible;
   }
   /* LISTS */
-
   ul, ol {
     padding-left: 2em;
     margin-top: 0;
@@ -132,7 +163,6 @@
     }
   }
   /* TABLES */
-
   table {
     border-spacing: 0;
     border-collapse: collapse;
@@ -170,10 +200,8 @@
     }
   }
   /* BLOCKQUOTE */
-
   blockquote {
     padding: .5em 1em;
-    color: var(--md-color-subtle);
     background: var(--md-background-subtle);
     border-left: .25em solid var(--md-border-subtle);
 
@@ -186,7 +214,6 @@
     }
   }
   /* CODE */
-
   code, tt {
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
     padding: .2em .4em;

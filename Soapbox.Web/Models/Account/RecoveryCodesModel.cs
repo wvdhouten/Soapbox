@@ -4,7 +4,6 @@ namespace Soapbox.Web.Models.Account
 
     public class RecoveryCodesModel
     {
-        [TempData]
         public string[] RecoveryCodes { get; set; }
     }
 }

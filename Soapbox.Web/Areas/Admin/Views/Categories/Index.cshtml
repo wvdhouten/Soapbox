@@ -1,0 +1,40 @@
+@model IPagedList<PostCategory>;
+@{
+    ViewData[Constants.Title] = "Categories";
+}
+
+<section class="container content">
+  <header class="has-actions">
+    <h1>@ViewData[Constants.Title]</h1>
+    <div>
+      <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    </div>
+  </header>
+
+  <table class="data-grid">
+    <thead>
+      <tr>
+        <th width="99%">Name</th>
+        <th>Slug</th>
+        <th>Posts</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var category in Model.Items)
+      {
+        <tr>
+          <td><a asp-area="Admin" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">@category.Name</a></td>
+          <td>@category.Slug</td>
+          <td>@category.Posts.Count</td>
+          <td>
+            <form asp-area="Admin" asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post">
+              <button type="submit" class="small"><i class="fa fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <partial name="../Shared/_Paging.cshtml" model="Model" />
+</section>
