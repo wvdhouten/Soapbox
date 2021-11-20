@@ -92,3 +92,81 @@
     }
   }
 }
+
+.tag-cloud {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--text-subtle-color);
+
+  .tag {
+    &::before {
+      display: inline-block;
+      content: "•";
+      margin: 0 6px;
+    }
+  }
+}
+
+.item-list {
+  color: var(--text-subtle-color);
+
+  > * {
+    &::before {
+      display: inline-block;
+      content: "•";
+      margin: 0 6px;
+    }
+  }
+}
+
+.calendar-navigation {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+
+  .title {
+    flex-grow: 1;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+.calendar-view {
+  table-layout: fixed;
+
+  td {
+    height: 100px;
+    vertical-align: top;
+    padding-left: 0;
+    padding-right: 0;
+
+    &.outside {
+      color: var(--text-subtle-color);
+      background: var(--background-raised-color);
+    }
+
+    > * {
+      padding-left: .7em;
+      padding-right: .7em;
+    }
+
+    > header {
+      &.today {
+        background: var(--accent1-medium);
+        color: var(--accent1-contrast);
+      }
+
+      > .month {
+        opacity: .5;
+      }
+    }
+
+    .entries {
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      > a {
+        white-space: nowrap;
+      }
+    }
+  }
+}

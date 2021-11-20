@@ -10,42 +10,13 @@
   var today = DateTime.UtcNow;
 }
 
-<style>
-  #month-view {
-    table-layout: fixed;
-  }
-
-    #month-view td > header > span {
-      opacity: .5;
-    }
-
-    #month-view td {
-      height: 100px;
-      vertical-align: top;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-      #month-view td > * {
-        padding-left: .7em;
-        padding-right: .7em;
-      }
-
-      #month-view td.outside {
-        background: hsla(0, 0%, 100%, .1);
-      }
-
-      #month-view td header.today {
-        background: var(--accent1-medium);
-      }
-</style>
-<div class="container">
-  <div>
-    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month"><<</a>
-    <span>@Model.CurrentMonth.ToString("MMMM yyyy")</span>
-    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month">>></a>
+<div class="container content">
+  <div class="calendar-navigation">
+    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month"><i class="fa fa-angle-double-left"></i> @prevMonth.ToString("MMM yyyy")</a>
+    <span class="title">@Model.CurrentMonth.ToString("MMMM yyyy")</span>
+    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month">@nextMonth.ToString("MMM yyyy") <i class="fa fa-angle-double-right"></i></a>
   </div>
-  <table id="month-view">
+  <table class="calendar-view">
     <thead>
       <tr>
         <th>Mon</th>
@@ -71,14 +42,14 @@
             <header class="@todayClass">
               @day.Key.Day
               @if (day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date)
-              {<span>@day.Key.ToString("MMM")</span>}
+              {<span class="month">@day.Key.ToString("MMM")</span>}
             </header>
-            <section>
+            <section class="entries">
               @if (day.Value != null && day.Value.Any())
               {
                 foreach (var post in day.Value)
                 {
-                  <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a>
+                  <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" title="@post.Title">@post.Title this is a bit longer than usual.</a>
                 }
               }
             </section>

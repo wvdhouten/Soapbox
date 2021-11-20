@@ -3,17 +3,17 @@
   ViewData["Title"] = $"Category: {Model.Name}";
 }
 
-<header>
-  <div class="container">
-    <h1>Category: @Model.Name</h1>
-  </div>
-</header>
+<div class="container content">
+  <header>
+    <h1>@Model.Name (@Model.Posts.Count)</h1>
+  </header>
 
-<div class="container">
-  <ul>
-    @foreach (var post in Model.Posts)
-    {
-      <li>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></li>
-    }
-  </ul>
+  <section>
+    <div class="item-list">
+      @foreach (var post in Model.Posts)
+      {
+        <div>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></div>
+      }
+    </div>
+  </section>
 </div>

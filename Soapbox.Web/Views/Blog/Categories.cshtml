@@ -1,32 +1,30 @@
 @model IAsyncEnumerable<PostCategory>
 @{
-  ViewData["Title"] = $"Categories";
+    ViewData["Title"] = $"Categories";
 }
 
-<header>
-  <div class="container">
+<div class="container content">
+  <header>
     <h1>Categories</h1>
-  </div>
-</header>
-<div class="container">
-  <ul>
+  </header>
+
+  <section class="tag-cloud">
     @await foreach (var category in Model)
     {
-      <li><a href="#@category.Slug">@category.Name</a></li>
+        <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
     }
-  </ul>
+  </section>
+
+  @await foreach (var category in Model)
+  {
+    <section>
+      <h2 id="@category.Slug"><a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a> (@category.Posts.Count)</h2>
+      <div class="item-list">
+        @foreach (var post in category.Posts)
+        {
+          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></div>
+        }
+      </div>
+    </section>
+  }
 </div>
-
-@await foreach (var category in Model)
-{
-  <div class="container">
-    <h2 id="@category.Slug">@category.Name</h2>
-
-    <ul>
-      @foreach (var post in category.Posts)
-      {
-        <li>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></li>
-      }
-    </ul>
-  </div>
-}

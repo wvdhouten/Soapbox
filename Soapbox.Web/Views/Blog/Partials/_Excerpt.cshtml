@@ -6,11 +6,11 @@
 }
 
 <article class="post excerpt">
-  <partial name="_PostHeader" model="Model"></partial>
+  <partial name="Partials/_PostHeader" model="Model"></partial>
   <section class="body">
     <div class="container markdown-content">
       @Html.Raw(Parser.Parse(content))
     </div>
   </section>
-<partial name="_PostFooter" model="Model"></partial>
+<partial name="Partials/_PostFooter" model="Model"></partial>
 </article>
