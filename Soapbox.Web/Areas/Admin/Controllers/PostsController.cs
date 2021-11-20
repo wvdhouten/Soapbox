@@ -41,7 +41,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 25)
         {
-            var model = await _blogService.GetPostsPageAsync(page, pageSize);
+            var model = await _blogService.GetPostsPageAsync(page, pageSize, false);
 
             return View(model);
         }

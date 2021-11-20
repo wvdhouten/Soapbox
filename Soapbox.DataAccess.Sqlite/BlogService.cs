@@ -20,9 +20,17 @@ namespace Soapbox.DataAccess.Sqlite
             _context = context;
         }
 
-        public Task<IPagedList<Post>> GetPostsPageAsync(int page, int pageSize)
+        public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool published = true)
         {
-            IQueryable<Post> posts = _context.Posts.Include(p => p.Author).Include(p => p.Categories);
+            IQueryable<Post> posts = _context.Posts;
+
+            if (published)
+            {
+                var now = DateTime.UtcNow;
+                posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);
+            }
+
+            posts = posts.Include(p => p.Author).Include(p => p.Categories);
             posts = posts.OrderByDescending(post => EF.Property<Post>(post, nameof(post.PublishedOn)));
             return Task.FromResult(posts.GetPaged(page, pageSize));
         }
