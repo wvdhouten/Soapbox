@@ -20,11 +20,11 @@ namespace Soapbox.DataAccess.Sqlite
             _context = context;
         }
 
-        public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool published = true)
+        public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true)
         {
             IQueryable<Post> posts = _context.Posts;
 
-            if (published)
+            if (isPublished)
             {
                 var now = DateTime.UtcNow;
                 posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);

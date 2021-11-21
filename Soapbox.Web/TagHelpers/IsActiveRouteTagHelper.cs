@@ -20,7 +20,6 @@ namespace Soapbox.Web.TagHelpers
     public class IsActiveRouteTagHelper : TagHelper
     {
         private const string IsActiveRouteAttributeName = "is-active-route";
-        private ActiveRoutePrecision _precision;
         private IDictionary<string, string> _routeValues;
 
         /// <summary>The name of the action method.</summary>
@@ -55,18 +54,7 @@ namespace Soapbox.Web.TagHelpers
         }
 
         [HtmlAttributeName(IsActiveRouteAttributeName)]
-        public ActiveRoutePrecision Precision
-        {
-            get => _precision;
-            set => _precision = value switch
-            {
-                ActiveRoutePrecision.All
-                or ActiveRoutePrecision.Action
-                or ActiveRoutePrecision.Controller
-                or ActiveRoutePrecision.Area => value,
-                _ => throw new Exception(),
-            };
-        }
+        public ActiveRoutePrecision Precision { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -86,65 +74,42 @@ namespace Soapbox.Web.TagHelpers
 
         private bool ShouldBeActive()
         {
+            var desiredArea = Area ?? string.Empty;
             var currentArea = ViewContext.RouteData.Values["Area"]?.ToString() ?? string.Empty;
+            var desiredController = Controller ?? string.Empty;
             var currentController = ViewContext.RouteData.Values["Controller"].ToString();
+            var desiredAction = Action ?? string.Empty;
             var currentAction = ViewContext.RouteData.Values["Action"].ToString();
 
-            if (!string.IsNullOrWhiteSpace(Area) && Area.ToLower() != currentArea.ToLower())
+            // TODO: Add Route values.
+            return Precision switch
             {
-                return false;
-            }
-
-            if (Precision == ActiveRoutePrecision.Area)
-            {
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
-            {
-                return false;
-            }
-
-            if (Precision == ActiveRoutePrecision.Controller)
-            {
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
-            {
-                return false;
-            }
-
-            if (Precision == ActiveRoutePrecision.Action)
-            {
-                return true;
-            }
-
-            foreach (var routeValue in RouteValues)
-            {
-                if (!ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
-                    ViewContext.RouteData.Values[routeValue.Key].ToString() != routeValue.Value)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+                ActiveRoutePrecision.Area => currentArea == desiredArea,
+                ActiveRoutePrecision.Controller => currentArea == desiredArea
+                    && currentController == desiredController,
+                ActiveRoutePrecision.Action => currentArea == desiredArea
+                    && currentController == desiredController
+                    && currentAction == desiredAction,
+                ActiveRoutePrecision.All
+                or _ => currentArea == desiredArea
+                    && currentController == desiredController
+                    && currentAction == desiredAction,
+            };
         }
 
         private static void MakeActive(TagHelperOutput output)
         {
-            var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
-            if (classAttr == null)
+            var classAttribute = output.Attributes.FirstOrDefault(a => a.Name == "class");
+            if (classAttribute == null)
             {
-                classAttr = new TagHelperAttribute("class", "active");
-                output.Attributes.Add(classAttr);
+                classAttribute = new TagHelperAttribute("class", "active");
+                output.Attributes.Add(classAttribute);
             }
-            else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
+            else if (classAttribute.Value == null || classAttribute.Value.ToString().IndexOf("active") < 0)
             {
-                output.Attributes.SetAttribute("class", classAttr.Value == null
+                output.Attributes.SetAttribute("class", classAttribute.Value == null
                     ? "active"
-                    : classAttr.Value.ToString() + " active");
+                    : classAttribute.Value.ToString() + " active");
             }
         }
     }

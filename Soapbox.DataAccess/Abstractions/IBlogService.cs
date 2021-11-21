@@ -8,7 +8,7 @@ namespace Soapbox.DataAccess.Abstractions
 
     public interface IBlogService
     {
-        Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool published = true);
+        Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true);
 
         Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
