@@ -1,14 +1,19 @@
 namespace Soapbox.Web
 {
+    using System;
+    using System.IO;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Google;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Net.Http.Headers;
     using Soapbox.Core.Email;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Markdown;
@@ -36,6 +41,8 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHealthChecks().AddCheck<SoapboxHealthChecks>("soapbox");
+
             services.AddAutoMapper(typeof(Startup));
             services.AddSqlite(Configuration, HostEnvironment);
 
@@ -111,6 +118,19 @@ namespace Soapbox.Web
             app.UseStaticFiles();
             app.UseHttpsRedirection();
 
+            static void CacheControlPrepareResponse(StaticFileResponseContext ctx)
+            {
+                ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + 60 * 60 * 24;
+                ctx.Context.Response.Headers["Expires"] = DateTime.UtcNow.AddHours(12).ToString("R");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName),
+                RequestPath = "/Content/Files",
+                OnPrepareResponse = CacheControlPrepareResponse
+            });
+
             app.UseMetaWeblog("/livewriter");
             app.UseRouting();
 
@@ -120,7 +140,7 @@ namespace Soapbox.Web
             app.UseEndpoints(endpoints =>
             {
                 // TODO: Add NotFound
-                // TODO: Add HealthCheck
+                endpoints.MapHealthChecks("/Health");
 
                 endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");

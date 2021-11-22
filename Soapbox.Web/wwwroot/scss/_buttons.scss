@@ -34,6 +34,7 @@ a.button {
 
   &.outline {
     background: transparent;
+    color: var(--text-color);
     border-width: 2px;
 
     &:hover {

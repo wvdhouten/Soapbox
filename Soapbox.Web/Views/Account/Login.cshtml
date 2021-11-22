@@ -13,14 +13,11 @@
   }
 
     #external-account button {
-      width: 30px;
-      height: 30px;
-      background-color: var(--text-color);
-      mask-size: cover;
+      aspect-ratio: 1:1;
+      font-size: 1.5rem;
+      background-color: transparent;
       border: none;
-      border-radius: initial;
-      cursor: pointer;
-      padding: 0;
+      padding: .25rem;
     }
 </style>
 
@@ -63,7 +60,7 @@
     <form id="external-account" class="form-horizontal" asp-controller="Account" asp-action="LoginExternal" asp-route-returnUrl="@Model.ReturnUrl" method="post">
       @foreach (var provider in Model.ExternalLogins)
       {
-        <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" style="mask: url('/assets/social/@(provider.DisplayName.ToLower()).svg'); mask-size: contain;"></button>
+        <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="icon-@provider.DisplayName.ToLower()"></i></button>
       }
     </form>
   }
