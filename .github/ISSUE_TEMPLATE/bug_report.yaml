@@ -28,7 +28,7 @@ body:
       required: true
   - type: markdown
       attributes:
-      value: Environment
+        value: Environment
   - type: input
     attributes:
       label: Device
