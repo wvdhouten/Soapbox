@@ -31,25 +31,25 @@ body:
   - type: input
     attributes:
       label: Device
-      description: [e.g. Desktop, iPhone8]
+      description: "[e.g. Desktop, iPhone8]"
     validations:
       required: false
   - type: input
     attributes:
       label: OS
-      description: [e.g. Windows, iOS]
+      description: "[e.g. Windows, iOS]"
     validations:
       required: false
   - type: input
     attributes:
       label: Browser
-      description: [e.g. chrome, safari]
+      description: "[e.g. chrome, safari]"
     validations:
       required: false
   - type: input
     attributes:
       label: Version
-      description: [e.g. 22]
+      description: "[e.g. 22]"
     validations:
       required: false
   - type: textarea
