@@ -6,14 +6,14 @@ assignees:
 body:
   - type: textarea
     attributes:
-      label: Description:
+      label: Description
       description: A clear and concise description of what the bug is.
     validations:
       required: true
   - type: textarea
     id: reproduction-steps
     attributes:
-      label: Reproduction steps:
+      label: Reproduction steps
       description: |
         1. Go to '...'
         2. Click on '....'
@@ -22,40 +22,40 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: Expected behavior:
+      label: Expected behavior
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
   - type: markdown
       attributes:
-      value: Environment:
+      value: Environment
   - type: input
     attributes:
-      label: Device:
+      label: Device
       description: [e.g. Desktop, iPhone8]
     validations:
       required: false
   - type: input
     attributes:
-      label: OS:
+      label: OS
       description: [e.g. Windows, iOS]
     validations:
       required: false
   - type: input
     attributes:
-      label: Browser:
+      label: Browser
       description: [e.g. chrome, safari]
     validations:
       required: false
   - type: input
     attributes:
-      label: Version:
+      label: Version
       description: [e.g. 22]
     validations:
       required: false
   - type: textarea
     attributes:
-      label: Additional context:
+      label: Additional context
       description: Add any other context about the problem.
     validations:
       required: false

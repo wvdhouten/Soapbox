@@ -71,7 +71,7 @@ namespace Soapbox.Web.TagHelpers
             return true;
         }
 
-        private void MakeActive(TagHelperOutput output)
+        private static void MakeActive(TagHelperOutput output)
         {
             var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
             if (classAttr == null)
