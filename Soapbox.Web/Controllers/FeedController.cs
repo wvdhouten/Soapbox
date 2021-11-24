@@ -56,7 +56,7 @@ namespace Soapbox.Web.Controllers
             {
                 var item = new SyndicationItem()
                     .WithTitle(post.Title)
-                    .WithContent(_markdownParser.Parse(post.Content));
+                    .WithContent(_markdownParser.ToHtml(post.Content));
 
                 return item;
             });

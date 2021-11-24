@@ -11,7 +11,7 @@ namespace Soapbox.Core.Markdown
             _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         }
 
-        public string Parse(string content)
+        public string ToHtml(string content)
         {
             return Markdown.ToHtml(content, _pipeline);
         }

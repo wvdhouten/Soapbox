@@ -1,0 +1,9 @@
+@inject IOptionsSnapshot<SiteSettings> settings
+<title>@ViewData[Constants.Title] | @settings.Value.Title</title>
+@*<base href="">*@
+<meta name="description" content="@ViewData[Constants.Description]" />
+<meta name="keywords" content="@ViewData[Constants.Keywords]" />
+<meta name="author" content="@ViewData[Constants.Author]" />
+<meta name="copyright" content="@settings.Value.Owner" />
+<link rel="canonical" href="@ViewData[Constants.Canonical]" />
+@*<link rel="microsummary" type="application/x.microsummary+xml" href="" />*@

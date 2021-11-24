@@ -7,7 +7,6 @@ namespace Soapbox.Web.TagHelpers
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.AspNetCore.Razor.TagHelpers;
 
-    // TODO: Documentation
     public enum ActiveRoutePrecision
     {
         All,

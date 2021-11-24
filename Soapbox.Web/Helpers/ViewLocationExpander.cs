@@ -8,7 +8,7 @@ namespace Soapbox.Web.Helpers
 
     public class ViewLocationExpander : IViewLocationExpander
     {
-        private const string ThemeLocation = "/Themes/{0}/{1}";
+        private const string ThemedViewLocation = "/Themes/{0}/{1}.cshtml";
 
         private readonly IOptionsMonitor<SiteSettings> _settings;
 
@@ -21,9 +21,14 @@ namespace Soapbox.Web.Helpers
         {
             var theme = _settings.CurrentValue.Theme;
             theme = !string.IsNullOrEmpty(theme) ? theme : "Default";
-            var themeLocation = string.Format(ThemeLocation, theme, "{0}.cshtml");
 
-            return viewLocations.Prepend(themeLocation);
+            var themedViewLocations = new List<string>
+            {
+                string.Format(ThemedViewLocation, theme, "{1}/{0}"),
+                string.Format(ThemedViewLocation, theme, "{0}"),
+            };
+
+            return themedViewLocations.Concat(viewLocations);
         }
 
         public void PopulateValues(ViewLocationExpanderContext context)

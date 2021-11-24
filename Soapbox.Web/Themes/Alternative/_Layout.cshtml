@@ -1,17 +1,28 @@
 @inject IOptionsSnapshot<SiteSettings> settings
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head prefix="og: http://ogp.me/ns#">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@ViewData[Constants.Title] | @settings.Value.Title</title>
-  <meta name="description" content="@ViewData[Constants.Description]" />
 
-  <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
+  <partial name="_SeoPartial" />
+  <partial name="_RssPartial" />
+  <partial name="_OpenGraphPartial" />
+  <partial name="_TwitterCardPartial" />
+
   <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/prism-theme.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
+   
+  <link rel="icon" type="image/png" sizes="16x16" href="~/img/icon16x16.png" />
+  <link rel="shortcut icon" href="~/img/icon16x16.png" />
+  <link rel="apple-touch-icon" href="~/img/icon180x180.png" />
 
+  <meta name="application-name" content="@settings.Value.Title" />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <meta name="msapplication-square150x150logo" content="~/img/icon180x180.png" />
 </head>
+
 <body>
   <header id="site-header">
     <div class="container">
@@ -19,11 +30,11 @@
         <h1><a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a></h1>
         <div>@settings.Value.Description</div>
       </div>
-      <nav id="site-nav">
-        <partial name="_NavigationPartial" />
-      </nav>
+      <partial name="_NavigationPartial" />
     </div>
   </header>
+
+  <partial name="_StatusMessagePartial" />
 
   <main role="main">
     @RenderBody()
@@ -47,10 +58,11 @@
         </ul>
       </div>
     </section>
-    <partial name="_CopyrightPartial" />
+    <partial name="_CopyrightPartial" /><span>(Alternative Theme)</span>
   </footer>
 
   <script src="~/js/site.js" asp-append-version="true"></script>
+
   <script src="~/lib/prism/prism.min.js" asp-append-version="true"></script>
   <script src="~/lib/prism/plugins/autoloader/prism-autoloader.min.js" asp-append-version="true"></script>
 

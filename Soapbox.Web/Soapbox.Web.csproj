@@ -57,10 +57,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Content\" />
     <Folder Include="Logs\" />
-    <Folder Include="Themes\Alternative\" />
     <Folder Include="Themes\Default\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Shared\_Layout.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

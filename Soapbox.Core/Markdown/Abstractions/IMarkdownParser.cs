@@ -2,6 +2,6 @@ namespace Soapbox.Core.Markdown
 {
     public interface IMarkdownParser
     {
-        public string Parse(string content);
+        public string ToHtml(string content);
     }
 }

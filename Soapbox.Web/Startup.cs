@@ -2,7 +2,6 @@ namespace Soapbox.Web
 {
     using System;
     using System.IO;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -22,7 +21,6 @@ namespace Soapbox.Web
     using Soapbox.Web.Extensions;
     using Soapbox.Web.Helpers;
     using Soapbox.Web.Identity;
-    using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
     using WilderMinds.MetaWeblog;
 
@@ -74,11 +72,11 @@ namespace Soapbox.Web
             .AddSignInManager()
             .AddSqliteStore();
 
-            services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
-            });
+            //services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
+            //});
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<ConfigFileService>();
@@ -125,16 +123,23 @@ namespace Soapbox.Web
             app.UseStaticFiles();
             app.UseHttpsRedirection();
 
-            static void CacheControlPrepareResponse(StaticFileResponseContext ctx)
+            static void CacheControlPrepareResponse(StaticFileResponseContext context)
             {
-                ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + 60 * 60 * 24;
-                ctx.Context.Response.Headers["Expires"] = DateTime.UtcNow.AddHours(12).ToString("R");
+                context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + 60 * 60 * 24;
+                context.Context.Response.Headers["Expires"] = DateTime.UtcNow.AddHours(12).ToString("R");
             }
 
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName),
                 RequestPath = "/Content/Files",
+                OnPrepareResponse = CacheControlPrepareResponse
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Themes")),
+                RequestPath = "/Themes",
                 OnPrepareResponse = CacheControlPrepareResponse
             });
 

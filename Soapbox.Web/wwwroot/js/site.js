@@ -17,7 +17,6 @@ document.addEventListener('click', event => {
     return;
 
   const form = Array.from(document.forms).find(form => form.id === formId);
-
   if (!form)
     return;
 
