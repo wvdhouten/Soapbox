@@ -5,7 +5,7 @@ namespace Soapbox.Core.Extensions
     using System.Globalization;
     using System.Text;
 
-    public static class StringUtils
+    public static class StringExtensions
     {
         public static string RemoveDiacritics(this string text)
         {

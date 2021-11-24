@@ -1,6 +1,9 @@
-@model             SiteSettings
+@using System.IO
+@model SiteSettings
 @{
     ViewData[Constants.Title] = "Site configuration";
+    var dir = Directory.GetDirectories(System.IO.Path.Combine(Environment.CurrentDirectory, "Themes"));
+	var themes = dir.Select(f => new DirectoryInfo(f).Name);
 }
 
 <div class="container content">
@@ -17,6 +20,10 @@
     <div class="form-group">
       <label asp-for="@Model.Description" class="label"></label>
       <input asp-for="@Model.Description" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Theme" class="label"></label>
+      <select asp-for="@Model.Theme" asp-items="themes.Select(t => new SelectListItem { Text = t, Value = t })"></select>
     </div>
     <div class="form-group">
       <label asp-for="@Model.PostsPerPage" class="label"></label>

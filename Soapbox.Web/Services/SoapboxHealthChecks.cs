@@ -8,16 +8,16 @@ namespace Soapbox.Web.Services
 
     public class SoapboxHealthChecks : IHealthCheck
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IWebHostEnvironment _env;
 
-        public SoapboxHealthChecks(IWebHostEnvironment webHostEnvironment)
+        public SoapboxHealthChecks(IWebHostEnvironment env)
         {
-            _webHostEnvironment = webHostEnvironment;
+            _env = env;
         }
 
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Content")))
+            if (!Directory.Exists(Path.Combine(_env.ContentRootPath, "Content")))
             {
                 Task.FromResult(HealthCheckResult.Degraded("Content directory not found"));
             }

@@ -2,12 +2,11 @@ namespace Soapbox.Web
 {
     using System;
     using System.IO;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.Google;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +20,7 @@ namespace Soapbox.Web
     using Soapbox.DataAccess.Sqlite;
     using Soapbox.Models;
     using Soapbox.Web.Extensions;
+    using Soapbox.Web.Helpers;
     using Soapbox.Web.Identity;
     using Soapbox.Web.Identity.Policies;
     using Soapbox.Web.Services;
@@ -88,7 +88,14 @@ namespace Soapbox.Web
             services.AddMetaWeblog<Services.MetaWeblogService>();
 
             services.AddHttpContextAccessor();
-            services.AddRazorPages();
+            services.AddControllersWithViews();
+
+            services.AddTransient<ViewLocationExpander>();
+            services.AddOptions<RazorViewEngineOptions>().Configure<ViewLocationExpander>((options, expander) =>
+            {
+                options.ViewLocationExpanders.Add(expander);
+            });
+
             services.AddWebOptimizer(options =>
             {
                 options.AddScssBundle("/css/bundle.css", "scss/site.scss");
@@ -144,7 +151,6 @@ namespace Soapbox.Web
 
                 endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
             });
         }
     }

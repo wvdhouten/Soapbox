@@ -1,12 +1,13 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
-    using System.Threading;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
+    using Soapbox.Web.Extensions;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
@@ -31,7 +32,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Settings([FromForm] SiteSettings settings)
+        public IActionResult Settings([FromForm] SiteSettings settings, [FromServices] IOptionsSnapshot<SiteSettings> config, [FromServices] IRazorViewEngine viewEngine)
         {
             if (!ModelState.IsValid)
             {
@@ -40,13 +41,16 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
             _logger.Log(LogLevel.Trace, "Updating site settings.");
 
-            // The redirect would happen before the file is fully updated, hence sleep.
             _configFileService.SaveToFile(settings, "site.json");
-            Thread.Sleep(250);
 
             _logger.Log(LogLevel.Information, "Site settings updated.");
 
-            return RedirectToAction(nameof(Settings));
+            if (config.Value.Theme != settings.Theme)
+            {
+                viewEngine.TryInvokeMethod(typeof(RazorViewEngine), "ClearCache");
+            }
+
+            return View(settings);
         }
     }
 }

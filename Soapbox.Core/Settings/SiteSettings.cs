@@ -24,6 +24,14 @@ namespace Soapbox.Core.Settings
         public string Description { get; set; }
 
         /// <summary>
+        /// Gets or sets the site theme.
+        /// </summary>
+        /// <value>
+        /// The site theme.
+        /// </value>
+        public string Theme { get; set; }
+
+        /// <summary>
         /// Gets or sets the owner.
         /// </summary>
         /// <value>
