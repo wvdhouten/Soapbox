@@ -1,6 +1,32 @@
 @model IPagedList<Post>
 
-@foreach (var post in Model.Items)
+@if (Model.Items.Count > 0)
 {
-  <partial name="Partials/_Excerpt" model="post" />
+  @foreach (var post in Model.Items)
+  {
+    <partial name="Partials/_Excerpt" model="post" />
+  }
+}
+else
+{
+  <div class="container content centered">
+    <p>No posts found!</p>
+  </div>
+}
+
+@if(Model.PageCount > 2){
+  <div class="container padded centered">
+    @if(Model.Page < Model.PageCount)
+    {
+      <a asp-area="" asp-controller="Blog" asp-action="Index" asp-route-page="@(Model.Page+1)">Older posts</a>
+    }
+    @if (Model.Page < Model.PageCount && Model.Page > 1)
+    {
+      <text> | </text>
+    }
+    @if(Model.Page > 1)
+    {
+      <a asp-area="" asp-controller="Blog" asp-action="Index" asp-route-page="@(Model.Page-1)">Newer posts</a>
+    }
+  </div>
 }
