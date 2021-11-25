@@ -46,7 +46,7 @@ namespace Soapbox.Web.Controllers
             if (ModelState.IsValid)
             {
                 var triggerLockoutOnFailure = false;
-                var result = await _signInManager.PasswordSignInAsync(model.Input.Username, model.Input.Password, model.Input.RememberMe, triggerLockoutOnFailure);
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, triggerLockoutOnFailure);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -54,7 +54,7 @@ namespace Soapbox.Web.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(Login2fa), new { ReturnUrl = returnUrl, model.Input.RememberMe });
+                    return RedirectToAction(nameof(Login2fa), new { ReturnUrl = returnUrl, model.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
@@ -121,10 +121,7 @@ namespace Soapbox.Web.Controllers
             {
                 ReturnUrl = returnUrl,
                 ProviderDisplayName = info.ProviderDisplayName,
-                Input = new LoginExternalModel.InputModel
-                {
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty
-                }
+                Email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty
             };
 
             return View(model);
@@ -146,8 +143,8 @@ namespace Soapbox.Web.Controllers
                 var hasUsers = _userManager.Users.Any();
                 var user = new SoapboxUser
                 {
-                    UserName = model.Input.Username,
-                    Email = model.Input.Email,
+                    UserName = model.Username,
+                    Email = model.Email,
                     Role = !hasUsers ? UserRole.Administrator : UserRole.Subscriber
                 };
                 var result = await _userManager.CreateAsync(user);
@@ -163,11 +160,11 @@ namespace Soapbox.Web.Controllers
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
 
-                        await _emailClient.SendEmailAsync(model.Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
-                            return RedirectToAction(nameof(RegisterConfirmation), new { model.Input.Email });
+                            return RedirectToAction(nameof(RegisterConfirmation), new { model.Email });
                         }
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
@@ -273,7 +270,7 @@ namespace Soapbox.Web.Controllers
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = model.Input.RecoveryCode.Replace(" ", string.Empty);
+            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
             if (result.Succeeded)
@@ -316,7 +313,7 @@ namespace Soapbox.Web.Controllers
 
             StatusMessage = "Please check your email to reset your password.";
 
-            var user = await _userManager.FindByEmailAsync(model.Input.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user is null || !await _userManager.IsEmailConfirmedAsync(user))
             {
                 return RedirectToAction(nameof(Index));
@@ -324,7 +321,7 @@ namespace Soapbox.Web.Controllers
 
             var code = await _accountService.GeneratePasswordResetCode(user);
             var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, Request.Scheme);
-            await _emailClient.SendEmailAsync(model.Input.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await _emailClient.SendEmailAsync(model.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             return RedirectToAction(nameof(Index));
         }

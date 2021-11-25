@@ -5,15 +5,9 @@ namespace Soapbox.Web.Models.Account
 
     public class ForgotPasswordModel
     {
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email", Prompt = "Email")]
-            public string Email { get; set; }
-        }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email", Prompt = "Email")]
+        public string Email { get; set; }
     }
 }

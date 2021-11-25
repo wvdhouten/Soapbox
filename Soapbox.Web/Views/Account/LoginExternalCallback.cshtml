@@ -21,14 +21,14 @@
       <form id="register" asp-controller="Account" asp-action="@nameof(Controllers.AccountController.LoginExternalConfirmation)" asp-route-returnUrl="@Model.ReturnUrl" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-          <label asp-for="Input.Username"></label>
-          <input asp-for="Input.Username" />
-          <span asp-validation-for="Input.Username" class="text-danger"></span>
+          <label asp-for="Username"></label>
+          <input asp-for="Username" />
+          <span asp-validation-for="Username" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Input.Email"></label>
-          <input asp-for="Input.Email" />
-          <span asp-validation-for="Input.Email" class="text-danger"></span>
+          <label asp-for="Email"></label>
+          <input asp-for="Email" />
+          <span asp-validation-for="Email" class="text-danger"></span>
         </div>
       </form>
     </section>

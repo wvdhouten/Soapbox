@@ -5,18 +5,11 @@ namespace Soapbox.Web.Models.Account
 
     public class LoginRecoveryCodeModel
     {
-        [BindProperty]
-        public InputModel Input { get; set; }
-
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
-            [BindProperty]
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Recovery Code")]
-            public string RecoveryCode { get; set; }
-        }
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Recovery Code")]
+        public string RecoveryCode { get; set; }
     }
 }

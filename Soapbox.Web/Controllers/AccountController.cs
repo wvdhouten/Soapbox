@@ -322,7 +322,7 @@ namespace Soapbox.Web.Controllers
             }
 
             model.RequirePassword = await _userManager.HasPasswordAsync(user);
-            if (model.RequirePassword && !await _userManager.CheckPasswordAsync(user, model.Input.Password))
+            if (model.RequirePassword && !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 ModelState.AddModelError(string.Empty, "Incorrect password.");
                 return View(model);

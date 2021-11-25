@@ -5,16 +5,10 @@ namespace Soapbox.Web.Models.Account
 
     public class DeleteModel
     {
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-        }
-
         public bool RequirePassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
     }
 }

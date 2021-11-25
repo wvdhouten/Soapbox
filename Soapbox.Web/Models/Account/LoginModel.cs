@@ -11,23 +11,17 @@ namespace Soapbox.Web.Models.Account
 
         public string ReturnUrl { get; set; }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [Required]
+        [MinLength(8)]
+        [Display(Name = "Username", Prompt = "Username")]
+        public string Username { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [MinLength(8)]
-            [Display(Name = "Username", Prompt = "Username")]
-            public string Username { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password", Prompt = "Password")]
+        public string Password { get; set; }
 
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password", Prompt = "Password")]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me")]
-            public bool RememberMe { get; set; }
-        }
+        [Display(Name = "Remember me")]
+        public bool RememberMe { get; set; }
     }
 }

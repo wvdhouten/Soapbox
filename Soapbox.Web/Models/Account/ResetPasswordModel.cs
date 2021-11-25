@@ -4,6 +4,8 @@ namespace Soapbox.Web.Models.Account
 
     public class ResetPasswordModel
     {
+        public string Code { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -17,7 +19,5 @@ namespace Soapbox.Web.Models.Account
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        public string Code { get; set; }
     }
 }
