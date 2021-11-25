@@ -105,7 +105,7 @@ namespace Soapbox.Web
         {
             app.UseSqlite(env);
 
-            if (env.IsDevelopment())
+            if (!env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
