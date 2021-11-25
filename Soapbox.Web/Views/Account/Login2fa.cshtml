@@ -3,39 +3,41 @@
   ViewData[Constants.Title] = "Two-factor authentication";
 }
 
-<div class="card">
-  <header class="centered">
-    <h1>@ViewData[Constants.Title]</h1>
-  </header>
+<div class="container content">
+  <div class="card">
+    <header class="centered">
+      <h1>@ViewData[Constants.Title]</h1>
+    </header>
 
-  <div class="separator"></div>
+    <div class="separator"></div>
 
-  <section>
-    <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
-    <form id="login" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-      <input asp-for="RememberMe" type="hidden" />
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-      <div class="form-group">
-        <label asp-for="AuthenticatorCode"></label>
-        <input asp-for="AuthenticatorCode" class="form-control" autocomplete="off" />
-        <span asp-validation-for="AuthenticatorCode" class="text-danger"></span>
-      </div>
-      <div class="form-group centered">
-        <div class="checkbox">
-          <label asp-for="RememberMachine">
-            <input asp-for="RememberMachine" />
-            @Html.DisplayNameFor(m => m.RememberMachine)
-          </label>
+    <section>
+      <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+      <form id="login" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <input asp-for="RememberMe" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <label asp-for="AuthenticatorCode"></label>
+          <input asp-for="AuthenticatorCode" class="form-control" autocomplete="off" />
+          <span asp-validation-for="AuthenticatorCode" class="text-danger"></span>
         </div>
-      </div>
-    </form>
-  </section>
+        <div class="form-group centered">
+          <div class="checkbox">
+            <label asp-for="RememberMachine">
+              <input asp-for="RememberMachine" />
+              @Html.DisplayNameFor(m => m.RememberMachine)
+            </label>
+          </div>
+        </div>
+      </form>
+    </section>
 
-  <div class="actions centered">
-    <button form="login" type="submit" class="large">Log in</button>
-  </div>
+    <div class="actions centered">
+      <button form="login" type="submit" class="large">Log in</button>
+    </div>
 
-  <div class="centered subtle">
-    Don't have access to your authenticator device? <a asp-controller="Account" asp-action="LoginRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">Log in with a recovery code</a>.
+    <div class="centered subtle">
+      Don't have access to your authenticator device? <a asp-controller="Account" asp-action="LoginRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">Log in with a recovery code</a>.
+    </div>
   </div>
 </div>

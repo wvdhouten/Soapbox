@@ -2,24 +2,26 @@
   ViewData[Constants.Title] = "Disable two-factor authentication (2FA)";
 }
 
-<div class="card">
-  <header class="centered">
-    <h1>@ViewData[Constants.Title]</h1>
-  </header>
+<div class="container content">
+  <div class="card">
+    <header class="centered">
+      <h1>@ViewData[Constants.Title]</h1>
+    </header>
 
-  <div class="separator"></div>
+    <div class="separator"></div>
 
-  <section>
-    <div role="alert">
-      <p><strong>This action only disables 2FA.</strong></p>
-      <p>Disabling 2FA does not change the keys used in authenticator apps. To change the authenticator key, you should remove and re-add the authenticator.</p>
+    <section>
+      <div role="alert">
+        <p><strong>This action only disables 2FA.</strong></p>
+        <p>Disabling 2FA does not change the keys used in authenticator apps. To change the authenticator key, you should remove and re-add the authenticator.</p>
+      </div>
+    </section>
+
+    <div class="actions centered">
+      <form method="post">
+        <button class="large" type="submit">Disable 2FA</button>
+      </form>
+      <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
     </div>
-  </section>
-
-  <div class="actions centered">
-    <form method="post">
-      <button class="large" type="submit">Disable 2FA</button>
-    </form>
-    <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
   </div>
 </div>

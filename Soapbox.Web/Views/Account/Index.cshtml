@@ -3,8 +3,14 @@
   ViewData[Constants.Title] = "Manage account";
 }
 
-<partial name="Partials/_Profile" model="Model" />
+<div class="container content">
+  <header>
+    <h1>@ViewData[Constants.Title]</h1>
+  </header>
 
-<partial name="Partials/_Security" />
+  <partial name="Partials/_Profile" model="Model" />
 
-<partial name="Partials/_Account" />
+  <partial name="Partials/_Security" />
+
+  <partial name="Partials/_Account" />
+</div>

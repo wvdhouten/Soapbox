@@ -3,32 +3,34 @@
     ViewData[Constants.Title] = "Delete account";
 }
 
-<div class="card">
-  <header class="centered">
-    <h1>@ViewData[Constants.Title]</h1>
-  </header>
+<div class="container content">
+  <div class="card">
+    <header class="centered">
+      <h1>@ViewData[Constants.Title]</h1>
+    </header>
 
-  <div class="separator"></div>
+    <div class="separator"></div>
 
-  <section>
-    <div role="alert">
-      <p>Deleting your account will destroy it and the attached personal data. This action is permanent, and cannot be reversed.</p>
+    <section>
+      <div role="alert">
+        <p>Deleting your account will destroy it and the attached personal data. This action is permanent, and cannot be reversed.</p>
+      </div>
+
+      <form id="delete" method="post">
+        <div asp-validation-summary="All"></div>
+        @if (Model.RequirePassword)
+        {
+          <div class="form-group">
+            <label asp-for="Input.Password"></label>
+            <input asp-for="Input.Password" />
+          </div>
+        }
+      </form>
+    </section>
+
+    <div class="actions centered">
+      <button form="delete" type="submit" class="large">Delete data and close my account</button>
+      <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
     </div>
-
-    <form id="delete" method="post">
-      <div asp-validation-summary="All"></div>
-      @if (Model.RequirePassword)
-      {
-        <div class="form-group">
-          <label asp-for="Input.Password"></label>
-          <input asp-for="Input.Password" />
-        </div>
-      }
-    </form>
-  </section>
-
-  <div class="actions centered">
-    <button form="delete" type="submit" class="large">Delete data and close my account</button>
-    <a asp-area="" asp-controller="Account" asp-action="Index" class="button outline large">Back</a>
   </div>
 </div>
