@@ -20,7 +20,12 @@
         <div>@settings.Value.Description</div>
       </div>
       <nav id="site-nav">
-        <partial name="_NavigationPartial" />
+        <ul>
+          <li><a asp-area="Admin" asp-controller="Posts" asp-action="Index" is-active-route="Controller">Posts</a></li>
+          <li><a asp-area="Admin" asp-controller="Categories" asp-action="Index" is-active-route="Controller">Categories</a></li>
+          <li><a asp-area="Admin" asp-controller="Users" asp-action="Index" is-active-route="Controller">Users</a></li>
+          <li><a asp-area="Admin" asp-controller="Site" asp-action="Settings" is-active-route="Action">Settings</a></li>
+        </ul>
       </nav>
     </div>
   </header>
@@ -43,11 +48,13 @@
         <h3>Site</h3>
         <ul>
           <partial name="_LoginPartial" />
-          <li><a asp-area="" asp-controller="Pages" asp-action="Page" asp-route-page="Privacy">Privacy</a></li>
         </ul>
       </div>
     </section>
-    <partial name="_CopyrightPartial" />
+    <section id="copyright" class="container">
+      <div>&copy; Copyright @DateTime.UtcNow.Year <a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Owner</a></div>
+      <div>Powered by <a href="https://github.com/wvdhouten/Soapbox" title="Soapbox">Soapbox</a></div>
+    </section>
   </footer>
 
   <script src="~/js/site.js" asp-append-version="true"></script>

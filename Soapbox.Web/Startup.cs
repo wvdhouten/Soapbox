@@ -94,10 +94,9 @@ namespace Soapbox.Web
                 options.ViewLocationExpanders.Add(expander);
             });
 
-            services.AddWebOptimizer(options =>
+            services.AddWebOptimizer(pipeline =>
             {
-                options.AddScssBundle("/css/bundle.css", "scss/site.scss");
-                options.AddScssBundle("/css/prism-theme.css", "scss/prism-theme.scss");
+                pipeline.AddScssBundle("/css/bundle.css", "scss/site.scss");
             });
         }
 
