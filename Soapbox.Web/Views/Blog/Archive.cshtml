@@ -12,9 +12,13 @@
 
 <div class="container content">
   <div class="calendar-navigation">
-    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month"><i class="fa fa-angle-double-left"></i> @prevMonth.ToString("MMM yyyy")</a>
+    <blog-link archive-year="prevMonth.Year" archive-month="prevMonth.Month">
+      <i class="fa fa-angle-double-left"></i> @prevMonth.ToString("MMM yyyy")
+    </blog-link>
     <span class="title">@Model.CurrentMonth.ToString("MMMM yyyy")</span>
-    <a asp-controller="Blog" asp-action="Archive" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month">@nextMonth.ToString("MMM yyyy") <i class="fa fa-angle-double-right"></i></a>
+    <blog-link archive-year="nextMonth.Year" archive-month="nextMonth.Month">
+      @nextMonth.ToString("MMM yyyy") <i class="fa fa-angle-double-right"></i>
+    </blog-link>
   </div>
   <table class="calendar-view">
     <thead>
@@ -49,7 +53,7 @@
               {
                 foreach (var post in day.Value)
                 {
-                  <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" title="@post.Title">@post.Title this is a bit longer than usual.</a>
+                  <blog-link post="post" title="@post.Title" />
                 }
               }
             </section>

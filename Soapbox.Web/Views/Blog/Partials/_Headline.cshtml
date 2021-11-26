@@ -1,6 +1,6 @@
 @model Post
 
 <article class="item">
-  <header><a asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></header>
+  <header><blog-link post="Model" /></header>
   <section class="metadata"><time datetime="@Model.PublishedOn.ToString("s")">@Model.PublishedOn.ToString("MMM d, yyyy")</time></section>
 </article>

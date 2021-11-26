@@ -11,18 +11,18 @@
   <section class="tag-cloud">
     @await foreach (var category in Model)
     {
-        <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
+      <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
     }
   </section>
 
   @await foreach (var category in Model)
   {
     <section>
-      <h2 id="@category.Slug"><a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a> (@category.Posts.Count)</h2>
+      <h2 id="@category.Slug"><blog-link category="category" /> (@category.Posts.Count)</h2>
       <div class="item-list">
         @foreach (var post in category.Posts)
         {
-          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></div>
+          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <blog-link post="post" /></div>
         }
       </div>
     </section>

@@ -1,15 +1,11 @@
-@using Identity.Extensions
 @model Post
 
 <header>
   <div class="container relative">
-    <h1><a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug">@Model.Title</a></h1>
-    @if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
-    {
-      <div class="quick-actions">
-      <a asp-area="Admin" asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="top-right"><i class="fa fa-edit"></i></a>
-      </div>
-    }
+    <h1><blog-link post="Model" /></h1>
+    <div class="quick-actions" is-authorized>
+      <edit-post post="Model" class="top-right"><i class="fa fa-edit"></i></edit-post>
+    </div>
     <div class="meta-data">
       <div>
         <i class="fa fa-calendar"></i>
@@ -17,14 +13,14 @@
       </div>
       <div>
         <i class="fa fa-user-circle"></i>
-        <a asp-area="" asp-controller="Blog" asp-action="Author" asp-route-id="@Model.Author.Id">@(!string.IsNullOrEmpty(Model.Author.DisplayName) ? Model.Author.DisplayName : Model.Author.UserName)</a>
+        <blog-link author="@Model.Author" />
       </div>
       <div>
         <i class="fa fa-tags"></i>
         <div class="tag-list">
         @foreach(var category in Model.Categories)
         {
-          <div class="tag"><a asp-area="" asp-controller="Blog" asp-action="Category" asp-route-slug="@category.Slug">@category.Name</a></div>
+          <div class="tag"><blog-link category="category" /></div>
         }
         </div>
       </div>

@@ -1,11 +1,8 @@
 @using Identity.Extensions
 <nav id="site-nav">
   <ul>
-    <li><a asp-area="" asp-controller="Blog" asp-action="Index" is-active-route="Controller">Blog</a></li>
+    <li><blog-link index>Blog</blog-link></li>
   </ul>
 </nav>
 
-@if (User.IsInRole(UserRole.Administrator, UserRole.Author, UserRole.Contributor, UserRole.Editor))
-{
-  <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small">New Post</a>
-}
+<a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small" is-authorized>New Post</a>

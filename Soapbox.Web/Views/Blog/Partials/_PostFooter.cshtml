@@ -11,7 +11,7 @@
     @if (!isFullPost && viewMode != "Full")
     {
       <div class="centered">
-        <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@Model.Slug" class="button outline small">Read More</a>
+        <blog-link post="Model" class="button outline small">Read More</blog-link>
       </div>
     }
     <div class="share">

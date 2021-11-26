@@ -19,8 +19,8 @@ namespace Soapbox.Web.Controllers
             _blogService = blogService;
         }
 
-        [HttpGet("{page:int?}")]
-        public async Task<IActionResult> Index(int page = 0)
+        [HttpGet("{page:int=1}")]
+        public async Task<IActionResult> Index(int page = 1)
         {
             var posts = await _blogService.GetPostsPageAsync(page, 5);
 

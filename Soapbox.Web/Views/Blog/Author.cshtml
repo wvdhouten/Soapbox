@@ -14,7 +14,7 @@
       @if (Model.Posts.Count > 0)
         foreach (var post in Model.Posts)
         {
-          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <a asp-area="" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></div>
+          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <blog-link post="post" /></div>
         }
       }
       else {
