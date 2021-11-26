@@ -74,6 +74,12 @@
       <label asp-for="Content"></label>
       <textarea asp-for="Content" class="editor"></textarea>
     </div>
-    <button type="submit">Save</button>
+    <div class="button-group" condition="Model.Status != PostStatus.Published">
+      <button type="submit" class="outline">Update</button>
+      <button type="submit" name="action" value="publish">Save & Publish</button>
+    </div>
+    <div class="button-group" condition="Model.Status == PostStatus.Published">
+      <button type="submit">Update</button>
+    </div>
   </form>
 </div>

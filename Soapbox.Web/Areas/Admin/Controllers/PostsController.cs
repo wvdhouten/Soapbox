@@ -72,6 +72,11 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
+            if (action == "publish")
+            {
+                post.Status = PostStatus.Published;
+            }
+
             post.Author = new SoapboxUser { Id = User.GetUserId() };
             post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
             SetSelectedCategories(post);
@@ -114,6 +119,11 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 return View(post);
+            }
+
+            if (action == "publish")
+            {
+                post.Status = PostStatus.Published;
             }
 
             post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
