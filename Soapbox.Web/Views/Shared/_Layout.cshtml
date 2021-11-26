@@ -8,7 +8,6 @@
   <partial name="_SeoPartial" />
   <partial name="_RssPartial" />
   <partial name="_OpenGraphPartial" />
-  <partial name="_TwitterCardPartial" />
 
   <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/prism-theme.css" asp-append-version="true" />
@@ -28,7 +27,7 @@
     <div class="container">
       <div id="brand">
         <h1><a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a></h1>
-        <div>@settings.Value.Description</div>
+        <div>@settings.Value.Subtitle</div>
       </div>
       <partial name="_NavigationPartial" />
     </div>

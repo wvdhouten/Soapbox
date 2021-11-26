@@ -35,5 +35,18 @@ namespace Soapbox.Core.Extensions
 
             return text;
         }
+
+        public static string Clip(this string text, int length)
+        {
+            if (text.Length < length)
+            {
+                return text;
+            }
+
+            text = text[..length];
+            var lastSpaceIndex = text.LastIndexOf(" ");
+            text = lastSpaceIndex > -1 ? text[..lastSpaceIndex] : text;
+            return $"{text}…";
+        }
     }
 }

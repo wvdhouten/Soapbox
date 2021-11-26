@@ -1,13 +1,10 @@
 @model Models.Account.RecoveryCodesModel
-
 <div class="container content">
   <div class="card centered">
   @if (Model.RecoveryCodes == null || Model.RecoveryCodes.Length == 0)
   {
-    ViewData[Constants.Title] = "Generate recovery codes";
-
     <header>
-      <h1>@ViewData[Constants.Title]</h1>
+      <h1>Generate recovery codes</h1>
     </header>
 
     <div class="separator"></div>
@@ -28,10 +25,8 @@
   }
   else
   {
-    ViewData[Constants.Title] = "Recovery codes";
-
     <header>
-      <h1>@ViewData[Constants.Title]</h1>
+      <h1>Recovery codes</h1>
     </header>
 
     <div class="separator"></div>

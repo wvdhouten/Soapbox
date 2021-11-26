@@ -1,10 +1,5 @@
 @model Models.Account.LoginModel
 @inject IOptionsSnapshot<SiteSettings> settings
-
-@{
-  ViewData[Constants.Title] = "Log in";
-}
-
 <style>
   #external-account {
     display: flex;
@@ -24,7 +19,7 @@
 <div class="container content">
   <div class="card">
     <header class="centered">
-      <h1>@ViewData[Constants.Title]</h1>
+      <h1>Sign in</h1>
     </header>
 
     <div class="separator"></div>

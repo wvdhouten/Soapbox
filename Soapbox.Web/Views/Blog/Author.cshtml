@@ -1,12 +1,8 @@
+@using Soapbox.Core.Extensions
 @model SoapboxUser
-@{
-  var name = !string.IsNullOrEmpty(Model.DisplayName) ? Model.DisplayName : Model.UserName;
-  ViewData["Title"] = $"Author: {name}";
-}
-
 <div class="container content">
   <header>
-    <h1>@name (@Model.Posts.Count)</h1>
+    <h1>@Model.ShownName() (@Model.Posts.Count)</h1>
   </header>
 
   <section>

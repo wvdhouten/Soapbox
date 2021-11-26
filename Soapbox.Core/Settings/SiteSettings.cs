@@ -16,12 +16,28 @@ namespace Soapbox.Core.Settings
         public string Title { get; set; }
 
         /// <summary>
+        /// Gets or sets the site subtitle.
+        /// </summary>
+        /// <value>
+        /// The site subtitle.
+        /// </value>
+        public string Subtitle { get; set; }
+
+        /// <summary>
         /// Gets or sets the site description.
         /// </summary>
         /// <value>
         /// The site description.
         /// </value>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the site keywords.
+        /// </summary>
+        /// <value>
+        /// The site keywords.
+        /// </value>
+        public string Keywords { get; set; }
 
         /// <summary>
         /// Gets or sets the site theme.
@@ -41,13 +57,13 @@ namespace Soapbox.Core.Settings
         public string Owner { get; set; }
 
         /// <summary>
-        /// Gets or sets the administrator email address.
+        /// Gets or sets the owner email address.
         /// </summary>
         /// <value>
-        /// The administrator email address.
+        /// The owner email address.
         /// </value>
-        [Display(Name = "Administrator email")]
-        public string AdminEmail { get; set; }
+        [Display(Name = "Owner email")]
+        public string OwnerEmail { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to [allow registration].
@@ -59,12 +75,21 @@ namespace Soapbox.Core.Settings
         public bool AllowRegistration { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets the blog page layout.
+        /// </summary>
+        /// <value>
+        /// The blog page layout.
+        /// </value>
+        [Display(Name = "Blog page layout")]
+        public BlogPageLayout BlogPageLayout { get; set; } = BlogPageLayout.List;
+
+        /// <summary>
         /// Gets or sets the posts per page.
         /// </summary>
         /// <value>
         /// The posts per page.
         /// </value>
         [Display(Name = "Posts per page")]
-        public int PostsPerPage { get; set; } = 5;
+        public int PostsPerPage { get; set; } = 6;
     }
 }

@@ -1,11 +1,14 @@
 {
   "SiteSettings": {
     "Title": "Soapbox",
-    "Description": "Get on your soapbox!",
+    "Subtitle": "Get on your soapbox!",
+    "Description": "A collection of opinions, rants, and speeches.",
+    "Keywords": "opinions, rants, speeches",
     "Theme": "Default",
     "Owner": "Soapbox",
-    "AdminEmail": "soapbox@example.com",
+    "OwnerEmail": "soapbox@example.com",
     "AllowRegistration": true,
-    "PostsPerPage": 5
+    "BlogPageLayout": 0,
+    "PostsPerPage": 6
   }
 }

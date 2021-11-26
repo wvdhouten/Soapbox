@@ -1,8 +1,6 @@
 @model Models.Blog.ArchiveModel
 
 @{
-  ViewData["Title"] = "Archive";
-
   var prevMonth = Model.CurrentMonth.AddMonths(-1);
   var nextMonth = Model.CurrentMonth.AddMonths(1);
   var endOfWeek = Model.StartOfWeek + 6;

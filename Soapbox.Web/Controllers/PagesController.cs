@@ -54,8 +54,6 @@ namespace Soapbox.Web.Controllers
 
         public IActionResult Offline()
         {
-            ViewData[Constants.Title] = Resources.Offline;
-
             return View();
         }
     }

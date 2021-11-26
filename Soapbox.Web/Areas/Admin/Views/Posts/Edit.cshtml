@@ -1,8 +1,4 @@
 @model Soapbox.Web.Areas.Admin.Models.Posts.PostViewModel
-@{
-    ViewData[Constants.Title] = "Edit post";
-}
-
 <style>
   .editor {
     min-height: 350px;
@@ -16,7 +12,7 @@
 <div class="container content">
   <form method="post" autocomplete="off">
     <header>
-      <h2>@ViewData[Constants.Title]</h2>
+      <h1>Edit post</h1>
     </header>
     <input type="hidden" asp-for="Id" />
     <div asp-validation-summary="All" class="text-danger"></div>

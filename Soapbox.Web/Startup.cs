@@ -36,7 +36,6 @@ namespace Soapbox.Web
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks().AddCheck<SoapboxHealthChecks>("soapbox");
@@ -73,6 +72,7 @@ namespace Soapbox.Web
             .AddSqliteStore();
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
+            services.AddScoped<SeoSettings>();
             services.AddScoped<ConfigFileService>();
 
             services.AddSingleton<IMarkdownParser, MarkdownParser>();
@@ -94,7 +94,6 @@ namespace Soapbox.Web
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             RepairSite(app, env);
@@ -146,7 +145,6 @@ namespace Soapbox.Web
 
             app.UseEndpoints(endpoints =>
             {
-                // TODO: Add NotFound
                 endpoints.MapHealthChecks("/Health");
 
                 endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");

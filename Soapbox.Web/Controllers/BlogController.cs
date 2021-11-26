@@ -5,6 +5,7 @@ namespace Soapbox.Web.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
+    using Soapbox.Core.Settings;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
@@ -13,10 +14,12 @@ namespace Soapbox.Web.Controllers
     public class BlogController : Controller
     {
         private readonly IBlogService _blogService;
+        private readonly SeoSettings _seoSettings;
 
-        public BlogController(IBlogService blogService)
+        public BlogController(IBlogService blogService, SeoSettings seoSettings)
         {
             _blogService = blogService;
+            _seoSettings = seoSettings;
         }
 
         [HttpGet("{page:int=1}")]
@@ -24,7 +27,7 @@ namespace Soapbox.Web.Controllers
         {
             var posts = await _blogService.GetPostsPageAsync(page, 5);
 
-            ViewData[Constants.Title] = "Blog";
+            _seoSettings.Title = "Blog";
 
             return View(posts);
         }
@@ -38,7 +41,7 @@ namespace Soapbox.Web.Controllers
                 return NotFound();
             }
 
-            ViewData[Constants.Title] = post.Title;
+            _seoSettings.Post = post;
 
             return View(post);
         }
@@ -52,7 +55,7 @@ namespace Soapbox.Web.Controllers
                 return NotFound();
             }
 
-            ViewData[Constants.Title] = post.Title;
+            _seoSettings.Post = post;
 
             return View(nameof(Post), post);
         }

@@ -1,12 +1,8 @@
 @model Soapbox.Web.Areas.Admin.Models.Categories.PostCategoryViewModel
-@{
-    ViewData[Constants.Title] = "Create category";
-}
-
 <div class="container content">
   <form method="post" autocomplete="off">
     <header>
-      <h2>@ViewData[Constants.Title]</h2>
+      <h1>Create category</h1>
     </header>
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">

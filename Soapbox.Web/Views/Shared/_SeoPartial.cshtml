@@ -1,9 +1,13 @@
-@inject IOptionsSnapshot<SiteSettings> settings
-<title>@ViewData[Constants.Title] | @settings.Value.Title</title>
-@*<base href="">*@
-<meta name="description" content="@ViewData[Constants.Description]" />
-<meta name="keywords" content="@ViewData[Constants.Keywords]" />
-<meta name="author" content="@ViewData[Constants.Author]" />
-<meta name="copyright" content="@settings.Value.Owner" />
-<link rel="canonical" href="@ViewData[Constants.Canonical]" />
+@inject SeoSettings settings
+@{
+  var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/")}";
+  var fullUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+}
+<title>@settings.Title</title>
+<base href="@baseUrl">
+<meta name="description" content="@settings.Description" />
+<meta name="keywords" content="@settings.Keywords" />
+<meta name="author" content="@settings.Author" />
+<meta name="copyright" content="@settings.Owner" />
+<link rel="canonical" href="@(settings.Canonical != null ? baseUrl + settings.Canonical : fullUrl)" />
 @*<link rel="microsummary" type="application/x.microsummary+xml" href="" />*@

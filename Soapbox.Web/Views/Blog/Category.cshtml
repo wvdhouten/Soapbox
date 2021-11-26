@@ -1,8 +1,4 @@
 @model PostCategory
-@{
-  ViewData["Title"] = $"Category: {Model.Name}";
-}
-
 <div class="container content">
   <header>
     <h1>@Model.Name (@Model.Posts.Count)</h1>

@@ -1,11 +1,7 @@
-@model IPagedList<Post>;
-@{
-    ViewData[Constants.Title] = "Posts";
-}
-
+@model IPagedList<Post>
 <section class="container content">
   <header class="has-actions">
-    <h1>@ViewData[Constants.Title]</h1>
+    <h1>Posts</h1>
     <div>
       <a asp-area="Admin" asp-controller="Posts" asp-action="Create" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>

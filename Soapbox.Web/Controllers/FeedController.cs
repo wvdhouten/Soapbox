@@ -48,7 +48,7 @@ namespace Soapbox.Web.Controllers
             var siteUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
             var builder = new FeedBuilder(new Uri(siteUri, "/blog/"), _settings.Title, _settings.Description, new Uri(siteUri, "/assets/yaktocat.png"));
             builder.AddCopyright(_settings.Owner);
-            var feed = builder.GetFeed(_settings.AdminEmail);
+            var feed = builder.GetFeed(_settings.OwnerEmail);
 
             var page = await _blogService.GetPostsPageAsync(0, 15);
 
