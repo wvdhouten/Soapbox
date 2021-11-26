@@ -1,10 +1,3 @@
-:root {
-  --input-background: #222;
-  --input-color: #fff;
-  --input-active-background: #333;
-  --input-disabled-background: #000;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -69,8 +62,6 @@ textarea {
 .button-group {
   text-align: right;
 }
-
-// TODO
 
 input:not([type="checkbox"]):not([type="radio"]),
 select,

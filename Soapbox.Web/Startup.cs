@@ -72,12 +72,6 @@ namespace Soapbox.Web
             .AddSignInManager()
             .AddSqliteStore();
 
-            //services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new OwnerRequirement()));
-            //});
-
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<ConfigFileService>();
 
@@ -103,6 +97,8 @@ namespace Soapbox.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            RepairSite(app, env);
+
             app.UseSqlite(env);
 
             if (!env.IsDevelopment())
@@ -156,6 +152,25 @@ namespace Soapbox.Web
                 endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");
             });
+        }
+
+        private static void RepairSite(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            var contentPath = Path.Combine(env.ContentRootPath, "Content", "Files");
+            var themesPath = Path.Combine(env.ContentRootPath, "Themes", "Default");
+            var logsPath = Path.Combine(env.ContentRootPath, "Logs");
+
+            EnsureDirectory(contentPath);
+            EnsureDirectory(themesPath);
+            EnsureDirectory(logsPath);
+        }
+
+        private static void EnsureDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

@@ -20,6 +20,10 @@
     --text-color: #f8f9fa;
     --background-raised-color: #101418;
     --text-subtle-color: #c6c7c8;
+    --input-background: #282c2e;
+    --input-color: #f8f9fa;
+    --input-active-background: #363a3d;
+    --input-disabled-background: #141617;
   }
 }
 
@@ -28,6 +32,10 @@ body.dark {
   --text-color: #f8f9fa;
   --background-raised-color: #101418;
   --text-subtle-color: #c6c7c8;
+  --input-background: #282c2e;
+  --input-color: #f8f9fa;
+  --input-active-background: #363a3d;
+  --input-disabled-background: #141617;
 }
 
 @media (prefers-color-scheme: light) {
@@ -36,6 +44,10 @@ body.dark {
     --text-color: #181c20;
     --background-raised-color: #f0f1f2;
     --text-subtle-color: #393837;
+    --input-background: #e6e6e6;
+    --input-color: #181c20;
+    --input-active-background: #f0f0f0;
+    --input-disabled-background: #cccccc;
   }
 }
 
@@ -44,6 +56,10 @@ body.light {
   --text-color: #181c20;
   --background-raised-color: #f0f1f2;
   --text-subtle-color: #393837;
+  --input-background: #e6e6e6;
+  --input-color: #181c20;
+  --input-active-background: #f0f0f0;
+  --input-disabled-background: #cccccc;
 }
 
 body {

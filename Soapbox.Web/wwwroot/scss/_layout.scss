@@ -94,7 +94,7 @@ main {
   width: 100%;
   min-width: 340px;
   padding: 20px;
-  background: rgba(255,255,255, .1);
+  background: var(--background-raised-color);
   border-radius: 4px;
   margin: 0 auto 20px;
 
