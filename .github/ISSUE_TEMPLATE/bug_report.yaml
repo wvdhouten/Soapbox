@@ -1,5 +1,5 @@
 name: Bug report
-description: Create a report to help us improve
+description: Create a bug report to help improve this project
 title: "Bug: "
 labels: ["triage", "bug"]
 body:
@@ -10,7 +10,6 @@ body:
     validations:
       required: true
   - type: textarea
-    id: reproduction-steps
     attributes:
       label: Reproduction steps
       description: |
