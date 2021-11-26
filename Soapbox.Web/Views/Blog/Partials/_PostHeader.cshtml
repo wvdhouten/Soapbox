@@ -4,16 +4,16 @@
   <div class="container relative">
     <h1><blog-link post="Model" /></h1>
     <div class="quick-actions" is-authorized>
-      <edit-post post="Model" class="top-right"><i class="fa fa-edit"></i></edit-post>
+      <edit-post post="Model"><i class="fa fa-edit"></i></edit-post>
     </div>
     <div class="meta-data">
       <div>
         <i class="fa fa-calendar"></i>
-        <time datetime="@Model.PublishedOn.ToString("s")">@Model.PublishedOn.ToString("MMM d, yyyy")</time>
+        <time value=Model.PublishedOn />
       </div>
       <div>
         <i class="fa fa-user-circle"></i>
-        <blog-link author="@Model.Author" />
+        <blog-link author="Model.Author" />
       </div>
       <div>
         <i class="fa fa-tags"></i>

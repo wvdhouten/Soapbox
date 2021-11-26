@@ -1,19 +1,22 @@
 namespace DasBlog.Web.TagHelpers
 {
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.AspNetCore.Razor.TagHelpers;
     using Soapbox.Models;
 
     [HtmlTargetElement(Attributes = "is-unauthorized")]
     public class IsUnauthorizedRoleTagHelper : TagHelper
 	{
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SignInManager<SoapboxUser> _signInManager;
 
-        public IsUnauthorizedRoleTagHelper(IHttpContextAccessor httpContextAccessor, SignInManager<SoapboxUser> signInManager)
+        [HtmlAttributeNotBound]
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
+
+        public IsUnauthorizedRoleTagHelper(SignInManager<SoapboxUser> signInManager)
         {
-            _httpContextAccessor = httpContextAccessor;
             _signInManager = signInManager;
         }
 
@@ -21,7 +24,7 @@ namespace DasBlog.Web.TagHelpers
         {
             base.Process(context, output);
 
-            var user = _httpContextAccessor.HttpContext.User;
+            var user = ViewContext.HttpContext.User;
 
             if (_signInManager.IsSignedIn(user))
             {

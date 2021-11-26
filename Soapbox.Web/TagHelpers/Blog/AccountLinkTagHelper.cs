@@ -25,8 +25,8 @@ namespace Soapbox.Web.TagHelpers.Blog
         {
             base.Process(context, output);
 
-            output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "a";
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             var builder = _generator.GenerateActionLink(ViewContext, string.Empty, Page, "Account", null, null, null, null, null);
 

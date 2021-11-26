@@ -27,8 +27,8 @@ namespace Soapbox.Web.TagHelpers.Blog
         {
             base.Process(context, output);
 
-            output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "a";
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             var routeValues = new Dictionary<string, object> { { "id", Post.Id } };
 

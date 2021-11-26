@@ -14,7 +14,7 @@
       @if (Model.Posts.Count > 0)
         foreach (var post in Model.Posts)
         {
-          <div>@post.PublishedOn.ToString("yyyy-MM-dd") <blog-link post="post" /></div>
+          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
         }
       }
       else {
