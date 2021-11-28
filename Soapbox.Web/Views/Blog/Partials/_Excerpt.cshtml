@@ -9,7 +9,7 @@
   <partial name="Partials/_PostHeader" model="Model"></partial>
   <section class="body">
     <div class="container markdown-content">
-      @Html.Raw(Parser.ToHtml(content))
+      @Html.Raw(Parser.ToHtml(content, out var _))
     </div>
   </section>
 <partial name="Partials/_PostFooter" model="Model"></partial>

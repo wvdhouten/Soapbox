@@ -7,6 +7,13 @@ namespace Soapbox.Core.Syndication
 
     public static class SyndicationItemExtensions
     {
+        public static SyndicationItem WithBaseUri(this SyndicationItem item, Uri uri)
+        {
+            item.BaseUri = uri;
+
+            return item;
+        }
+
         public static SyndicationItem WithTitle(this SyndicationItem item, string title)
         {
             item.Title = new TextSyndicationContent(title);
@@ -30,7 +37,10 @@ namespace Soapbox.Core.Syndication
 
         public static SyndicationItem WithImage(this SyndicationItem item, Uri uri)
         {
-            var element = new XElement("enclosure", new XAttribute("url", uri.ToString()), new XAttribute("length", 0), new XAttribute("type", "image/png"));
+            var url = uri.ToString();
+            var knownMimeType = MimeTypes.TryGetMimeType(url, out var mimeType);
+
+            var element = new XElement("enclosure", new XAttribute("url", url), new XAttribute("length", 0), new XAttribute("type", knownMimeType ? mimeType : string.Empty));
 
             item.ElementExtensions.Add(element);
 
@@ -47,12 +57,9 @@ namespace Soapbox.Core.Syndication
             return item;
         }
 
-        public static SyndicationItem WithContributors(this SyndicationItem item, IEnumerable<string> contributors)
+        public static SyndicationItem WithAuthor(this SyndicationItem item, string author)
         {
-            foreach (var contributor in contributors)
-            {
-                item.Contributors.Add(new SyndicationPerson(contributor));
-            }
+            item.Authors.Add(new SyndicationPerson(null, author, null));
 
             return item;
         }

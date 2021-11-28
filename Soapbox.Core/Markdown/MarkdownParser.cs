@@ -1,6 +1,9 @@
 namespace Soapbox.Core.Markdown
 {
+    using System.Linq;
     using Markdig;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
 
     public class MarkdownParser : IMarkdownParser
     {
@@ -11,9 +14,13 @@ namespace Soapbox.Core.Markdown
             _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         }
 
-        public string ToHtml(string content)
+        public string ToHtml(string content, out string image)
         {
-            return Markdown.ToHtml(content, _pipeline);
+            var parsed = Markdown.Parse(content, _pipeline);
+
+            image = parsed.Descendants<ParagraphBlock>().SelectMany(x => x.Inline.Descendants<LinkInline>()).FirstOrDefault(l => l.IsImage)?.Url ?? string.Empty;
+
+            return parsed.ToHtml();
         }
     }
 }

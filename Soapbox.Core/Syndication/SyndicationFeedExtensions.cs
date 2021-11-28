@@ -8,12 +8,6 @@ namespace Soapbox.Core.Syndication
 
     public static class SyndicationFeedExtensions
     {
-        public static SyndicationFeed WithImage(this SyndicationFeed feed, Uri uri)
-        {
-            feed.ImageUrl = uri;
-            return feed;
-        }
-
         public static SyndicationFeed WithCopyright(this SyndicationFeed feed, string owner)
         {
             feed.Copyright = new TextSyndicationContent($"Copyright {DateTime.UtcNow.Year}, {owner}");
@@ -44,36 +38,14 @@ namespace Soapbox.Core.Syndication
             return feed;
         }
 
-        public static SyndicationFeed WithItems<T>(this SyndicationFeed feed, IEnumerable<T> items, Func<T, SyndicationItem> itemMapper)
+        public static SyndicationFeedFormatter GetFormatter(this SyndicationFeed feed, FeedFormat format)
         {
-            var syndicationItems = items.Select(itemMapper);
-
-            if (syndicationItems.Any())
+            return format switch
             {
-                feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
-            }
-
-            feed.Items = syndicationItems;
-
-            return feed;
-        }
-
-        public async static Task<SyndicationFeed> WithItemsAsync<T>(this SyndicationFeed feed, IAsyncEnumerable<T> items, Func<T, SyndicationItem> itemMapper)
-        {
-            var syndicationItems = new List<SyndicationItem>();
-            await foreach (var item in items)
-            {
-                syndicationItems.Add(itemMapper(item));
-            }
-
-            if (syndicationItems.Any())
-            {
-                feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
-            }
-
-            feed.Items = syndicationItems;
-
-            return feed;
+                FeedFormat.Atom => feed.GetAtom10Formatter(),
+                FeedFormat.Rss => feed.GetRss20Formatter(false),
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }

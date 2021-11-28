@@ -91,5 +91,7 @@ namespace Soapbox.Core.Settings
         /// </value>
         [Display(Name = "Posts per page")]
         public int PostsPerPage { get; set; } = 6;
+
+        public string SyndicationFeedImage { get; set; }
     }
 }

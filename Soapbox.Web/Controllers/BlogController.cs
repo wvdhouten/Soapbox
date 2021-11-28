@@ -5,7 +5,6 @@ namespace Soapbox.Web.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
-    using Soapbox.Core.Settings;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
@@ -14,12 +13,10 @@ namespace Soapbox.Web.Controllers
     public class BlogController : Controller
     {
         private readonly IBlogService _blogService;
-        private readonly SeoSettings _seoSettings;
 
-        public BlogController(IBlogService blogService, SeoSettings seoSettings)
+        public BlogController(IBlogService blogService)
         {
             _blogService = blogService;
-            _seoSettings = seoSettings;
         }
 
         [HttpGet("{page:int=1}")]
@@ -27,7 +24,7 @@ namespace Soapbox.Web.Controllers
         {
             var posts = await _blogService.GetPostsPageAsync(page, 5);
 
-            _seoSettings.Title = "Blog";
+            ViewData[Constants.Title] = "Blog";
 
             return View(posts);
         }
@@ -41,12 +38,11 @@ namespace Soapbox.Web.Controllers
                 return NotFound();
             }
 
-            _seoSettings.Post = post;
-
             return View(post);
         }
 
         [HttpGet("post/{id}")]
+        [ActionName(nameof(Post))]
         public async Task<IActionResult> PostById(string id)
         {
             var post = await _blogService.GetPostByIdAsync(id);
@@ -54,8 +50,6 @@ namespace Soapbox.Web.Controllers
             {
                 return NotFound();
             }
-
-            _seoSettings.Post = post;
 
             return View(nameof(Post), post);
         }
@@ -65,8 +59,8 @@ namespace Soapbox.Web.Controllers
         [HttpGet("archive/{year:int?}/{month:int?}")]
         public async Task<IActionResult> Archive(int year = 0, int month = 0)
         {
-            year = year > 0 ? year : DateTime.Now.Year;
-            month = month > 0 ? month : DateTime.Now.Month;
+            year = year > 0 ? year : DateTime.UtcNow.Year;
+            month = month > 0 ? month : DateTime.UtcNow.Month;
 
             var currentDate = new DateTime(year, month, 1);
             var model = await GetMonthModel(currentDate);

@@ -1,36 +1,68 @@
 namespace Soapbox.Core.Syndication
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.ServiceModel.Syndication;
 
     public class FeedBuilder
     {
-        private readonly Uri _baseUri;
+        private const string GeneratorName = "Soapbox";
+        private const string GeneratorUrl = "https://github.com/wvdhouten/Soapbox";
+
         private readonly SyndicationFeed _feed;
 
-        public FeedBuilder(Uri baseUri, string title, string description, Uri imageUri)
+        public FeedBuilder(Uri sourceUri, string title, string description)
         {
-            _baseUri = baseUri;
-
-            _feed = new SyndicationFeed(title, description, baseUri)
+            _feed = new SyndicationFeed(title, description, sourceUri)
             {
-                Id = baseUri.ToString(),
+                Id = sourceUri.ToString(),
+                LastUpdatedTime = DateTimeOffset.MinValue,
+                TimeToLive = TimeSpan.FromHours(24)
             }
-            .WithImage(imageUri)
-            .WithGenerator("Soapbox", GetType().Assembly.GetName().Version.ToString(), new Uri("https://github.com/wvdhouten/Soapbox"));
+            .WithGenerator(GeneratorName, Assembly.GetExecutingAssembly().GetName().Version.ToString(), new Uri(GeneratorUrl));
         }
 
-        public void AddCopyright(string owner)
+        public void SetSelfLink(Uri feedUri)
         {
-            _feed.WithCopyright(owner);
+            _feed.Links.Add(new SyndicationLink(feedUri, "self", null, null, 0));
         }
 
-        // TODO
-        public SyndicationFeed GetFeed(string administrator)
+        public void SetOwner(string owner, string ownerEmail)
         {
-            _feed.WithManagingEditor(administrator)
-                 .WithWebMaster(administrator);
+            _feed.WithCopyright(owner)
+                .WithManagingEditor(ownerEmail)
+                .WithWebMaster(ownerEmail);
+        }
 
+        public void SetImage(Uri imageUri)
+        {
+            _feed.ImageUrl = imageUri;
+        }
+
+        public void SetCategories(IEnumerable<string> categories)
+        {
+            foreach (var category in categories)
+            {
+                _feed.WithCategory(category);
+            }
+        }
+
+        public void SetItems<T>(IEnumerable<T> items, Func<T, SyndicationItem> mapper)
+        {
+            var syndicationItems = items.Select(mapper);
+            if (syndicationItems.Any())
+            {
+                syndicationItems = syndicationItems.OrderByDescending(i => i.PublishDate);
+                _feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
+            }
+
+            _feed.Items = syndicationItems;
+        }
+
+        public SyndicationFeed GetFeed()
+        {
             return _feed;
         }
     }

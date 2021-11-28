@@ -8,7 +8,7 @@ namespace Soapbox.Web.Models.Blog
     {
         public DayOfWeek StartOfWeek { get; set; } = DayOfWeek.Monday;
 
-        public DateTime CurrentMonth { get; set; } = DateTime.Now;
+        public DateTime CurrentMonth { get; set; } = DateTime.UtcNow;
 
         public IDictionary<DateTime, ICollection<Post>> Days { get; } = new Dictionary<DateTime, ICollection<Post>>();
     }
