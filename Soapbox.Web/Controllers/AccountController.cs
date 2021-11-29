@@ -13,6 +13,7 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Soapbox.Core.Common;
     using Soapbox.Core.Email;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
@@ -194,14 +195,14 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationModel model)
+        public async Task<IActionResult> SendEmailVerification(SendEmailVerificationModel model)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.GetUserAsync(User);
             if (user is null)
             {
                 StatusMessage = "User not found.";
@@ -228,6 +229,7 @@ namespace Soapbox.Web.Controllers
                 ReturnUrl = returnUrl ?? Url.Content("~/"),
                 ExternalLogins = await GetExternalLogins()
             };
+
             return View(model);
         }
 
@@ -391,32 +393,6 @@ namespace Soapbox.Web.Controllers
             await _signInManager.ForgetTwoFactorClientAsync();
             StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SendEmailVerification(ProfileModel model)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(nameof(Index), model);
-            }
-
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", values: new { area = "Identity", userId, code }, protocol: Request.Scheme);
-            await _emailClient.SendEmailAsync(email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-            StatusMessage = "Verification email sent. Please check your email.";
-
-            return View(nameof(Index), model);
         }
 
         [HttpGet]

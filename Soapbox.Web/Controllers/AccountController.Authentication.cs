@@ -13,6 +13,7 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
+    using Soapbox.Core.Common;
     using Soapbox.Models;
     using Soapbox.Web.Models.Account;
 
@@ -123,6 +124,8 @@ namespace Soapbox.Web.Controllers
                 ProviderDisplayName = info.ProviderDisplayName,
                 Email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty
             };
+
+            ViewData[Constants.PageTitle] = $"Sign in: {info.ProviderDisplayName}";
 
             return View(model);
         }

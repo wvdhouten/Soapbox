@@ -2,7 +2,7 @@ namespace Soapbox.Web.Models.Account
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class ResendEmailConfirmationModel
+    public class SendEmailVerificationModel
     {
         [Required]
         [EmailAddress]

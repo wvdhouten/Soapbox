@@ -1,13 +1,11 @@
-@inject SeoSettings settings
-@{
-  var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/")}";
-  var fullUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
-}
-<title>@settings.Title</title>
-<base href="@baseUrl">
-<meta name="description" content="@settings.Description" />
-<meta name="keywords" content="@settings.Keywords" />
-<meta name="author" content="@settings.Author" />
-<meta name="copyright" content="@settings.Owner" />
-<link rel="canonical" href="@(settings.Canonical != null ? baseUrl + settings.Canonical : fullUrl)" />
-@*<link rel="microsummary" type="application/x.microsummary+xml" href="" />*@
+@using Soapbox.Web.Extensions
+@inject IOptionsSnapshot<SiteSettings> settings
+@{ var seo = ViewData.GetSeoValues(settings.Value); }
+
+<base href="@Context.Request.BaseUrl()">
+<title>@seo.Title</title>
+<meta name="description" content="@seo.Description" />
+<meta name="keywords" content="@seo.Keywords" />
+<meta name="author" content="@seo.Author" />
+<meta name="copyright" content="@seo.Owner" />
+<link rel="canonical" href="@Context.Request.FullUrl()" />

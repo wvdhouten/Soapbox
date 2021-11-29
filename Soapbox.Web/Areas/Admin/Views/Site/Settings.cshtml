@@ -1,8 +1,9 @@
 @using System.IO
 @model SiteSettings
 @{
-    var dir = Directory.GetDirectories(System.IO.Path.Combine(Environment.CurrentDirectory, "Themes"));
-	var themes = dir.Select(f => new DirectoryInfo(f).Name);
+  ViewData[Constants.PageTitle] = "Settings";
+  var dir = Directory.GetDirectories(System.IO.Path.Combine(Environment.CurrentDirectory, "Themes"));
+  var themes = dir.Select(f => new DirectoryInfo(f).Name);
 }
 
 <div class="container content">

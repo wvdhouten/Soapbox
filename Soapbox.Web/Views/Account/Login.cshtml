@@ -1,5 +1,9 @@
 @model Models.Account.LoginModel
 @inject IOptionsSnapshot<SiteSettings> settings
+@{
+  ViewData[Constants.PageTitle] = "Sign in";
+}
+
 <style>
   #external-account {
     display: flex;

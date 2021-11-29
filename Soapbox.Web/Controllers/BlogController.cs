@@ -2,9 +2,14 @@ namespace Soapbox.Web.Controllers
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using System.Web;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
+    using Soapbox.Core.Extensions;
+    using Soapbox.Core.Markdown;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
@@ -13,18 +18,18 @@ namespace Soapbox.Web.Controllers
     public class BlogController : Controller
     {
         private readonly IBlogService _blogService;
+        private readonly IMarkdownParser _markdownParser;
 
-        public BlogController(IBlogService blogService)
+        public BlogController(IBlogService blogService, IMarkdownParser markdownParser)
         {
             _blogService = blogService;
+            _markdownParser = markdownParser;
         }
 
         [HttpGet("{page:int=1}")]
         public async Task<IActionResult> Index(int page = 1)
         {
             var posts = await _blogService.GetPostsPageAsync(page, 5);
-
-            ViewData[Constants.Title] = "Blog";
 
             return View(posts);
         }
@@ -38,6 +43,8 @@ namespace Soapbox.Web.Controllers
                 return NotFound();
             }
 
+            UpdateSeoForPost(post);
+
             return View(post);
         }
 
@@ -50,6 +57,8 @@ namespace Soapbox.Web.Controllers
             {
                 return NotFound();
             }
+
+            UpdateSeoForPost(post);
 
             return View(nameof(Post), post);
         }
@@ -92,6 +101,10 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> Author(string id)
         {
             var author = await _blogService.GetAuthorByIdAsync(id);
+            if (author is null)
+            {
+                return NotFound();
+            }    
 
             return View(author);
         }
@@ -115,6 +128,22 @@ namespace Soapbox.Web.Controllers
             }
 
             return model;
+        }
+
+        private void UpdateSeoForPost(Post post)
+        {
+            ViewData[Constants.PageTitle] = post.Title;
+            var content = _markdownParser.ToHtml(post.Content, out var image);
+            var description = !string.IsNullOrWhiteSpace(post.Excerpt)
+                ? post.Excerpt
+                : content;
+
+            // TODO: Might need to take part of post.
+            ViewData[Constants.Description] = description.StripHtml().Clip(87);
+            ViewData[Constants.Keywords] = string.Join(", ", post.Categories.Select(c => c.Name));
+            ViewData[Constants.Author] = post.Author.ShownName();
+            ViewData[Constants.Image] = image;
+            ViewData[Constants.Video] = null;
         }
     }
 }

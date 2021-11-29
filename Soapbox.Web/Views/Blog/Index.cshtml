@@ -1,5 +1,7 @@
 @model IPagedList<Post>
 @{
+  ViewData[Constants.PageTitle] = "Blog";
+
   var pageOlder = Model.Page + 1;
   var pageNewer = Model.Page - 1;
 }

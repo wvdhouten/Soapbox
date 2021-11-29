@@ -72,7 +72,6 @@ namespace Soapbox.Web
             .AddSqliteStore();
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
-            services.AddScoped<SeoSettings>();
             services.AddScoped<ConfigFileService>();
 
             services.AddSingleton<IMarkdownParser, MarkdownParser>();

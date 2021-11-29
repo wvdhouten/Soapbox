@@ -1,4 +1,8 @@
 @model Models.Account.RecoveryCodesModel
+@{
+  ViewData[Constants.PageTitle] = "Recovery codes";
+}
+
 <div class="container content">
   <div class="card centered">
   @if (Model.RecoveryCodes == null || Model.RecoveryCodes.Length == 0)

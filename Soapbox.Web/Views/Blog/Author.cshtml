@@ -1,5 +1,9 @@
 @using Soapbox.Core.Extensions
 @model SoapboxUser
+@{
+  ViewData[Constants.PageTitle] = $"Author: {Model.ShownName()}";
+}
+
 <div class="container content">
   <header>
     <h1>@Model.ShownName() (@Model.Posts.Count)</h1>

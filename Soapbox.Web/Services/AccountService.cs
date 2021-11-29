@@ -5,28 +5,19 @@ namespace Soapbox.Web.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Email;
     using Soapbox.Models;
 
     public class AccountService
     {
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailClient _emailClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LinkGenerator _linkGenerator;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(UserManager<SoapboxUser> userManager, IEmailClient emailClient, IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator, ILogger<AccountService> logger)
+        public AccountService(UserManager<SoapboxUser> userManager, ILogger<AccountService> logger)
         {
             _userManager = userManager;
-            _emailClient = emailClient;
-            _httpContextAccessor = httpContextAccessor;
-            _linkGenerator = linkGenerator;
             _logger = logger;
         }
 

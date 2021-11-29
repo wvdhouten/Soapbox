@@ -4,6 +4,8 @@ namespace Soapbox.Core.Extensions
     using System.Collections.Generic;
     using System.Globalization;
     using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
 
     public static class StringExtensions
     {
@@ -34,6 +36,13 @@ namespace Soapbox.Core.Extensions
             }
 
             return text;
+        }
+
+        public static string StripHtml(this string html, bool decode = true)
+        {
+            var reg = new Regex("<[^>]+>", RegexOptions.IgnoreCase);
+            var stripped = reg.Replace(html, "");
+            return decode ? HttpUtility.HtmlDecode(stripped) : stripped;
         }
 
         public static string Clip(this string text, int length)

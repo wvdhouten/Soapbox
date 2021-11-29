@@ -7,6 +7,7 @@ namespace Soapbox.Web.TagHelpers.Blog
     using Microsoft.AspNetCore.Mvc.TagHelpers;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.AspNetCore.Razor.TagHelpers;
+    using Soapbox.Core.Extensions;
     using Soapbox.Models;
 
     public class BlogLinkTagHelper : TagHelper
@@ -117,7 +118,7 @@ namespace Soapbox.Web.TagHelpers.Blog
                 }
 
                 builder = GetTagBuilder("Author", new Dictionary<string, object> { { "id", Author.Id } });
-                defaultContent = () => !string.IsNullOrWhiteSpace(Author.DisplayName) ? Author.DisplayName : Author.UserName;
+                defaultContent = () => Author.ShownName();
             }
 
             if (Archive || ArchiveYear.HasValue || ArchiveMonth.HasValue)
