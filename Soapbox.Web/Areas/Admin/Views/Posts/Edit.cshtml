@@ -19,6 +19,7 @@
       <h1>Edit post</h1>
     </header>
     <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ModifiedOn" />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
       <label asp-for="Title"></label>
@@ -29,8 +30,8 @@
       <div class="input-group">
         <input asp-for="Slug" />
         <div class="input-addon">
-          <input asp-for="GenerateSlugFromTitle" />
-          <label asp-for="GenerateSlugFromTitle">Generate from title</label>
+          <input asp-for="UpdateSlugFromTitle" />
+          <label asp-for="UpdateSlugFromTitle"></label>
         </div>
       </div>
     </div>
@@ -43,11 +44,11 @@
           {
             <div class="pill">
               <span>
-                <input asp-for="@Model.AllCategories[i].Id" type="hidden" />
-                <input asp-for="@Model.AllCategories[i].Name" type="hidden" />
-                <input asp-for="@Model.AllCategories[i].Selected" type="checkbox" />
+                <input asp-for="AllCategories[i].Id" type="hidden" />
+                <input asp-for="AllCategories[i].Name" type="hidden" />
+                <input asp-for="AllCategories[i].Selected" type="checkbox" />
               </span>
-              <span><label asp-for="@Model.AllCategories[i].Selected">@Model.AllCategories[i].Name</label></span>
+              <span><label asp-for="AllCategories[i].Selected">@Model.AllCategories[i].Name</label></span>
             </div>
           }
         </div>
@@ -59,8 +60,24 @@
       </div>
     </div>
     <div class="form-group horizontal">
+      <label asp-for="ModifiedOn"></label>
+      <div class="input-group">
+        <input asp-for="ModifiedOn" readonly />
+        <div class="input-addon">
+          <input asp-for="UpdateModifiedOn" />
+          <label asp-for="UpdateModifiedOn"></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group horizontal">
       <label asp-for="PublishedOn"></label>
-      <input asp-for="PublishedOn" />
+      <div class="input-group">
+        <input asp-for="PublishedOn" />
+        <div class="input-addon">
+          <input asp-for="UpdatePublishedOn" />
+          <label asp-for="UpdatePublishedOn"></label>
+        </div>
+      </div>
     </div>
     <div class="form-group horizontal">
       <label asp-for="Status"></label>
@@ -74,12 +91,8 @@
       <label asp-for="Content"></label>
       <textarea asp-for="Content" class="editor"></textarea>
     </div>
-    <div class="button-group" condition="Model.Status != PostStatus.Published">
+    <div class="button-group">
       <button type="submit" class="outline">Update</button>
-      <button type="submit" name="action" value="publish">Save & Publish</button>
-    </div>
-    <div class="button-group" condition="Model.Status == PostStatus.Published">
-      <button type="submit">Update</button>
     </div>
   </form>
 </div>

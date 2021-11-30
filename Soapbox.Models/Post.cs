@@ -42,6 +42,7 @@ namespace Soapbox.Models
         /// <summary>
         /// Gets or sets the modification date.
         /// </summary>
+        [Display(Name = "Modified on"), DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime ModifiedOn { get; set; } = DateTime.UtcNow;
 
         /// <summary>
@@ -52,8 +53,7 @@ namespace Soapbox.Models
         /// <summary>
         /// Gets or sets the publication date.
         /// </summary>
-        [Display(Name = "Published on")]
-        [DataType(DataType.Date)]
+        [Display(Name = "Published on"), DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
 
         /// <summary>

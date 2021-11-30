@@ -53,7 +53,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             var model = new PostViewModel
             {
                 AllCategories = await categories.Select(c => _mapper.Map<SelectableCategoryViewModel>(c)).ToListAsync(),
-                GenerateSlugFromTitle = true
+                UpdateSlugFromTitle = true
             };
 
             return View(model);
@@ -72,13 +72,11 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
-            if (action == "publish")
-            {
-                post.Status = PostStatus.Published;
-            }
-
             post.Author = new SoapboxUser { Id = User.GetUserId() };
-            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
+            var now = DateTime.UtcNow;
+            post.ModifiedOn = post.UpdateModifiedOn ? now : post.ModifiedOn;
+            post.PublishedOn = post.UpdatePublishedOn ? now : post.PublishedOn;
+            post.Slug = post.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
             SetSelectedCategories(post);
 
             await _blogService.CreatePostAsync(post);
@@ -96,7 +94,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             var model = _mapper.Map<PostViewModel>(post);
-            model.GenerateSlugFromTitle = post.Slug == CreateSlug(post.Title);
+            model.UpdateSlugFromTitle = post.Slug == CreateSlug(post.Title);
+            model.UpdatePublishedOn = model.UpdateModifiedOn = post.Status == PostStatus.Private && post.ModifiedOn == post.PublishedOn;
             model.AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category =>
             {
                 return _mapper.Map<PostCategory, SelectableCategoryViewModel>(category, opts =>
@@ -121,12 +120,10 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(post);
             }
 
-            if (action == "publish")
-            {
-                post.Status = PostStatus.Published;
-            }
-
-            post.Slug = post.GenerateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
+            var now = DateTime.UtcNow;
+            post.ModifiedOn = post.UpdateModifiedOn ? now : post.ModifiedOn;
+            post.PublishedOn = post.UpdatePublishedOn ? now : post.PublishedOn;
+            post.Slug = post.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
             SetSelectedCategories(post);
 
             await _blogService.UpdatePostAsync(post);

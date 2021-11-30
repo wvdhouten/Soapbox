@@ -111,7 +111,7 @@ namespace Soapbox.DataAccess.Sqlite
         {
             post.Title = post.Title.Trim();
             post.Slug = post.Slug.Trim();
-            post.ModifiedOn = DateTime.UtcNow;
+            post.ModifiedOn = post.ModifiedOn;
             post.PublishedOn = post.PublishedOn;
             post.Content = post.Content?.Trim() ?? string.Empty;
             post.Excerpt = post.Excerpt?.Trim() ?? string.Empty;
