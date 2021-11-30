@@ -1,4 +1,4 @@
-namespace Soapbox.DataAccess.Extensions
+namespace Soapbox.Core.Extensions
 {
     using System.Linq;
     using Soapbox.Models;

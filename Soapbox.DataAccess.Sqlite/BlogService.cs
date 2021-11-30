@@ -7,8 +7,8 @@ namespace Soapbox.DataAccess.Sqlite
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using Soapbox.DataAccess.Abstractions;
+    using Soapbox.Core.Extensions;
     using Soapbox.DataAccess.Data;
-    using Soapbox.DataAccess.Extensions;
     using Soapbox.Models;
 
     public class BlogService : IBlogService

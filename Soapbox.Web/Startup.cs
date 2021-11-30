@@ -73,6 +73,7 @@ namespace Soapbox.Web
 
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<ConfigFileService>();
+            services.AddScoped<MediaFileService>();
 
             services.AddSingleton<IMarkdownParser, MarkdownParser>();
 
@@ -125,7 +126,7 @@ namespace Soapbox.Web
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName),
-                RequestPath = "/Content/Files",
+                RequestPath = "/Media",
                 OnPrepareResponse = CacheControlPrepareResponse
             });
 

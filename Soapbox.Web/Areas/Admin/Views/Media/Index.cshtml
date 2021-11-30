@@ -1,0 +1,40 @@
+@model IPagedList<Media>
+@{
+  ViewData[Constants.PageTitle] = "Media";
+}
+
+<section class="container content">
+  <header class="has-actions">
+    <h1>Media</h1>
+    <div>
+      <a asp-area="Admin" asp-controller="Media" asp-action="Upload" class="button small"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    </div>
+  </header>
+
+  <table class="data-grid">
+    <thead>
+      <tr>
+        <th width="99%">Name</th>
+        <th>Size</th>
+        <th>Last modified</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var media in Model.Items)
+      {
+        <tr>
+          <td><a href="@($"{Context.Request.BaseUrl()}/Media/{media.Name}")" target="_blank">@media.Name</a></td>
+          <td><file-size length="@media.Size" /></td>
+          <td><time value="media.ModifiedOn" format="yyyy-MM-dd hh:mm:ss" /></td>
+          <td>
+            <form asp-area="Admin" asp-controller="Media" asp-action="Delete" asp-route-name="@media.Name" method="post">
+              <button type="submit" class="small"><i class="fa fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <partial name="../Shared/_Paging.cshtml" model="Model" />
+</section>

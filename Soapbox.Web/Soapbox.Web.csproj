@@ -64,7 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Content\Files\" />
     <Folder Include="Logs\" />
     <Folder Include="Themes\Default\" />
   </ItemGroup>

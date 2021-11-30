@@ -9,9 +9,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Common;
     using Soapbox.Core.Email;
-    using Soapbox.DataAccess.Extensions;
+    using Soapbox.Core.Extensions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
