@@ -81,7 +81,7 @@ namespace Soapbox.Core.Settings
         /// The blog page layout.
         /// </value>
         [Display(Name = "Blog page layout")]
-        public BlogPageLayout BlogPageLayout { get; set; } = BlogPageLayout.List;
+        public BlogPageLayout BlogPageLayout { get; set; } = BlogPageLayout.PostList;
 
         /// <summary>
         /// Gets or sets the posts per page.
@@ -92,6 +92,12 @@ namespace Soapbox.Core.Settings
         [Display(Name = "Posts per page")]
         public int PostsPerPage { get; set; } = 6;
 
+        /// <summary>
+        /// Gets or sets the posts per page.
+        /// </summary>
+        /// <value>
+        /// The posts per page.
+        /// </value>
         public string SyndicationFeedImage { get; set; }
     }
 }

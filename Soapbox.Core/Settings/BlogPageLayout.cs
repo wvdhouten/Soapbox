@@ -1,14 +1,16 @@
 namespace Soapbox.Core.Settings
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.ComponentModel.DataAnnotations;
 
     public enum BlogPageLayout
     {
-        List,
-        Summary
+        [Display(Name = "List (Posts)")]
+        PostList,
+
+        [Display(Name = "List (Excerpts)")]
+        ExcerptList,
+
+        [Display(Name = "Cards (Excerpts)")]
+        ExcerptCards
     }
 }

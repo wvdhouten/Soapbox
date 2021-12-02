@@ -1,5 +1,7 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.IO;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.Extensions.Logging;
@@ -51,6 +53,23 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             }
 
             return View(settings);
+        }
+
+        [HttpGet]
+        public IActionResult Backup()
+        {
+            _logger.Log(LogLevel.Information, "Backup downloaded.");
+
+            var filePath = Path.Combine(Environment.CurrentDirectory, "Content", "Soapbox.sqlite");
+            var memoryStream = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                stream.Position = 0;
+                stream.CopyTo(memoryStream);
+            }
+
+            memoryStream.Position = 0;
+            return File(memoryStream, "application/octet-stream", $"Backup-Soapbox-{DateTime.UtcNow:yyyy-MM-dd}.sqlite");
         }
     }
 }

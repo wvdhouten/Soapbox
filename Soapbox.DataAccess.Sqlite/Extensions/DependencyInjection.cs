@@ -1,7 +1,6 @@
 namespace Soapbox.DataAccess.Sqlite
 {
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -19,9 +18,7 @@ namespace Soapbox.DataAccess.Sqlite
             services.AddScoped<IBlogService, BlogService>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var contentPath = $"{env.ContentRootPath}\\Content";
-                Directory.CreateDirectory(contentPath);
-                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{ContentPath}", contentPath));
+                options.UseSqlite(configuration.GetSection("SqlLite").GetValue<string>("ConnectionString").Replace("{ContentPath}", $"{env.ContentRootPath}\\Content"));
             });
             services.AddDatabaseDeveloperPageExceptionFilter();
 
