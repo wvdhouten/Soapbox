@@ -24,8 +24,6 @@
 @import '_forms.scss';
 @import '_markdown.scss';
 
-/* TODO: Consider a grid system */
-
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;

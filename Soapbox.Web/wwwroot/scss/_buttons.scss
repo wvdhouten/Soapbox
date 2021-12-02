@@ -1,11 +1,3 @@
-:root {
-  --button-text-color: var(--accent1-contrast);
-  --button-background-color: var(--accent1-medium);
-  --button-hover-background-color: var(--accent1-dark);
-  --button-active-background-color: var(--accent1-x-dark);
-  --button-disabled-background-color: var(--grey-medium);
-}
-
 button,
 a.button {
   display: inline-block;

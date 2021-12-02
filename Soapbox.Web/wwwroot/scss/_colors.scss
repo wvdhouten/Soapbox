@@ -14,6 +14,14 @@
   --grey-medium: #999;
 }
 
+:root {
+  --button-text-color: var(--accent1-contrast);
+  --button-background-color: var(--accent1-medium);
+  --button-hover-background-color: var(--accent1-dark);
+  --button-active-background-color: var(--accent1-x-dark);
+  --button-disabled-background-color: var(--grey-medium);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #181c20;

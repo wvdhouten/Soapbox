@@ -1,10 +1,7 @@
 html {
   overflow-y: scroll;
-}
-
-* {
   scrollbar-width: thin;
-  scrollbar-color: var(--accent1-medium) var(--accent1-x-dark);
+  scrollbar-color: var(--scrollbar-thumb-color, #666) var(--scrollbar-track-color, #000);
 }
 
 *::-webkit-scrollbar {
@@ -12,10 +9,10 @@ html {
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--accent1-x-dark);
+  background: var(--scrollbar-track-color, #000);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--accent1-medium);
+  background-color: var(--scrollbar-thumb-color, #666);
   border-radius: 5px;
 }
