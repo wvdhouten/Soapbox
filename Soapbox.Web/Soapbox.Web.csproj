@@ -74,6 +74,7 @@
     <Folder Include="Themes\Default\" />
     <Folder Include="Content\Files" />
     <Folder Include="Logs\" />
+    <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 
   <ItemGroup>
