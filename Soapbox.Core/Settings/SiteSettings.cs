@@ -13,7 +13,7 @@ namespace Soapbox.Core.Settings
         /// <value>
         /// The site title.
         /// </value>
-        public string Title { get; set; }
+        public string Title { get; set; } = "Soapbox";
 
         /// <summary>
         /// Gets or sets the site subtitle.
@@ -45,7 +45,7 @@ namespace Soapbox.Core.Settings
         /// <value>
         /// The site theme.
         /// </value>
-        public string Theme { get; set; }
+        public string Theme { get; set; } = "Default";
 
         /// <summary>
         /// Gets or sets the owner.

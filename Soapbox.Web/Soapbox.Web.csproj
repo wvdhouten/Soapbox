@@ -67,13 +67,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Config\site.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Themes\Default\" />
     <Folder Include="Content\Files" />
     <Folder Include="Logs\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Themes\**">
+    <None Include="Themes\*\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
