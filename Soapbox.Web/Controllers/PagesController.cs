@@ -5,7 +5,6 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Common;
     using Soapbox.Web.Models;
 
     public class PagesController : Controller
