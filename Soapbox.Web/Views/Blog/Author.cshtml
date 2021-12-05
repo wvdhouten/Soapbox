@@ -12,6 +12,7 @@
   <section>
     <div class="item-list">
       @if (Model.Posts.Count > 0)
+      {
         foreach (var post in Model.Posts)
         {
           <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
