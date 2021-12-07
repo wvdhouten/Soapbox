@@ -25,3 +25,7 @@ document.addEventListener('click', event => {
   event.preventDefault();
   event.stopPropagation();
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').then(function () { console.log('Service worker registered'); });;
+};
