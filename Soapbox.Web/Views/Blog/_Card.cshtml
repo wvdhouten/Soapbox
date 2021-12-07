@@ -3,8 +3,11 @@
 @inject Soapbox.Core.Markdown.IMarkdownParser Parser
 @{
     var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
-    var content = !isFullPost ? Model.Excerpt : Model.Content;
-    content = Parser.ToHtml(content, out var image).StripHtml().Clip(140);
+    var content = Parser.ToHtml(Model.Content, out var image).StripHtml();
+    if (!string.IsNullOrEmpty(Model.Excerpt))
+    {
+        content = Model.Excerpt;
+    }
 }
 
 <article class="post-card">
@@ -24,7 +27,7 @@
       </section>
     </header>
     <section class="excerpt">
-      @content
+      @content.Clip(140)
     </section>
     <footer>
       <div class="read-more">
