@@ -12,7 +12,10 @@
   <section class="item-feed">
     @foreach (var post in posts)
     {
-      <partial name="~/Views/Blog/Partials/_Headline.cshtml" model="post" />
+      <article class="item">
+        <header><blog-link post="post" /></header>
+        <section class="metadata"><time value="post.PublishedOn" /></section>
+      </article>
     }
   </section>
 </article>

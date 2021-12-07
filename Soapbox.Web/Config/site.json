@@ -8,7 +8,8 @@
     "Owner": "Soapbox",
     "OwnerEmail": "soapbox@example.com",
     "AllowRegistration": true,
-    "BlogPageLayout": 0,
-    "PostsPerPage": 6
+    "BlogPageLayout": 2,
+    "PostsPerPage": 6,
+    "SyndicationFeedImage": null
   }
 }

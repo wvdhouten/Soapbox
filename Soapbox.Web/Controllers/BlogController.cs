@@ -3,9 +3,7 @@ namespace Soapbox.Web.Controllers
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using System.Web;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
     using Soapbox.Core.Extensions;
@@ -17,6 +15,8 @@ namespace Soapbox.Web.Controllers
     [Route("blog")]
     public class BlogController : Controller
     {
+        private const string PostView = "_Post";
+
         private readonly IBlogService _blogService;
         private readonly IMarkdownParser _markdownParser;
 
@@ -45,7 +45,7 @@ namespace Soapbox.Web.Controllers
 
             UpdateSeoForPost(post);
 
-            return View(post);
+            return View(PostView, post);
         }
 
         [HttpGet("post/{id}")]
@@ -60,7 +60,7 @@ namespace Soapbox.Web.Controllers
 
             UpdateSeoForPost(post);
 
-            return View(nameof(Post), post);
+            return View(PostView, post);
         }
 
         [HttpGet("archive")]

@@ -88,8 +88,8 @@ main {
   font-size: .8rem;
 }
 
-/* CARD */
-.card {
+/* BOX */
+.box {
   display: block;
   width: 100%;
   min-width: 340px;
@@ -156,7 +156,7 @@ main {
     max-width: 540px
   }
 
-  .card {
+  .box {
     width: 500px;
   }
 }

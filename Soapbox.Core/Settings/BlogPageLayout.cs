@@ -4,13 +4,13 @@ namespace Soapbox.Core.Settings
 
     public enum BlogPageLayout
     {
-        [Display(Name = "List (Posts)")]
-        PostList,
+        [Display(Name = "Posts")]
+        Posts,
 
-        [Display(Name = "List (Excerpts)")]
-        ExcerptList,
+        [Display(Name = "Excerpts")]
+        Excerpts,
 
-        [Display(Name = "Cards (Excerpts)")]
-        ExcerptCards
+        [Display(Name = "Cards")]
+        Cards
     }
 }

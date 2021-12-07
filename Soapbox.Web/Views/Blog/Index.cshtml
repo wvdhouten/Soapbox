@@ -1,29 +1,25 @@
 @model IPagedList<Post>
+@inject IOptionsSnapshot<SiteSettings> settings
 @{
   ViewData[Constants.PageTitle] = "Blog";
-
-  var pageOlder = Model.Page + 1;
-  var pageNewer = Model.Page - 1;
 }
 
 @if (Model.Items.Count > 0)
 {
-  @foreach (var post in Model.Items)
+  @switch (settings.Value.BlogPageLayout)
   {
-    <partial name="Partials/_Excerpt" model="post" />
+    case BlogPageLayout.Posts:
+      <partial name="_PostsPage" model="Model" />
+      break;
+    case BlogPageLayout.Excerpts:
+      <partial name="_ExcerptsPage" model="Model" />
+      break;
+    case BlogPageLayout.Cards:
+      <partial name="_CardsPage" model="Model" />
+      break;
   }
 }
 else
 {
-  <div class="container content centered">
-    <p>No posts found!</p>
-  </div>
-}
-
-@if(Model.PageCount > 2){
-  <div class="container padded centered">
-      <blog-link page="pageOlder" condition="(Model.Page < Model.PageCount)">Older posts</blog-link>
-      <span condition="(Model.Page < Model.PageCount && Model.Page > 1)"> | </span>
-      <blog-link page="pageNewer" condition="(Model.Page > 1)">Newer posts</blog-link>
-  </div>
+  <partial name="_NoPosts" />
 }

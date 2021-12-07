@@ -1,0 +1,8 @@
+@model IPagedList<Post>
+
+@foreach (var post in Model.Items)
+{
+  <partial name="_Excerpt" model="post" />
+}
+
+<partial name="_Paging" model="Model" />

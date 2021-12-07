@@ -1,0 +1,10 @@
+@model IPagedList<Post>
+
+<section class="container content post-cards">
+  @foreach (var post in Model.Items)
+  {
+    <partial name="_Card" model="post" />
+  }
+</section>
+
+<partial name="_Paging" model="Model" />

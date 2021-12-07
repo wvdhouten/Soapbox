@@ -81,7 +81,7 @@ namespace Soapbox.Core.Settings
         /// The blog page layout.
         /// </value>
         [Display(Name = "Blog page layout")]
-        public BlogPageLayout BlogPageLayout { get; set; } = BlogPageLayout.PostList;
+        public BlogPageLayout BlogPageLayout { get; set; } = BlogPageLayout.Posts;
 
         /// <summary>
         /// Gets or sets the posts per page.

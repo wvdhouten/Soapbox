@@ -83,4 +83,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\Blog\Partials\**" />
+    <Content Remove="Views\Blog\Partials\**" />
+    <EmbeddedResource Remove="Views\Blog\Partials\**" />
+    <None Remove="Views\Blog\Partials\**" />
+  </ItemGroup>
+
 </Project>

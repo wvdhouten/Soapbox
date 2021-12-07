@@ -1,0 +1,44 @@
+@using Soapbox.Core.Extensions
+@model Post
+@inject Soapbox.Core.Markdown.IMarkdownParser Parser
+@{
+    var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
+    var content = !isFullPost ? Model.Excerpt : Model.Content;
+    content = Parser.ToHtml(content, out var image).StripHtml().Clip(140);
+}
+
+<article class="post-card">
+  <div class="image" style="background-image: url('@image');"></div>
+  <div class="card-content">
+    <header>
+      <h3><blog-link post="Model" /></h3>
+      <section class="meta-data subtle">
+        <div>
+          <i class="fa fa-calendar"></i>
+          <time value=Model.PublishedOn />
+        </div>
+        <div>
+          <i class="fa fa-user-circle"></i>
+          <blog-link author="Model.Author" />
+        </div>
+      </section>
+    </header>
+    <section class="excerpt">
+      @content
+    </section>
+    <footer>
+      <div class="read-more">
+        <blog-link post="Model">Read more</blog-link>
+      </div>
+      <div class="subtle" condition="@Model.Categories.Any()">
+        <i class="fa fa-tags"></i>
+        <div class="tag-list">
+        @foreach(var category in Model.Categories)
+        {
+          <div class="tag"><blog-link category="category" /></div>
+        }
+        </div>
+      </div>
+    </footer>
+  </div>
+</article>
