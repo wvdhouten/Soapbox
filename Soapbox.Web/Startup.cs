@@ -4,6 +4,7 @@ namespace Soapbox.Web
     using System.IO;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.AspNetCore.StaticFiles;
@@ -114,7 +115,17 @@ namespace Soapbox.Web
             app.UseStatusCodePagesWithReExecute("/Pages/Error", "?statusCode={0}");
             app.UseWebOptimizer();
 
-            app.UseStaticFiles();
+            var staticFileOptions = new StaticFileOptions
+            {
+                HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
+                OnPrepareResponse = (context) =>
+                {
+                    var headers = context.Context.Response.GetTypedHeaders();
+                    headers.CacheControl = new CacheControlHeaderValue { Public = true, MaxAge = TimeSpan.FromDays(30) };
+                }
+            };
+
+            app.UseStaticFiles(staticFileOptions);
             app.UseHttpsRedirection();
 
             static void CacheControlPrepareResponse(StaticFileResponseContext context)
