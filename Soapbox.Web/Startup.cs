@@ -154,7 +154,6 @@ namespace Soapbox.Web
         private static void CacheControlPrepareResponse(StaticFileResponseContext context)
         {
             context.Context.Response.Headers[HeaderNames.CacheControl] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
-            context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.AddDays(365).ToString("R");
         }
 
         private static void RepairSite(IApplicationBuilder app, IWebHostEnvironment env)
