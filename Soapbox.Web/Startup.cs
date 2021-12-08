@@ -1,6 +1,7 @@
 namespace Soapbox.Web
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -115,26 +116,13 @@ namespace Soapbox.Web
             app.UseStatusCodePagesWithReExecute("/Pages/Error", "?statusCode={0}");
             app.UseWebOptimizer();
 
-            var staticFileOptions = new StaticFileOptions
-            {
-                HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
-                OnPrepareResponse = (context) =>
-                {
-                    var headers = context.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new CacheControlHeaderValue { Public = true, MaxAge = TimeSpan.FromDays(30) };
-                }
-            };
-
-            app.UseStaticFiles(staticFileOptions);
             app.UseHttpsRedirection();
-
-            static void CacheControlPrepareResponse(StaticFileResponseContext context)
+            app.UseStaticFiles(new StaticFileOptions
             {
-                context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + 60 * 60 * 24;
-                context.Context.Response.Headers["Expires"] = DateTime.UtcNow.AddHours(12).ToString("R");
-            }
+                OnPrepareResponse = CacheControlPrepareResponse
+            });
 
-            app.UseStaticFiles(new StaticFileOptions()
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName),
                 RequestPath = "/Media",
@@ -161,6 +149,12 @@ namespace Soapbox.Web
                 endpoints.MapControllerRoute(name: "area", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Pages}/{action=Index}/{id?}");
             });
+        }
+
+        private static void CacheControlPrepareResponse(StaticFileResponseContext context)
+        {
+            context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + 60 * 60 * 24;
+            context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.AddDays(30).ToString("R");
         }
 
         private static void RepairSite(IApplicationBuilder app, IWebHostEnvironment env)
