@@ -1,4 +1,4 @@
-namespace Soapbox.Web.TagHelpers.Blog
+namespace Soapbox.Web.TagHelpers.Generic
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc.Rendering;

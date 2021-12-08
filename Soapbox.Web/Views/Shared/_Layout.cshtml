@@ -23,14 +23,14 @@
   <meta name="application-name" content="@settings.Value.Title" />
   <meta name="msapplication-TileColor" content="#ffaaee">
   <meta name="theme-color" content="#ffaaee">
-  <meta name="msapplication-square150x150logo" content="~/mstile-150x150.png" />
+  <meta name="msapplication-square150x150logo" content="/mstile-150x150.png" />
 </head>
 
 <body>
   <header id="site-header">
     <div class="container">
       <div id="brand">
-        <h1><a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Title</a></h1>
+        <h1><page-link page="Index">@settings.Value.Title</page-link></h1>
         <div>@settings.Value.Subtitle</div>
       </div>
       <partial name="_NavigationPartial" />
@@ -61,7 +61,7 @@
       </div>
     </section>
     <section id="copyright" class="container">
-      <div>&copy; Copyright @DateTime.UtcNow.Year <a asp-area="" asp-controller="Pages" asp-action="Index">@settings.Value.Owner</a></div>
+      <div>&copy; Copyright @DateTime.UtcNow.Year <page-link page="Index">@settings.Value.Owner</page-link></div>
       <div>Powered by <a href="https://github.com/wvdhouten/Soapbox" title="Soapbox">Soapbox</a></div>
     </section>
   </footer>
