@@ -125,7 +125,7 @@ namespace Soapbox.DataAccess.Sqlite
                 {
                     _context.PostCategories.Add(category);
                 }
-                else if(!_context.PostCategories.Local.Any(c => c.Id == category.Id))
+                else if(_context.PostCategories.Local.Any(c => c.Id == category.Id))
                 {
                     _context.PostCategories.Attach(category);
                 }
