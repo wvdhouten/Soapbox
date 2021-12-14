@@ -12,7 +12,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Models;
     using Soapbox.Web.Models.Blog;
 
-    [Route("blog")]
+    [Route("[controller]")]
     public class BlogController : Controller
     {
         private const string PostView = "_Post";

@@ -1,13 +1,12 @@
 namespace Soapbox.Web
 {
     using System;
-    using System.Globalization;
     using System.IO;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc.Razor;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -82,6 +81,11 @@ namespace Soapbox.Web
             services.AddMetaWeblog<Services.MetaWeblogService>();
 
             services.AddHttpContextAccessor();
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
             services.AddControllersWithViews();
 
             services.AddTransient<ViewLocationExpander>();

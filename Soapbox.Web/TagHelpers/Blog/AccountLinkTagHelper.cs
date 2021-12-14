@@ -1,5 +1,6 @@
 namespace Soapbox.Web.TagHelpers.Blog
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -28,11 +29,19 @@ namespace Soapbox.Web.TagHelpers.Blog
             output.TagName = "a";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var builder = _generator.GenerateActionLink(ViewContext, string.Empty, Page, "Account", null, null, null, null, null);
+            var builder = GetTagBuilder(!string.IsNullOrEmpty(Page) ? Page : "Index", null);
 
             output.MergeAttributes(builder);
 
             return Task.CompletedTask;
+        }
+
+        private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
+        {
+            routeValues ??= new Dictionary<string, object>();
+            routeValues.TryAdd("Area", "");
+
+            return _generator.GenerateActionLink(ViewContext, string.Empty, action, "Account", null, null, null, routeValues, null);
         }
     }
 }

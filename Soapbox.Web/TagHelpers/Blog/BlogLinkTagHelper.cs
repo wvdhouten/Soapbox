@@ -152,6 +152,9 @@ namespace Soapbox.Web.TagHelpers.Blog
 
         private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
         {
+            routeValues ??= new Dictionary<string,object>();
+            routeValues.TryAdd("Area", "");
+
             return _generator.GenerateActionLink(ViewContext, string.Empty, action, "Blog", null, null, null, routeValues, null);
         }
     }

@@ -13,7 +13,6 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Common;
     using Soapbox.Core.Email;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
