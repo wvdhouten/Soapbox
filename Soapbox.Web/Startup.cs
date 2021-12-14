@@ -2,6 +2,7 @@ namespace Soapbox.Web
 {
     using System;
     using System.IO;
+    using AspNetCore.SassCompiler;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -94,10 +95,10 @@ namespace Soapbox.Web
                 options.ViewLocationExpanders.Add(expander);
             });
 
-            services.AddWebOptimizer(pipeline =>
+            if (HostEnvironment.IsDevelopment())
             {
-                pipeline.AddScssBundle("/css/bundle.css", "scss/site.scss");
-            });
+                services.AddSassCompiler();
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -118,27 +119,19 @@ namespace Soapbox.Web
             }
 
             app.UseStatusCodePagesWithReExecute("/Pages/Error", "?statusCode={0}");
-            app.UseWebOptimizer();
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = CacheControlPrepareResponse
-            });
+            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = CacheControlPrepareResponse });
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName),
-                RequestPath = "/Media",
-                OnPrepareResponse = CacheControlPrepareResponse
-            });
+            var mediaFileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(env.ContentRootPath, "Content", "Files")).FullName);
+            var mediaFileOptions = new StaticFileOptions { FileProvider = mediaFileProvider, RequestPath = "/Media", OnPrepareResponse = CacheControlPrepareResponse };
+            app.UseStaticFiles(mediaFileOptions);
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Themes")),
-                RequestPath = "/Themes",
-                OnPrepareResponse = CacheControlPrepareResponse
-            });
+            var themeFileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Themes"));
+            var themeFileOptions = new StaticFileOptions { FileProvider = themeFileProvider, RequestPath = "/Themes", OnPrepareResponse = CacheControlPrepareResponse };
+            app.UseStaticFiles(themeFileOptions);
+
+            env.WebRootFileProvider = new ExtendedCompositeFileProvider(env.WebRootFileProvider, mediaFileOptions, themeFileOptions);
 
             app.UseMetaWeblog("/livewriter");
             app.UseRouting();
