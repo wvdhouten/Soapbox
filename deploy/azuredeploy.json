@@ -4,14 +4,14 @@
     "parameters": {
       "siteName": {
         "type": "string",
-        "defaultValue": "DasBlog",
+        "defaultValue": "Soapbox",
         "metadata": {
           "description": "The AzureWebSites name of your Web Site (some random text will be added at the end for uniqueness)"
         }
       },
       "hostingPlan": {
         "type": "string",
-        "defaultValue": "DasBlogHosting",
+        "defaultValue": "SoapboxHosting",
         "metadata": {
           "description": "The name of the hosting plan to deploy to. If the plan doesn't exist, it will be created"
         }
@@ -51,7 +51,7 @@
       },
       "repoURL": {
         "type": "string",
-        "defaultValue": "https://github.com/poppastring/dasblog-core.git",
+        "defaultValue": "https://github.com/wvdhouten/Soapbox.git",
         "metadata": {
           "description": "The URL for the GitHub repository that contains the project to deploy."
         }
