@@ -1,0 +1,56 @@
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+a[role="button"] {
+  display: inline-block;
+  color: var(--button-text-color);
+  font-weight: bold;
+  background: var(--button-background-color);
+  border: 2px solid var(--button-background-color);
+  border-radius: 2px;
+  padding: .5rem 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--button-hover-background-color);
+  }
+
+  &:active {
+    background: var(--button-active-background-color);
+  }
+
+  &[disabled] {
+    background: var(--button-disabled-background-color);
+    border-color: var(--button-disabled-background-color);
+    cursor: default;
+  }
+
+  &.outline {
+    background: transparent;
+    color: currentColor;
+
+    &:hover {
+      border-color: var(--button-hover-background-color);
+    }
+
+    &:active {
+      border-color: var(--button-active-background-color);
+    }
+
+    &[disabled] {
+      border-color: var(--button-disabled-background-color);
+      color: var(--button-disabled-text-color);
+      cursor: default;
+    }
+  }
+
+  &.small {
+    font-size: .8rem;
+    padding: .3rem .5rem;
+  }
+
+  &.large {
+    width: 80%;
+  }
+}

@@ -1,0 +1,16 @@
+// Breakpoints
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+// Viewports
+$viewports: (
+  sm: 510px,
+  md: 700px,
+  lg: 920px,
+  xl: 1130px
+) !default;

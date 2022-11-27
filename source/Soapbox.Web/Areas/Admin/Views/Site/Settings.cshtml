@@ -1,0 +1,69 @@
+@using System.IO
+@model SiteSettings
+@{
+  ViewData[Constants.PageTitle] = "Settings";
+  var dir = Directory.GetDirectories(System.IO.Path.Combine(Environment.CurrentDirectory, "Themes"));
+  var themes = dir.Select(f => new DirectoryInfo(f).Name);
+}
+
+<div class="container content">
+  <form class="horizontal-form" asp-area="Admin" asp-controller="Site" asp-action="Settings" method="post">
+    <header>
+      <h1>Settings</h1>
+    </header>
+    <h2>Site</h2>
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+      <label asp-for="@Model.Title" class="label"></label>
+      <input asp-for="@Model.Title" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Subtitle" class="label"></label>
+      <input asp-for="@Model.Subtitle" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Description" class="label"></label>
+      <input asp-for="@Model.Description" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Keywords" class="label"></label>
+      <input asp-for="@Model.Keywords" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Theme" class="label"></label>
+      <select asp-for="@Model.Theme" asp-items="themes.Select(t => new SelectListItem { Text = t, Value = t })"></select>
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.Owner" class="label"></label>
+      <input asp-for="@Model.Owner" />
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.OwnerEmail" title="Will be visible on RSS feeds" class="label"></label>
+      <input asp-for="@Model.OwnerEmail" />
+    </div>
+    <h2>Blog</h2>
+    <div class="form-group">
+      <label asp-for="@Model.BlogPageLayout" class="label"></label>
+      <select asp-for="@Model.BlogPageLayout" asp-items="Html.GetEnumSelectList<BlogPageLayout>()"></select>
+    </div>
+    <div class="form-group">
+      <label asp-for="@Model.PostsPerPage" class="label"></label>
+      <input asp-for="@Model.PostsPerPage" />
+    </div>
+    <h2>Security</h2>
+    <div class="form-group">
+      <span class="label">Membership</span>
+      <div class="input">
+        <input asp-for="@Model.AllowRegistration" />
+        <label asp-for="@Model.AllowRegistration" class="label"></label>
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="submit">Save</button>
+    </div>
+    <h2>Backup</h2>
+    <div class="form-group">
+      <a asp-area="Admin" asp-controller="Site" asp-action="Backup" role="button">Download</a>
+    </div>
+  </form>
+</div>

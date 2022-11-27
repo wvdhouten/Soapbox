@@ -1,0 +1,11 @@
+figure {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+
+  figcaption {
+    padding: calc(var(--spacing) * 0.5) 0;
+    color: var(--muted-color);
+  }
+}
