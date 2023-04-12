@@ -20,26 +20,26 @@ namespace Soapbox.Web.Controllers
         private readonly IBlogService _blogService;
         private readonly IMarkdownParser _markdownParser;
 
-        public FeedController(IOptionsSnapshot<SiteSettings> config, IBlogService blogService, IMarkdownParser markdownParser)
+        public FeedController(IOptionsSnapshot<SiteSettings> settings, IBlogService blogService, IMarkdownParser markdownParser)
         {
-            _settings = config.Value;
+            _settings = settings.Value;
             _blogService = blogService;
             _markdownParser = markdownParser;
         }
 
+        [Produces("application/rss+xml")]
         public async Task Rss()
         {
-            Response.ContentType = "application/rss+xml";
-            await OutputFeed(FeedFormat.Rss);
+            await WriteFeed(FeedFormat.Rss);
         }
 
+        [Produces("application/atom+xml")]
         public async Task Atom()
         {
-            Response.ContentType = "application/atom+xml";
-            await OutputFeed(FeedFormat.Atom);
+            await WriteFeed(FeedFormat.Atom);
         }
 
-        private async Task OutputFeed(FeedFormat format = FeedFormat.Rss)
+        private async Task WriteFeed(FeedFormat format = FeedFormat.Rss)
         {
             var baseUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
             var imageUri = !string.IsNullOrWhiteSpace(_settings.SyndicationFeedImage)
