@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Core", "Soapbox.Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A3B1592C-B16F-4905-8A1E-110996071D41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Tests", "Soapbox.Tests\Soapbox.Tests.csproj", "{EB5A14A5-4BDD-495A-8EA9-3C903E36E691}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Tests", "Soapbox.Tests\Soapbox.Tests.csproj", "{EB5A14A5-4BDD-495A-8EA9-3C903E36E691}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.DataAccess.FileSystem", "Soapbox.DataAccess.FileSystem\Soapbox.DataAccess.FileSystem.csproj", "{717B4076-FFAA-4AB9-B53C-282B74BA621E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{EB5A14A5-4BDD-495A-8EA9-3C903E36E691}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB5A14A5-4BDD-495A-8EA9-3C903E36E691}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB5A14A5-4BDD-495A-8EA9-3C903E36E691}.Release|Any CPU.Build.0 = Release|Any CPU
+		{717B4076-FFAA-4AB9-B53C-282B74BA621E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{717B4076-FFAA-4AB9-B53C-282B74BA621E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{717B4076-FFAA-4AB9-B53C-282B74BA621E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{717B4076-FFAA-4AB9-B53C-282B74BA621E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
