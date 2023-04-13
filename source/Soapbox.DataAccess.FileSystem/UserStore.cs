@@ -15,6 +15,14 @@ namespace Soapbox.DataAccess.FileSystem
         private readonly string _filePath = Path.Combine(Environment.CurrentDirectory, "Content", "users.json");
         private IList<SoapboxUser> _users;
 
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            Converters =
+            {
+
+            }
+        };
+
         public IQueryable<SoapboxUser> Users
         {
             get

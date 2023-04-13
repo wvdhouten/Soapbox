@@ -2,100 +2,139 @@ namespace Soapbox.DataAccess.FileSystem
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Identity;
+    using Soapbox.Core.Extensions;
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
 
     public class BlogService : IBlogService
     {
-        public BlogService()
+        private readonly IBlogStore _blogStore;
+        private readonly IUserStore<SoapboxUser> _userStore;
+
+        private IQueryable<Post> Posts => _blogStore.Posts.AsQueryable();
+
+        private IQueryable<PostCategory> Categories => _blogStore.Categories.AsQueryable();
+
+        public BlogService(IBlogStore blogStore, IUserStore<SoapboxUser> userStore)
         {
+            _blogStore = blogStore;
+            _userStore = userStore;
         }
 
         public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true)
         {
-            throw new NotImplementedException();
+            var posts = Posts;
+
+            if (isPublished)
+            {
+                var now = DateTime.UtcNow;
+                posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);
+            }
+
+            posts = posts.OrderByDescending(post => post.PublishedOn);
+
+            return Task.FromResult(posts.GetPaged(page, pageSize));
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Posts.Where(predicate).ToAsyncEnumerable());
         }
 
-        public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long id)
+        public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).ToAsyncEnumerable());
         }
 
-        public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string id)
+        public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).ToAsyncEnumerable());
         }
 
-        public async Task CreatePostAsync(Post post)
+        public Task<Post> GetPostByIdAsync(string postId)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Post> GetPostByIdAsync(string id)
-        {
-            throw new NotImplementedException();
+            return Task.FromResult(Posts.FirstOrDefault(p => p.Id == postId));
         }
 
         public Task<Post> GetPostBySlugAsync(string slug)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Posts.FirstOrDefault(p => p.Slug == slug.ToLowerInvariant()));
         }
 
-        public async Task UpdatePostAsync(Post post)
+        public Task CreatePostAsync(Post post)
         {
-            throw new NotImplementedException();
+            _blogStore.UpdatePost(post);
+
+            return Task.CompletedTask;
         }
 
-        public async Task DeletePostByIdAsync(string id)
+        public Task UpdatePostAsync(Post post)
         {
-            throw new NotImplementedException();
+            _blogStore.UpdatePost(post);
+
+            return Task.CompletedTask;
         }
 
-        public Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
+        public Task DeletePostByIdAsync(string postId)
         {
-            throw new NotImplementedException();
+            _blogStore.DeletePost(postId);
+
+            return Task.CompletedTask;
         }
 
         public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Categories.GetPaged(page, pageSize));
         }
 
-        public async Task CreateCategoryAsync(PostCategory category)
+        public Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Categories.ToAsyncEnumerable());
         }
 
-        public Task<PostCategory> GetCategoryByIdAsync(long id, bool includePosts = false)
+        public Task<PostCategory> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
         }
 
         public Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Categories.FirstOrDefault(category => category.Slug == slug.ToLowerInvariant()));
         }
 
-        public async Task UpdateCategoryAsync(PostCategory category)
+        public Task CreateCategoryAsync(PostCategory category)
+        {
+            _blogStore.Categories.Add(category);
+
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateCategoryAsync(PostCategory category)
+        {
+            var existingCategory = _blogStore.Categories.FirstOrDefault(c => c.Id == category.Id);
+
+            var list = new List<PostCategory>();
+            _blogStore.Categories.Add(category);
+
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteCategoryByIdAsync(long categoryId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteCategoryByIdAsync(long id)
+        public async Task<SoapboxUser> GetAuthorByIdAsync(string authorId)
         {
-            throw new NotImplementedException();
-        }
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(10));
 
-        public Task<SoapboxUser> GetAuthorByIdAsync(string id)
-        {
-            throw new NotImplementedException();
+            return await _userStore.FindByIdAsync(authorId, cts.Token);
         }
     }
 }

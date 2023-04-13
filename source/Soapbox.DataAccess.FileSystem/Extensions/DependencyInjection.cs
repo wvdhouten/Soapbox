@@ -13,6 +13,7 @@ namespace Soapbox.DataAccess.FileSystem
     {
         public static IServiceCollection AddFileSystemStorage([NotNull] this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            services.AddSingleton<IBlogStore, BlogStore>();
             services.AddScoped<IBlogService, BlogService>();
 
             return services;
