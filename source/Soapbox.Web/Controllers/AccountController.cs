@@ -706,6 +706,13 @@ namespace Soapbox.Web.Controllers
                 return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
+            var logins = await _userManager.GetLoginsAsync(user);
+            if (logins.Count == 1 && !await _userManager.HasPasswordAsync(user))
+            {
+                StatusMessage = "Cannot remove the last login mechanism.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
             if (!result.Succeeded)
             {
