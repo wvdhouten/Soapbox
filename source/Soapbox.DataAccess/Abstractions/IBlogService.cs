@@ -12,34 +12,34 @@ namespace Soapbox.DataAccess.Abstractions
 
         Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
-        Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long id);
+        Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long categoryId);
 
         Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId);
+
+        Task<Post> GetPostByIdAsync(string postId);
+
+        Task<Post> GetPostBySlugAsync(string slug);
 
         Task CreatePostAsync(Post post);
 
         Task UpdatePostAsync(Post post);
 
-        Task<Post> GetPostByIdAsync(string id);
-
-        Task<Post> GetPostBySlugAsync(string slug);
-
-        Task DeletePostByIdAsync(string id);
-
-        Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
+        Task DeletePostByIdAsync(string postId);
 
         Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false);
 
-        Task CreateCategoryAsync(PostCategory category);
+        Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
 
-        Task<PostCategory> GetCategoryByIdAsync(long id, bool includePosts = false);
+        Task<PostCategory> GetCategoryByIdAsync(long categoryId, bool includePosts = false);
 
         Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false);
 
+        Task CreateCategoryAsync(PostCategory category);
+
         Task UpdateCategoryAsync(PostCategory category);
 
-        Task DeleteCategoryByIdAsync(long id);
+        Task DeleteCategoryByIdAsync(long categoryId);
 
-        Task<SoapboxUser> GetAuthorByIdAsync(string id);
+        Task<SoapboxUser> GetAuthorByIdAsync(string authorId);
     }
 }

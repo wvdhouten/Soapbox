@@ -40,14 +40,24 @@ namespace Soapbox.DataAccess.Sqlite
             return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(predicate).AsAsyncEnumerable());
         }
 
-        public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long id)
+        public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
         {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Categories.Any(c => c.Id == id)).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Categories.Any(c => c.Id == categoryId)).AsAsyncEnumerable());
         }
 
-        public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string id)
+        public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
         {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Author.Id == id).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Author.Id == authorId).AsAsyncEnumerable());
+        }
+
+        public async Task<Post> GetPostByIdAsync(string postId)
+        {
+            return await _context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefaultAsync(p => p.Id == postId);
+        }
+
+        public Task<Post> GetPostBySlugAsync(string slug)
+        {
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefault(p => p.Slug == slug.ToLowerInvariant()));
         }
 
         public async Task CreatePostAsync(Post post)
@@ -60,16 +70,6 @@ namespace Soapbox.DataAccess.Sqlite
             AttachCategories(post);
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<Post> GetPostByIdAsync(string id)
-        {
-            return await _context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        public Task<Post> GetPostBySlugAsync(string slug)
-        {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).FirstOrDefault(p => p.Slug == slug.ToLowerInvariant()));
         }
 
         public async Task UpdatePostAsync(Post post)
@@ -99,12 +99,92 @@ namespace Soapbox.DataAccess.Sqlite
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeletePostByIdAsync(string id)
+        public async Task DeletePostByIdAsync(string postId)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.FindAsync(postId);
             _context.Posts.Remove(post);
 
             await _context.SaveChangesAsync();
+        }
+
+        public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.OrderBy(c => c.Name).GetPaged(page, pageSize));
+        }
+
+        public Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.OrderBy(c => c.Name).AsAsyncEnumerable());
+        }
+
+        public Task<PostCategory> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.FirstOrDefault(c => c.Id == categoryId));
+        }
+
+        public Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false)
+        {
+            IQueryable<PostCategory> query = _context.PostCategories;
+            if (includePosts)
+            {
+                query = query.Include(c => c.Posts);
+            }
+
+            return Task.FromResult(query.FirstOrDefault(c => c.Slug == slug));
+        }
+
+        public async Task CreateCategoryAsync(PostCategory category)
+        {
+            if (_context.PostCategories.Any(c => c.Name == category.Name))
+            {
+                throw new Exception($"Category with name '{category.Name}' already exists.");
+            }
+
+            await _context.PostCategories.AddAsync(category);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCategoryAsync(PostCategory category)
+        {
+            var existing = _context.PostCategories.Find(category.Id);
+            _context.Entry(existing).CurrentValues.SetValues(category);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteCategoryByIdAsync(long categoryId)
+        {
+            var category = await _context.PostCategories.FindAsync(categoryId);
+
+            _context.PostCategories.Remove(category);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public Task<SoapboxUser> GetAuthorByIdAsync(string authorId)
+        {
+            IQueryable<SoapboxUser> query = _context.Users.Include(u => u.Posts);
+
+            return Task.FromResult(query.FirstOrDefault(u => u.Id == authorId));
         }
 
         private static void CleanPostValues(Post post)
@@ -125,91 +205,11 @@ namespace Soapbox.DataAccess.Sqlite
                 {
                     _context.PostCategories.Add(category);
                 }
-                else if(_context.PostCategories.Local.Any(c => c.Id == category.Id))
+                else if (_context.PostCategories.Local.Any(c => c.Id == category.Id))
                 {
                     _context.PostCategories.Attach(category);
                 }
             }
-        }
-
-        public Task<IAsyncEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
-        {
-            IQueryable<PostCategory> query = _context.PostCategories;
-            if (includePosts)
-            {
-                query = query.Include(c => c.Posts);
-            }
-
-            return Task.FromResult(query.OrderBy(c => c.Name).AsAsyncEnumerable());
-        }
-
-        public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
-        {
-            IQueryable<PostCategory> query = _context.PostCategories;
-            if (includePosts)
-            {
-                query = query.Include(c => c.Posts);
-            }
-
-            return Task.FromResult(query.OrderBy(c => c.Name).GetPaged(page, pageSize));
-        }
-
-        public async Task CreateCategoryAsync(PostCategory category)
-        {
-            if (_context.PostCategories.Any(c => c.Name == category.Name))
-            {
-                throw new Exception($"Category with name '{category.Name}' already exists.");
-            }
-
-            await _context.PostCategories.AddAsync(category);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public Task<PostCategory> GetCategoryByIdAsync(long id, bool includePosts = false)
-        {
-            IQueryable<PostCategory> query = _context.PostCategories;
-            if (includePosts)
-            {
-                query = query.Include(c => c.Posts);
-            }
-
-            return Task.FromResult(query.FirstOrDefault(c => c.Id == id));
-        }
-
-        public Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false)
-        {
-            IQueryable<PostCategory> query = _context.PostCategories;
-            if (includePosts)
-            {
-                query = query.Include(c => c.Posts);
-            }
-
-            return Task.FromResult(query.FirstOrDefault(c => c.Slug == slug));
-        }
-
-        public async Task UpdateCategoryAsync(PostCategory category)
-        {
-            var existing = _context.PostCategories.Find(category.Id);
-            _context.Entry(existing).CurrentValues.SetValues(category);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteCategoryByIdAsync(long id)
-        {
-            var category = await _context.PostCategories.FindAsync(id);
-
-            _context.PostCategories.Remove(category);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public Task<SoapboxUser> GetAuthorByIdAsync(string id)
-        {
-            IQueryable<SoapboxUser> query = _context.Users.Include(u => u.Posts);
-
-            return Task.FromResult(query.FirstOrDefault(u => u.Id == id));
         }
     }
 }

@@ -10,6 +10,6 @@ namespace Soapbox.Models
 
         public UserRole Role { get; set; }
 
-        public IList<Post> Posts { get; set; }
+        public IList<Post> Posts { get; set; } = new List<Post>();
     }
 }

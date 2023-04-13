@@ -1,6 +1,7 @@
 namespace Soapbox.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Text.Encodings.Web;
@@ -67,8 +68,8 @@ namespace Soapbox.Web.Controllers
             var email = await _userManager.GetEmailAsync(user);
             var currentLogins = await _userManager.GetLoginsAsync(user);
             var otherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
-                .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
-                .ToList();
+                    .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
+                    .ToList();
 
             var model = new ProfileModel
             {
@@ -259,7 +260,14 @@ namespace Soapbox.Web.Controllers
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code, returnUrl }, protocol: Request.Scheme);
 
-                await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                try
+                {
+                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                }
+                catch
+                {
+                    // TODO: What if the email is not sent?
+                }
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {

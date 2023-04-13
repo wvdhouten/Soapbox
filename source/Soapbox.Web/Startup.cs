@@ -2,7 +2,6 @@ namespace Soapbox.Web
 {
     using System;
     using System.IO;
-    using AspNetCore.SassCompiler;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -103,7 +102,7 @@ namespace Soapbox.Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            RepairSite(app, env);
+            RepairSite(env);
 
             app.UseSqlite(env);
 
@@ -153,7 +152,7 @@ namespace Soapbox.Web
             context.Context.Response.Headers[HeaderNames.CacheControl] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
         }
 
-        private static void RepairSite(IApplicationBuilder app, IWebHostEnvironment env)
+        private static void RepairSite(IWebHostEnvironment env)
         {
             var contentPath = Path.Combine(env.ContentRootPath, "Content", "Files");
             var themesPath = Path.Combine(env.ContentRootPath, "Themes", "Default");

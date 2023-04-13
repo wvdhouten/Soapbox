@@ -1,6 +1,6 @@
 namespace Soapbox.Models
 {
-    public class PostMeta
+    public class PostMetadata
     {
         public long Id { get; set; }
 

@@ -16,6 +16,6 @@ namespace Soapbox.DataAccess.Data
 
         public DbSet<PostCategory> PostCategories { get; set; }
 
-        public DbSet<PostMeta> PostMeta { get; set; }
+        public DbSet<PostMetadata> PostMetadata { get; set; }
     }
 }

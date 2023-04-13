@@ -64,7 +64,7 @@ namespace Soapbox.Models
         /// <summary>
         /// Gets or sets the meta data.
         /// </summary>
-        public IList<PostMeta> Meta { get; set; } = new List<PostMeta>();
+        public IList<PostMetadata> Metadata { get; set; } = new List<PostMetadata>();
     }
 
     /// <summary>

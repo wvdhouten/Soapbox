@@ -5,7 +5,7 @@ namespace Soapbox.Models
 
     public class PagedList<T> : IPagedList<T>
     {
-        public IList<T> Items { get; set; }
+        public IList<T> Items { get; set; } = new List<T>();
 
         public int Total { get; set; }
 
