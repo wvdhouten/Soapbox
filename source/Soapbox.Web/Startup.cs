@@ -84,7 +84,7 @@ namespace Soapbox.Web
             services.Configure<RouteOptions>(options =>
             {
                 options.LowercaseUrls = true;
-                options.LowercaseQueryStrings = true;
+                options.LowercaseQueryStrings = false;
             });
             services.AddControllersWithViews();
 

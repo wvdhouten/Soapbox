@@ -159,7 +159,14 @@ namespace Soapbox.Web.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
-            StatusMessage = "Your email has been confirmed.";
+            if (result.Succeeded)
+            {
+                StatusMessage = "Your email has been confirmed.";
+            }
+            else
+            {
+                StatusMessage = "Something went wrong.";
+            }
 
             return RedirectToAction(nameof(Index));
         }
