@@ -112,7 +112,7 @@ namespace Soapbox.DataAccess.Sqlite
             IQueryable<PostCategory> query = _context.PostCategories;
             if (includePosts)
             {
-                query = query.Include(c => c.Posts);
+                query = IncludePostsInQuery(query);
             }
 
             return Task.FromResult(query.OrderBy(c => c.Name).GetPaged(page, pageSize));
@@ -123,7 +123,7 @@ namespace Soapbox.DataAccess.Sqlite
             IQueryable<PostCategory> query = _context.PostCategories;
             if (includePosts)
             {
-                query = query.Include(c => c.Posts);
+                query = IncludePostsInQuery(query);
             }
 
             return Task.FromResult(query.OrderBy(c => c.Name).AsAsyncEnumerable());
@@ -134,7 +134,7 @@ namespace Soapbox.DataAccess.Sqlite
             IQueryable<PostCategory> query = _context.PostCategories;
             if (includePosts)
             {
-                query = query.Include(c => c.Posts);
+                query = IncludePostsInQuery(query);
             }
 
             return Task.FromResult(query.FirstOrDefault(c => c.Id == categoryId));
@@ -145,10 +145,15 @@ namespace Soapbox.DataAccess.Sqlite
             IQueryable<PostCategory> query = _context.PostCategories;
             if (includePosts)
             {
-                query = query.Include(c => c.Posts);
+                query = IncludePostsInQuery(query);
             }
 
             return Task.FromResult(query.FirstOrDefault(c => c.Slug == slug));
+        }
+
+        private static IQueryable<PostCategory> IncludePostsInQuery(IQueryable<PostCategory> query)
+        {
+            return query.Where(c => c.Posts.Any(p => p.Status == PostStatus.Published)).Include(c => c.Posts.Where(p => p.Status == PostStatus.Published));
         }
 
         public async Task CreateCategoryAsync(PostCategory category)
