@@ -1,0 +1,23 @@
+@model Models.Blog.ArchiveModel
+
+<header>
+  <h1>@Model.Year</h1>
+</header>
+@for (int i = 1; i <= 12; i++)
+{
+  var month = new DateTime(Model.Year, i, 1);
+  <section>
+    <h2 id="@string.Format("{0}-{1}", Model.Year, i)">
+      <blog-link archive-year="Model.Year" archive-month="i">@month.ToString("MMMM")</blog-link>
+    </h2>
+    <div class="item-list">
+      @foreach (var day in Model.Days.Where(day => day.Key.Month == i))
+      {
+        foreach (var post in day.Value)
+        {
+          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+        }
+      }
+    </div>
+  </section>
+}

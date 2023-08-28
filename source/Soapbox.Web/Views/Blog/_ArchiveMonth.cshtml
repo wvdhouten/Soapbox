@@ -1,0 +1,66 @@
+@model Models.Blog.ArchiveModel
+@{
+    var currentMonth = new DateTime(Model.Year, Model.Month ?? 1, 1);
+    var prevMonth = currentMonth.AddMonths(-1);
+    var nextMonth = currentMonth.AddMonths(1);
+    var endOfWeek = Model.StartOfWeek + 6;
+    var startOfCalendar = Model.Days.First().Key;
+    var today = DateTime.UtcNow;
+}
+
+<div class="calendar-navigation">
+  <blog-link archive-year="prevMonth.Year" archive-month="prevMonth.Month">
+    <i class="fa fa-angle-double-left"></i> @prevMonth.ToString("MMM yyyy")
+  </blog-link>
+  <h1 class="title">@currentMonth.ToString("MMMM yyyy")</h1>
+  <blog-link archive-year="nextMonth.Year" archive-month="nextMonth.Month">
+    @nextMonth.ToString("MMM yyyy") <i class="fa fa-angle-double-right"></i>
+  </blog-link>
+</div>
+<table class="calendar-view">
+  <thead>
+    <tr>
+      <th>Mon</th>
+      <th>Tue</th>
+      <th>Wed</th>
+      <th>Thu</th>
+      <th>Fri</th>
+      <th>Sat</th>
+      <th>Sun</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var day in Model.Days)
+    {
+      var modifier = day.Key.Month != currentMonth.Month ? "outside" : "";
+      var todayClass = day.Key.Date == today.Date ? "today" : "";
+
+      if (day.Key.DayOfWeek == Model.StartOfWeek)
+      {
+        @:<tr>
+      }
+      <td class="@modifier">
+        <header class="@todayClass">
+          @day.Key.Day
+          @if (day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date)
+          {
+            <span class="month">@day.Key.ToString("MMM")</span>
+          }
+        </header>
+        <section class="entries">
+          @if (day.Value != null && day.Value.Any())
+          {
+            foreach (var post in day.Value)
+            {
+              <blog-link post="post" title="@post.Title" />
+            }
+          }
+        </section>
+      </td>
+      if (day.Key.DayOfWeek == endOfWeek)
+      {
+        @:</tr>
+      }
+    }
+  </tbody>
+</table>

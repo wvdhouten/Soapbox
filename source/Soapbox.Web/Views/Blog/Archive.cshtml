@@ -1,67 +1,25 @@
 @model Models.Blog.ArchiveModel
 @{
-  ViewData[Constants.PageTitle] = "Archive";
+  var archiveTitle = Model.Month == null
+      ? Model.Year.ToString()
+      : new DateTime(Model.Year, Model.Month.Value, 1).ToString("MMMM yyyy");
 
-  var prevMonth = Model.CurrentMonth.AddMonths(-1);
-  var nextMonth = Model.CurrentMonth.AddMonths(1);
-  var endOfWeek = Model.StartOfWeek + 6;
-  var startOfCalendar = Model.Days.First().Key;
-  var today = DateTime.UtcNow;
+  ViewData[Constants.PageTitle] = $"Archive: {archiveTitle}";
 }
 
 <div class="container content">
-  <div class="calendar-navigation">
-    <blog-link archive-year="prevMonth.Year" archive-month="prevMonth.Month">
-      <i class="fa fa-angle-double-left"></i> @prevMonth.ToString("MMM yyyy")
-    </blog-link>
-    <span class="title">@Model.CurrentMonth.ToString("MMMM yyyy")</span>
-    <blog-link archive-year="nextMonth.Year" archive-month="nextMonth.Month">
-      @nextMonth.ToString("MMM yyyy") <i class="fa fa-angle-double-right"></i>
-    </blog-link>
+  <div class="years-navigation">
+    @for (int year = Model.FirstYear; year <= DateTime.UtcNow.Year; year++)
+    {
+      <blog-link archive-year="@year">@year</blog-link>
+    }
   </div>
-  <table class="calendar-view">
-    <thead>
-      <tr>
-        <th>Mon</th>
-        <th>Tue</th>
-        <th>Wed</th>
-        <th>Thu</th>
-        <th>Fri</th>
-        <th>Sat</th>
-        <th>Sun</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var day in Model.Days)
-      {
-        var modifier = day.Key.Month != Model.CurrentMonth.Month ? "outside" : "";
-        var todayClass = day.Key.Date == today.Date ? "today" : "";
-
-        if (day.Key.DayOfWeek == Model.StartOfWeek)
-        {
-          @:<tr>
-          }
-          <td class="@modifier">
-            <header class="@todayClass">
-              @day.Key.Day
-              @if (day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date)
-              {<span class="month">@day.Key.ToString("MMM")</span>}
-            </header>
-            <section class="entries">
-              @if (day.Value != null && day.Value.Any())
-              {
-                foreach (var post in day.Value)
-                {
-                  <blog-link post="post" title="@post.Title" />
-                }
-              }
-            </section>
-          </td>
-          if (day.Key.DayOfWeek == endOfWeek)
-          {
-          @:</tr>
-        }
-      }
-    </tbody>
-  </table>
+  @if (Model.Month != null)
+  {
+    <partial name="_ArchiveMonth" model="Model" />
+  }
+  else
+  {
+    <partial name="_ArchiveYear" model="Model" />
+  }
 </div>

@@ -8,7 +8,7 @@ namespace Soapbox.Core.Settings
         private readonly ViewDataDictionary _viewData;
         private readonly SiteSettings _settings;
 
-        public string Title => GetViewDataValue(Constants.Title) ?? (GetViewDataValue(Constants.PageTitle) != null ? $"{GetViewDataValue(Constants.PageTitle)} - {_settings.Title}" : _settings.Title);
+        public string Title => GetViewDataValue(Constants.PageTitle) != null ? $"{GetViewDataValue(Constants.PageTitle)} - {_settings.Title}" : _settings.Title;
 
         public string Description => GetViewDataValue(Constants.Description) ?? _settings.Description;
 

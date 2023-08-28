@@ -6,7 +6,7 @@
 
 <div class="container content">
   <header>
-    <h1>@Model.ShownName() (@Model.Posts.Count)</h1>
+    <h1>@ViewData[Constants.PageTitle] (@Model.Posts.Count)</h1>
   </header>
 
   <section>
@@ -18,7 +18,8 @@
           <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
         }
       }
-      else {
+      else
+      {
         <p>No posts found!</p>
       }
     </div>

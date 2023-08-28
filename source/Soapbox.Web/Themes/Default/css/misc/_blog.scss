@@ -156,14 +156,10 @@
 
 .item-list {
   color: var(--text-subtle-color);
+}
 
-  > * {
-    &::before {
-      display: inline-block;
-      content: "•";
-      margin: 0 6px;
-    }
-  }
+.years-navigation {
+    text-align: center;
 }
 
 .calendar-navigation {

@@ -2,7 +2,6 @@ namespace Soapbox.Core.Common
 {
     public class Constants
     {
-        public static readonly string Title = "Title";
         public static readonly string PageTitle = "PageTitle";
         public static readonly string Description = "Description";
         public static readonly string Author = "Author";

@@ -64,17 +64,25 @@ namespace Soapbox.Web.Controllers
         }
 
         [HttpGet("archive")]
-        [HttpGet("archive/{year:int?}")]
         [HttpGet("archive/{year:int?}/{month:int?}")]
         public async Task<IActionResult> Archive(int year = 0, int month = 0)
         {
             year = year > 0 ? year : DateTime.UtcNow.Year;
             month = month > 0 ? month : DateTime.UtcNow.Month;
 
-            var currentDate = new DateTime(year, month, 1);
-            var model = await GetMonthModel(currentDate);
+            var model = await GetMonthModel(year, month);
 
             return View(model);
+        }
+
+        [HttpGet("archive/{year:int?}")]
+        public async Task<IActionResult> Archive(int year = 0)
+        {
+            year = year > 0 ? year : DateTime.UtcNow.Year;
+
+            var model = await GetYearModel(year);
+
+            return View("Archive", model);
         }
 
         [HttpGet("categories")]
@@ -104,15 +112,16 @@ namespace Soapbox.Web.Controllers
             if (author is null)
             {
                 return NotFound();
-            }    
+            }
 
             return View(author);
         }
 
-        private async Task<ArchiveModel> GetMonthModel(DateTime currentMonth)
+        private async Task<ArchiveModel> GetMonthModel(int year, int month)
         {
-            var model = new ArchiveModel { CurrentMonth = currentMonth };
-            var startOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, 1);
+            var model = new ArchiveModel { Year = year, Month = month };
+
+            var startOfMonth = new DateTime(year, month, 1);
             var startOffset = startOfMonth.DayOfWeek == model.StartOfWeek ? 7 : (7 + startOfMonth.DayOfWeek - model.StartOfWeek) % 7;
             var startOfCalendar = startOfMonth.AddDays(-startOffset);
 
@@ -121,9 +130,27 @@ namespace Soapbox.Web.Controllers
                 model.Days.Add(startOfCalendar.AddDays(day).Date, new Collection<Post>());
             }
 
-            var posts = await _blogService.GetPostsAsync(post => post.Status == PostStatus.Published && post.PublishedOn.Year == currentMonth.Year && post.PublishedOn.Month == currentMonth.Month);
+            var posts = await _blogService.GetPostsAsync(post => post.Status == PostStatus.Published && post.PublishedOn.Year == year && post.PublishedOn.Month == month);
             await foreach (var post in posts)
             {
+                model.Days[post.PublishedOn.Date].Add(post);
+            }
+
+            return model;
+        }
+
+        private async Task<ArchiveModel> GetYearModel(int year)
+        {
+            var model = new ArchiveModel { Year = year, Month = null };
+
+            var posts = await _blogService.GetPostsAsync(post => post.Status == PostStatus.Published && post.PublishedOn.Year == year);
+            await foreach (var post in posts)
+            {
+                if (!model.Days.Any(x => x.Key == post.PublishedOn.Date))
+                {
+                    model.Days.Add(post.PublishedOn.Date, new Collection<Post>());
+                }
+
                 model.Days[post.PublishedOn.Date].Add(post);
             }
 
