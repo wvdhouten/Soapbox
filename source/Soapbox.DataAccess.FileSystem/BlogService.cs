@@ -36,24 +36,24 @@ namespace Soapbox.DataAccess.FileSystem
                 posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);
             }
 
-            posts = posts.OrderByDescending(post => post.PublishedOn);
+            posts = posts.OrderByDescending(post => post.IsPinned).ThenByDescending(post => post.PublishedOn);
 
             return Task.FromResult(posts.GetPaged(page, pageSize));
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
         {
-            return Task.FromResult(Posts.Where(predicate).ToAsyncEnumerable());
+            return Task.FromResult(Posts.Where(predicate).OrderByDescending(p => p.IsPinned).ToAsyncEnumerable());
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
         {
-            return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).ToAsyncEnumerable());
+            return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).OrderByDescending(p => p.IsPinned).ToAsyncEnumerable());
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
         {
-            return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).ToAsyncEnumerable());
+            return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).OrderByDescending(p => p.IsPinned).ToAsyncEnumerable());
         }
 
         public Task<Post> GetPostByIdAsync(string postId)

@@ -50,7 +50,7 @@ namespace Soapbox.Web.Services
 
         public async Task<Dictionary<string, string>> GetPersonalDataAsync(SoapboxUser user)
         {
-            _logger.LogInformation($"User with ID '{user.Id}' requested their personal data.");
+            _logger.LogInformation("User with ID '{userId}' requested their personal data.", user.Id);
 
             var personalData = new Dictionary<string, string>();
 

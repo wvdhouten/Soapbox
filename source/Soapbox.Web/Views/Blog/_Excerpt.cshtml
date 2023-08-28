@@ -8,7 +8,9 @@
 <article class="post excerpt">
   <header>
     <div class="container relative">
-      <h1><blog-link post="Model" /></h1>
+      <h1>
+        <blog-link post="Model" />
+      </h1>
       <div class="quick-actions" is-authorized>
         <edit-post post="Model"><i class="fa fa-edit"></i></edit-post>
       </div>
@@ -21,15 +23,16 @@
           <i class="fa fa-user-circle"></i>
           <blog-link author="Model.Author" />
         </div>
-        <div>
+        <div class="subtle" condition="@Model.Categories.Any()">
           <i class="fa fa-tags"></i>
           <div class="tag-list">
-          @foreach(var category in Model.Categories)
-          {
-            <div class="tag"><blog-link category="category" /></div>
-          }
+            @foreach (var category in Model.Categories)
+            {
+              <div class="tag"><blog-link category="category" /></div>
+            }
           </div>
         </div>
+        <i class="fa fa-thumb-tack" aria-hidden="true" condition="Model.IsPinned"></i>
       </div>
     </div>
   </header>

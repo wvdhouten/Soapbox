@@ -15,7 +15,10 @@
       {
         foreach (var post in day.Value)
         {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+          <div>
+            <time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" />
+            <i class="fa fa-thumb-tack" aria-hidden="true" condition="post.IsPinned"></i>
+          </div>
         }
       }
     </div>

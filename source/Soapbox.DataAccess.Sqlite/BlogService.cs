@@ -31,23 +31,23 @@ namespace Soapbox.DataAccess.Sqlite
             }
 
             posts = posts.Include(p => p.Author).Include(p => p.Categories);
-            posts = posts.OrderByDescending(post => EF.Property<Post>(post, nameof(post.PublishedOn)));
+            posts = posts.OrderByDescending(post => EF.Property<Post>(post, nameof(post.IsPinned))).ThenByDescending(post => EF.Property<Post>(post, nameof(post.PublishedOn)));
             return Task.FromResult(posts.GetPaged(page, pageSize));
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
         {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(predicate).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(predicate).OrderByDescending(p => p.IsPinned).AsAsyncEnumerable());
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
         {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Categories.Any(c => c.Id == categoryId)).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Categories.Any(c => c.Id == categoryId)).OrderByDescending(p => p.IsPinned).AsAsyncEnumerable());
         }
 
         public Task<IAsyncEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
         {
-            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Author.Id == authorId).AsAsyncEnumerable());
+            return Task.FromResult(_context.Posts.Include(p => p.Author).Include(p => p.Categories).Where(p => p.Author.Id == authorId).OrderByDescending(p => p.IsPinned).AsAsyncEnumerable());
         }
 
         public async Task<Post> GetPostByIdAsync(string postId)

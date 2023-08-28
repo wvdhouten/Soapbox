@@ -57,6 +57,12 @@ namespace Soapbox.Models
         public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
 
         /// <summary>
+        /// Gets or sets the pinned
+        /// </summary>
+        [Display(Name = "Is pinned")]
+        public bool IsPinned { get; set; }
+
+        /// <summary>
         /// Gets or sets the categories.
         /// </summary>
         public IList<PostCategory> Categories { get; set; } = new List<PostCategory>();

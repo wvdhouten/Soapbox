@@ -22,7 +22,10 @@
       <div class="item-list">
         @foreach (var post in category.Posts)
         {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+          <div>
+            <i class="fa fa-thumb-tack" aria-hidden="true" condition="post.IsPinned"></i>
+            <time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" />
+          </div>
         }
       </div>
     </section>

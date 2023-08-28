@@ -52,6 +52,7 @@
           {
             foreach (var post in day.Value)
             {
+              <i class="fa fa-thumb-tack" aria-hidden="true" condition="post.IsPinned"></i>
               <blog-link post="post" title="@post.Title" />
             }
           }
