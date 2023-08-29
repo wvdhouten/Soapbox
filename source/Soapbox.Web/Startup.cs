@@ -14,6 +14,7 @@ namespace Soapbox.Web
     using Microsoft.Extensions.Hosting;
     using Microsoft.Net.Http.Headers;
     using Soapbox.Core.Email;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Markdown;
     using Soapbox.Core.Settings;
@@ -43,6 +44,8 @@ namespace Soapbox.Web
 
             services.AddAutoMapper(typeof(Startup));
             services.AddSqlite(Configuration, HostEnvironment);
+
+            services.AddScoped<IEmailRenderer, RazorEmailRenderer>();
 
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddScoped<IEmailClient, SmtpEmailClient>();

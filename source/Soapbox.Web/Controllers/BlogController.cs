@@ -6,6 +6,7 @@ namespace Soapbox.Web.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Soapbox.Core.Common;
+    using Soapbox.Core.Email.Abstractions;
     using Soapbox.Core.Extensions;
     using Soapbox.Core.Markdown;
     using Soapbox.DataAccess.Abstractions;
@@ -19,16 +20,20 @@ namespace Soapbox.Web.Controllers
 
         private readonly IBlogService _blogService;
         private readonly IMarkdownParser _markdownParser;
+        private readonly IEmailRenderer _renderer;
 
-        public BlogController(IBlogService blogService, IMarkdownParser markdownParser)
+        public BlogController(IBlogService blogService, IMarkdownParser markdownParser, IEmailRenderer renderer)
         {
             _blogService = blogService;
             _markdownParser = markdownParser;
+            _renderer = renderer;
         }
 
         [HttpGet("{page:int=1}")]
         public async Task<IActionResult> Index(int page = 1)
         {
+            var result = _renderer.Render("Welcome", new Welcome());
+
             var posts = await _blogService.GetPostsPageAsync(page, 5);
 
             return View(posts);
