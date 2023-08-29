@@ -26,31 +26,21 @@ namespace Soapbox.Web
     using Soapbox.Web.Services;
     using WilderMinds.MetaWeblog;
 
-    public class Startup
+    public static class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
-        {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
-        }
-
-        public IWebHostEnvironment HostEnvironment { get; }
-
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             services.AddHealthChecks().AddCheck<SoapboxHealthChecks>("soapbox");
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddSqlite(Configuration, HostEnvironment);
+            services.AddSqlite(configuration, hostEnvironment);
 
             services.AddScoped<IEmailRenderer, RazorEmailRenderer>();
 
-            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
             services.AddScoped<IEmailClient, SmtpEmailClient>();
 
-            services.Configure<IdentityOptions>(Configuration.GetSection("IdentityOptions"));
+            services.Configure<IdentityOptions>(configuration.GetSection("IdentityOptions"));
             services.AddScoped<AccountService>();
             services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
 
@@ -59,12 +49,12 @@ namespace Soapbox.Web
                 o.DefaultScheme = IdentityConstants.ApplicationScheme;
                 o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
-            .TryAddGoogle(Configuration.GetSection("Authentication:Google"))
-            .TryAddMicrosoft(Configuration.GetSection("Authentication:Microsoft"))
-            .TryAddFacebook(Configuration.GetSection("Authentication:Facebook"))
-            .TryAddTwitter(Configuration.GetSection("Authentication:Twitter"))
-            .TryAddGitHub(Configuration.GetSection("Authentication:GitHub"))
-            .TryAddYahoo(Configuration.GetSection("Authentication:Yahoo"))
+            .TryAddGoogle(configuration.GetSection("Authentication:Google"))
+            .TryAddMicrosoft(configuration.GetSection("Authentication:Microsoft"))
+            .TryAddFacebook(configuration.GetSection("Authentication:Facebook"))
+            .TryAddTwitter(configuration.GetSection("Authentication:Twitter"))
+            .TryAddGitHub(configuration.GetSection("Authentication:GitHub"))
+            .TryAddYahoo(configuration.GetSection("Authentication:Yahoo"))
             .AddIdentityCookies();
 
             services.AddIdentityCore<SoapboxUser>(o =>
@@ -75,7 +65,7 @@ namespace Soapbox.Web
             .AddSignInManager()
             .AddSqliteStore();
 
-            services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
+            services.Configure<SiteSettings>(configuration.GetSection(nameof(SiteSettings)));
             services.AddScoped<ConfigFileService>();
             services.AddScoped<MediaFileService>();
 
@@ -97,13 +87,13 @@ namespace Soapbox.Web
                 options.ViewLocationExpanders.Add(expander);
             });
 
-            if (HostEnvironment.IsDevelopment())
+            if (hostEnvironment.IsDevelopment())
             {
                 services.AddSassCompiler();
             }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             RepairSite(env);
 
