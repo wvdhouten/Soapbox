@@ -15,6 +15,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.Web.Areas.Admin.Models.Users;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
+    using Soapbox.Web.Models.Email;
     using Soapbox.Web.Services;
 
     [Area("Admin")]
@@ -23,10 +24,10 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     {
         private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;
-        private readonly IEmailClient _emailClient;
+        private readonly IEmailService _emailClient;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(AccountService accountService, UserManager<SoapboxUser> userManager, IEmailClient emailClient, ILogger<UsersController> logger)
+        public UsersController(AccountService accountService, UserManager<SoapboxUser> userManager, IEmailService emailClient, ILogger<UsersController> logger)
         {
             _accountService = accountService;
             _userManager = userManager;
@@ -72,7 +73,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { area = "", code });
-                await _emailClient.SendEmailAsync(user.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _emailClient.SendEmailAsync(user.Email, "Reset Password", new ResetPassword { CallbackUrl = callbackUrl });
 
                 return RedirectToAction(nameof(Index));
             }

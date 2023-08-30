@@ -16,6 +16,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Core.Common;
     using Soapbox.Models;
     using Soapbox.Web.Models.Account;
+    using Soapbox.Web.Models.Email;
 
     public partial class AccountController : Controller
     {
@@ -163,7 +164,7 @@ namespace Soapbox.Web.Controllers
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
 
-                        await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await _emailService.SendEmailAsync(model.Email, "Confirm your email", new ConfirmEmail { CallbackUrl = callbackUrl });
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
@@ -189,11 +190,7 @@ namespace Soapbox.Web.Controllers
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login2fa([FromQuery] bool rememberMe, [FromQuery] string returnUrl = null)
         {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user is null)
-            {
-                throw new InvalidOperationException("Unable to load two-factor authentication user.");
-            }
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync() ?? throw new InvalidOperationException("Unable to load two-factor authentication user.");
 
             var model = new Login2faModel
             {
@@ -213,11 +210,7 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user is null)
-            {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-            }
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync() ?? throw new InvalidOperationException($"Unable to load two-factor authentication user.");
 
             var authenticatorCode = model.AuthenticatorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
             var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.RememberMachine);
@@ -244,11 +237,8 @@ namespace Soapbox.Web.Controllers
         public async Task<IActionResult> LoginRecoveryCode([FromQuery] string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user is null)
-            {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-            }
+
+            _ = await _signInManager.GetTwoFactorAuthenticationUserAsync() ?? throw new InvalidOperationException($"Unable to load two-factor authentication user.");
 
             var model = new LoginRecoveryCodeModel
             {
@@ -267,11 +257,7 @@ namespace Soapbox.Web.Controllers
                 return View(model);
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user is null)
-            {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-            }
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync() ?? throw new InvalidOperationException($"Unable to load two-factor authentication user.");
 
             var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
@@ -324,7 +310,7 @@ namespace Soapbox.Web.Controllers
 
             var code = await _accountService.GeneratePasswordResetCode(user);
             var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, Request.Scheme);
-            await _emailClient.SendEmailAsync(model.Email, "Reset Password", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await _emailService.SendEmailAsync(model.Email, "Reset Password", new ResetPassword { CallbackUrl = callbackUrl });
 
             return RedirectToAction(nameof(Index));
         }

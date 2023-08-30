@@ -1,10 +1,7 @@
 namespace Soapbox.Core.Syndication
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.ServiceModel.Syndication;
-    using System.Threading.Tasks;
 
     public static class SyndicationFeedExtensions
     {

@@ -1,6 +1,5 @@
 namespace Soapbox.Tests.TagHelpers
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -14,9 +13,7 @@ namespace Soapbox.Tests.TagHelpers
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.AspNetCore.Razor.TagHelpers;
     using Microsoft.AspNetCore.Routing;
-    using Moq;
     using Soapbox.Web.TagHelpers;
-    using Xunit;
 
     public class IsActiveRouteTagHelperTests
     {
