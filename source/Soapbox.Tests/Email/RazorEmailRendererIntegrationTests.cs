@@ -5,6 +5,7 @@ namespace Soapbox.Tests.Email
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.DependencyInjection;
     using Soapbox.Core.Email.Abstractions;
+    using Soapbox.Web.Models.Email;
 
     public class RazorEmailRendererIntegrationTests
     {
@@ -17,11 +18,11 @@ namespace Soapbox.Tests.Email
             var emailRenderer = server.Services.CreateScope().ServiceProvider.GetService<IEmailRenderer>();
 
             // Act
-            var result = await emailRenderer.Render("Welcome", "Test");
+            var result = await emailRenderer.Render(nameof(ResetPassword), new ResetPassword { CallbackUrl= "--Reset-Password--" });
 
             // Assert
             Assert.NotNull(result);
-            Assert.Contains("Welcome Test", result);
+            Assert.Contains("--Reset-Password--", result);
         }
     }
 }
