@@ -38,7 +38,7 @@ namespace Soapbox.Web
             services.AddScoped<IEmailRenderer, RazorEmailRenderer>();
 
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
-            services.AddScoped<IEmailClient, SmtpEmailClient>();
+            services.AddScoped<IEmailService, SmtpEmailClient>();
 
             services.Configure<IdentityOptions>(configuration.GetSection("IdentityOptions"));
             services.AddScoped<AccountService>();

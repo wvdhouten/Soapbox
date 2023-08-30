@@ -4,20 +4,25 @@ namespace Soapbox.Core.Email
     using System.Net.Mail;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
+    using Soapbox.Core.Email.Abstractions;
 
-    public class SmtpEmailClient : IEmailClient
+    public class SmtpEmailClient : IEmailService
     {
         private readonly SmtpSettings _settings;
+        private readonly IEmailRenderer _renderer;
 
-        public SmtpEmailClient(IOptionsSnapshot<SmtpSettings> options)
+        public SmtpEmailClient(IOptionsSnapshot<SmtpSettings> options, IEmailRenderer renderer)
         {
             _settings = options.Value;
+            _renderer = renderer;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync<T>(string recipient, string subject, T model)
         {
+            var htmlBody = await _renderer.Render(typeof(T).Name, model);
+
             using var client = GetClient();
-            var mailMessage = new MailMessage(_settings.Sender, email, subject, htmlMessage)
+            var mailMessage = new MailMessage(_settings.Sender, recipient, subject, htmlBody)
             {
                 IsBodyHtml = true
             };

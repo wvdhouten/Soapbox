@@ -1,4 +1,7 @@
+using System.Runtime.CompilerServices;
 using Soapbox.Web;
+
+[assembly: InternalsVisibleTo("Soapbox.Tests")]
 
 var builder = WebApplication.CreateBuilder(args);
 

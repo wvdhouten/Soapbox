@@ -1,0 +1,8 @@
+@using System.Text.Encodings.Web
+
+@model ConfirmEmail
+@{
+  Layout = "_Layout.cshtml";
+}
+
+<span>Please confirm your account by <a href="@HtmlEncoder.Default.Encode(Model.CallbackUrl)">clicking here</a>.</span>

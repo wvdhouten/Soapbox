@@ -1,7 +1,6 @@
 namespace Soapbox.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Text.Encodings.Web;
@@ -18,6 +17,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Core.Settings;
     using Soapbox.Models;
     using Soapbox.Web.Models.Account;
+    using Soapbox.Web.Models.Email;
     using Soapbox.Web.Services;
 
     [Authorize]
@@ -27,7 +27,7 @@ namespace Soapbox.Web.Controllers
         private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;
         private readonly SignInManager<SoapboxUser> _signInManager;
-        private readonly IEmailClient _emailClient;
+        private readonly IEmailService _emailService;
         private readonly ILogger<AccountController> _logger;
         private readonly UrlEncoder _urlEncoder;
 
@@ -43,7 +43,7 @@ namespace Soapbox.Web.Controllers
             AccountService accountService,
             UserManager<SoapboxUser> userManager,
             SignInManager<SoapboxUser> signInManager,
-            IEmailClient emailClient,
+            IEmailService emailService,
             ILogger<AccountController> logger,
             UrlEncoder urlEncoder)
         {
@@ -51,7 +51,7 @@ namespace Soapbox.Web.Controllers
             _accountService = accountService;
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailClient = emailClient;
+            _emailService = emailService;
             _logger = logger;
             _urlEncoder = urlEncoder;
         }
@@ -116,7 +116,7 @@ namespace Soapbox.Web.Controllers
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Action(nameof(ConfirmEmailChange), "Account", values: new { userId, email = model.NewEmail, code }, protocol: Request.Scheme);
-                await _emailClient.SendEmailAsync(model.NewEmail, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _emailService.SendEmailAsync(model.NewEmail, "Confirm your email", new ConfirmEmail { CallbackUrl = callbackUrl });
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
             }
@@ -221,7 +221,7 @@ namespace Soapbox.Web.Controllers
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId, code }, Request.Scheme);
-            await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await _emailService.SendEmailAsync(model.Email, "Confirm your email", new ConfirmEmail { CallbackUrl = callbackUrl });
 
             StatusMessage = "Verification email sent. Please check your email.";
 
@@ -269,7 +269,7 @@ namespace Soapbox.Web.Controllers
 
                 try
                 {
-                    await _emailClient.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailService.SendEmailAsync(model.Email, "Confirm your email", new ConfirmEmail { CallbackUrl = callbackUrl });
                 }
                 catch
                 {
@@ -678,11 +678,7 @@ namespace Soapbox.Web.Controllers
                 return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync(user.Id);
-            if (info is null)
-            {
-                throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
-            }
+            var info = await _signInManager.GetExternalLoginInfoAsync(user.Id) ?? throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
 
             var result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)

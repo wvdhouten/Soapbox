@@ -1,14 +1,8 @@
 namespace Soapbox.Tests.Email
 {
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc.Razor;
-    using Microsoft.AspNetCore.Mvc.ViewEngines;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Soapbox.Core.Email;
     using Xunit;
-    using Soapbox.Models;
     using Microsoft.AspNetCore.Mvc.Testing;
-    using Soapbox.Web;
     using Microsoft.Extensions.DependencyInjection;
     using Soapbox.Core.Email.Abstractions;
 
@@ -19,7 +13,7 @@ namespace Soapbox.Tests.Email
         public async Task RenderWelcomeEmail()
         {
             // Arrange
-            var server = new WebApplicationFactory<Startup>();
+            var server = new WebApplicationFactory<Program>();
             var emailRenderer = server.Services.CreateScope().ServiceProvider.GetService<IEmailRenderer>();
 
             // Act
