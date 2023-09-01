@@ -6,12 +6,12 @@ namespace Soapbox.Core.Email
     using Microsoft.Extensions.Options;
     using Soapbox.Core.Email.Abstractions;
 
-    public class SmtpEmailClient : IEmailService
+    public class SmtpEmailService : IEmailService
     {
         private readonly SmtpSettings _settings;
         private readonly IEmailRenderer _renderer;
 
-        public SmtpEmailClient(IOptionsSnapshot<SmtpSettings> options, IEmailRenderer renderer)
+        public SmtpEmailService(IOptionsSnapshot<SmtpSettings> options, IEmailRenderer renderer)
         {
             _settings = options.Value;
             _renderer = renderer;

@@ -4,6 +4,6 @@ namespace Soapbox.Core.Email
 
     public interface IEmailService
     {
-        Task SendEmailAsync<T>(string recipient, string subject, T model);
+        Task SendEmailAsync<TModel>(string recipient, string subject, TModel model);
     }
 }

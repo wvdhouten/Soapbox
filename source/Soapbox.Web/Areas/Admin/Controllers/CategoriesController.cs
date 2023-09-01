@@ -55,11 +55,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-            var category = await _blogService.GetCategoryByIdAsync(id);
-            if (category is null)
-            {
-                throw new Exception("Not Found");
-            }
+            var category = await _blogService.GetCategoryByIdAsync(id) ?? throw new Exception("Not Found");
 
             var model = _mapper.Map<PostCategoryViewModel>(category);
             model.GenerateSlugFromName = category.Slug == CreateSlug(category.Name);

@@ -22,6 +22,8 @@ namespace Soapbox.Web.Services
                 Task.FromResult(HealthCheckResult.Degraded("Content directory not found"));
             }
 
+            // TODO: Add additional checks.
+
             return Task.FromResult(HealthCheckResult.Healthy());
         }
     }
