@@ -15,8 +15,6 @@ namespace Soapbox.Web.Services
         {
             var errorMessages = new List<string>();
 
-            errorMessages.Add("Failed to create required directories.");
-
             try
             {
                 var contentPath = Path.Combine(_environment.ContentRootPath, "Content", "Files");
