@@ -8,7 +8,7 @@ The first user you'll create will automatically be set up as the site administra
 
 An even simpler way, is to deploy the solution from the button below:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwvdhouten%2FSoapbox%2Fmain%2Fdeploy%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwvdhouten%2FSoapbox%2Fmain%2Fdeploy%2Fazuredeploy.json){:target="_blank"}
 
 ## Contributing
 The Contribution guidelines for this project can be found [here](CONTRIBUTING.md)
