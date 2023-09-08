@@ -67,10 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Config\site.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Content\Files" />
     <Folder Include="Logs\" />
