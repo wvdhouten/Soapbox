@@ -6,14 +6,14 @@
         "type": "string",
         "defaultValue": "Soapbox",
         "metadata": {
-          "description": "The AzureWebSites name of your Web Site (some random text will be added at the end for uniqueness)"
+          "description": "The AzureWebSites name of your Soapbox Site (some random text will be added at the end for uniqueness)."
         }
       },
       "hostingPlan": {
         "type": "string",
         "defaultValue": "SoapboxHosting",
         "metadata": {
-          "description": "The name of the hosting plan to deploy to. If the plan doesn't exist, it will be created"
+          "description": "The name of the hosting plan to deploy to. If the plan doesn't exist, it will be created."
         }
       },
       "sku": {
@@ -68,8 +68,7 @@
       "siteName": "[toLower(concat(parameters('siteName'),'-', uniqueString(resourceGroup().id)))]",
       "hostingPlanName": "[parameters('hostingPlan')]",
       "location": "[resourceGroup().location]",
-      "netFrameworkVersion": "v6.0",
-      "use32BitWorkerProcess": false
+      "netFrameworkVersion": "v7.0"
     },
     "resources": [
       {
@@ -98,7 +97,6 @@
           "httpsOnly": true,
           "siteconfig": {
             "netFrameworkVersion": "[variables('netFrameworkVersion')]",
-            "use32BitWorkerProcess": false,
             "appSettings": [
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
