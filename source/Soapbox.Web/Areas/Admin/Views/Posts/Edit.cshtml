@@ -19,7 +19,6 @@
       <h1>Edit post</h1>
     </header>
     <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="ModifiedOn" />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
       <label asp-for="Title"></label>
@@ -96,3 +95,14 @@
     </div>
   </form>
 </div>
+
+@section StyleSheets {
+  <link rel="stylesheet" href="~/lib/easymde/dist/easymde.min.css" asp-append-version="true">
+}
+
+@section Scripts {
+  <script src="~/lib/easymde/dist/easymde.min.js" asp-append-version="true"></script>
+  <script>
+    var easymde = new EasyMDE({ element: document.getElementById("Content"), autoDownloadFontAwesome: false });
+  </script>
+}

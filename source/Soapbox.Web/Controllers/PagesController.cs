@@ -7,7 +7,7 @@ namespace Soapbox.Web.Controllers
     using Microsoft.Extensions.Logging;
     using Soapbox.Web.Models;
 
-    public class PagesController : Controller
+    public class PagesController : BaseSoapboxController
     {
         private readonly ILogger<PagesController> _logger;
 

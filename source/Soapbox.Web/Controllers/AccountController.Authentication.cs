@@ -5,7 +5,6 @@ namespace Soapbox.Web.Controllers
     using System.Linq;
     using System.Security.Claims;
     using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -18,7 +17,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Models.Email;
 
-    public partial class AccountController : Controller
+    public partial class AccountController : BaseSoapboxController
     {
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] string returnUrl = null)

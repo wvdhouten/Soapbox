@@ -4,10 +4,8 @@
   var pageNewer = Model.Page - 1;
 }
 
-@if(Model.PageCount > 2){
-  <div class="container padded centered">
-    <blog-link page="pageOlder" condition="(Model.Page < Model.PageCount)">Older posts</blog-link>
-    <span condition="(Model.Page < Model.PageCount && Model.Page > 1)"> | </span>
-    <blog-link page="pageNewer" condition="(Model.Page > 1)">Newer posts</blog-link>
-  </div>
-}
+<div class="container padded centered" condition="Model.PageCount > 2">
+  <blog-link page="pageOlder" condition="(Model.Page < Model.PageCount)">Older posts</blog-link>
+  <span condition="(Model.Page < Model.PageCount && Model.Page > 1)"> | </span>
+  <blog-link page="pageNewer" condition="(Model.Page > 1)">Newer posts</blog-link>
+</div>

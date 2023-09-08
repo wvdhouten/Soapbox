@@ -9,10 +9,7 @@
     <p>@message</p>
   </header>
 
-  @if (Model.ShowRequestId)
-  {
-    <p>
-      <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-  }
+  <p condition="Model.ShowRequestId">
+    <strong>Request ID:</strong> <code>@Model.RequestId</code>
+  </p>
 </dir>

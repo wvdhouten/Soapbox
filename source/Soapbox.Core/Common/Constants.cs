@@ -11,6 +11,7 @@ namespace Soapbox.Core.Common
         public static readonly string Image = "Image";
         public static readonly string Video = "Video";
 
+        public static readonly string StyleSheets = "StyleSheets";
         public static readonly string Scripts = "Scripts";
     }
 }

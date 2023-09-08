@@ -9,11 +9,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Categories;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseSoapboxController
     {
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;

@@ -3,11 +3,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Soapbox.Models;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class HomeController : Controller
+    public class HomeController : BaseSoapboxController
     {
         private readonly ILogger<HomeController> _logger;
 

@@ -42,10 +42,7 @@
       <td class="@modifier">
         <header class="@todayClass">
           @day.Key.Day
-          @if (day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date)
-          {
-            <span class="month">@day.Key.ToString("MMM")</span>
-          }
+          <span class="month" condition="day.Key.Day == 1 || day.Key.Date == startOfCalendar.Date">@day.Key.ToString("MMM")</span>
         </header>
         <section class="entries">
           @if (day.Value != null && day.Value.Any())

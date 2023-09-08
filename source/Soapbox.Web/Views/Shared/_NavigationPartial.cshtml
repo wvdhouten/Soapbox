@@ -1,7 +1,10 @@
+<label for="toggle-nav" class="fa fa-bars" aria-hidden="true"></label>
+<input id="toggle-nav" title="Toggle Navigation" type="checkbox" style="display: none;" />
+
 <nav id="site-nav">
   <ul>
     <li><blog-link index>Blog</blog-link></li>
   </ul>
-</nav>
 
-<a asp-area="Admin" asp-controller="Posts" asp-action="Create" role="button" class="small" is-authorized>New Post</a>
+  <a asp-area="Admin" asp-controller="Posts" asp-action="Create" role="button" class="small" is-authorized>New Post</a>
+</nav>

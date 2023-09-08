@@ -10,6 +10,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.DataAccess.Abstractions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Posts;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
 
@@ -24,7 +25,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author, UserRole.Contributor)]
-    public class PostsController : Controller
+    public class PostsController : BaseSoapboxController
     {
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;
@@ -80,17 +81,15 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
             await _blogService.CreatePostAsync(post);
 
+            StatusMessage = "Post created successfully.";
+
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var post = await _blogService.GetPostByIdAsync(id);
-            if (post is null)
-            {
-                throw new Exception("Not Found");
-            }
+            var post = await _blogService.GetPostByIdAsync(id) ?? throw new Exception("Not Found");
 
             var model = _mapper.Map<PostViewModel>(post);
             model.UpdateSlugFromTitle = post.Slug == CreateSlug(post.Title);
@@ -127,6 +126,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
             await _blogService.UpdatePostAsync(post);
 
+            StatusMessage = "Post updated successfully.";
+
             return RedirectToAction(nameof(Edit), new { id = post.Id });
         }
 
@@ -136,10 +137,12 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             try
             {
                 await _blogService.DeletePostByIdAsync(id);
+
+                StatusMessage = "Post deleted successfully.";
             }
             catch
             {
-                // TODO: Add status message.
+                ErrorMessage = " Failed to delete post.";
             }
 
             return RedirectToAction(nameof(Index));

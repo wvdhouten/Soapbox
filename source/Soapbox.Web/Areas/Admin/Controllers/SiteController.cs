@@ -9,12 +9,13 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.Core.FileManagement;
     using Soapbox.Core.Settings;
     using Soapbox.Models;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Extensions;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class SiteController : Controller
+    public class SiteController : BaseSoapboxController
     {
         private readonly ConfigFileService _configFileService;
         private readonly ILogger<SiteController> _logger;

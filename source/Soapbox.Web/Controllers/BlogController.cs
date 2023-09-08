@@ -32,8 +32,6 @@ namespace Soapbox.Web.Controllers
         [HttpGet("{page:int=1}")]
         public async Task<IActionResult> Index(int page = 1)
         {
-            var result = _renderer.Render("Welcome", new Welcome());
-
             var posts = await _blogService.GetPostsPageAsync(page, 5);
 
             return View(posts);

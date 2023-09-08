@@ -7,12 +7,17 @@
       "destination": "wwwroot/lib/qrcodejs/"
     },
     {
-      "library": "prism@1.25.0",
+      "library": "prism@1.29.0",
       "destination": "wwwroot/lib/prism/"
     },
     {
       "library": "fork-awesome@1.2.0",
       "destination": "wwwroot/lib/fork-awesome/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "easymde@2.18.0",
+      "destination": "wwwroot/lib/easymde"
     }
   ]
 }

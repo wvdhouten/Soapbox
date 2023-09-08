@@ -21,7 +21,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Services;
 
     [Authorize]
-    public partial class AccountController : Controller
+    public partial class AccountController : BaseSoapboxController
     {
         private readonly SiteSettings _siteSettings;
         private readonly AccountService _accountService;
@@ -32,12 +32,6 @@ namespace Soapbox.Web.Controllers
         private readonly UrlEncoder _urlEncoder;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
-
-        [TempData]
-        public string StatusMessage { get; set; }
-
-        [TempData]
-        public string ErrorMessage { get; set; }
 
         public AccountController(IOptionsSnapshot<SiteSettings> siteSettings,
             AccountService accountService,

@@ -18,13 +18,10 @@
 
       <form id="delete" method="post">
         <div asp-validation-summary="All"></div>
-        @if (Model.RequirePassword)
-        {
-          <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" />
-          </div>
-        }
+        <div class="form-group" condition="Model.RequirePassword">
+          <label asp-for="Password"></label>
+          <input asp-for="Password" />
+        </div>
       </form>
     </section>
 

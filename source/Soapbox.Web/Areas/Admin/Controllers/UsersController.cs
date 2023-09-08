@@ -3,7 +3,6 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using System;
     using System.Linq;
     using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -13,6 +12,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Soapbox.Core.Extensions;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Users;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
     using Soapbox.Web.Models.Email;
@@ -20,7 +20,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class UsersController : Controller
+    public class UsersController : BaseSoapboxController
     {
         private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;

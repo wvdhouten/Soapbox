@@ -1,3 +1,5 @@
+@import '../variables';
+
 main {
   overflow: auto;
 }
@@ -9,7 +11,8 @@ main {
 }
 
 #site-header > .container {
-  display: flex;
+  display: grid;
+  grid: auto auto / 1fr auto;
   align-items: center;
 }
 
@@ -25,24 +28,62 @@ main {
   line-height: inherit;
   white-space: nowrap;
 
+  width: 75%;
+
   div {
     font-size: .9rem;
   }
 }
 
-#site-nav {
+#toggle-nav:checked + * {
   display: flex;
-  flex-wrap: wrap;
+}
+
+label[for=toggle-nav] {
+  display: flex;
+  margin-left: auto;
+
+  @if map-get($breakpoints, "md") {
+    @media (min-width: map-get($breakpoints, "md")) {
+      display: none;
+    }
+  }
+}
+
+#site-nav {
+  display: none;
+  flex-direction: column;
   align-items: center;
   margin-left: auto;
 
+  @if map-get($breakpoints, "md") {
+    @media (min-width: map-get($breakpoints, "md")) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  flex-direction: column;
+  margin-left: unset;
+
   + * {
-      margin-left: 6px;
+    flex: 1;
+    margin-left: 6px;
   }
 }
 
 #site-nav ul {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+
+  @if map-get($breakpoints, "md") {
+    @media (min-width: map-get($breakpoints, "md")) {
+      flex-direction: row;
+    }
+  }
+
   gap: 4px;
   list-style-type: none;
   margin: 0;

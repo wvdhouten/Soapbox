@@ -10,7 +10,7 @@
 <style>
   .paging .pages {
     display: flex;
-    gap: .5rem;    
+    gap: .5rem;
   }
 
   .pages > a {
@@ -29,26 +29,14 @@
 <div class="paging">
   <div class="pages">
     <a asp-route-page="@prevPage" disabled="@(Model.Page == 1)"><i class="fa fa-angle-left"></i></a>
-    @if(lowPage > 1)
-    {
-      <a asp-route-page="1">1</a>
-    }
-    @if(lowPage > 2)
-    {
-      <span>...</span>
-    }
-    @for(var page = lowPage; page <= highPage; page++)
+    <a asp-route-page="1" condition="lowPage > 1">1</a>
+    <span condition="lowPage > 2">...</span>
+    @for (var page = lowPage; page <= highPage; page++)
     {
       <a asp-route-page="@(page)" active="@(page == Model.Page)">@(page)</a>
     }
-    @if(highPage < Model.PageCount - 1)
-    {
-      <span>...</span>
-    }
-    @if(highPage < Model.PageCount)
-    {
-      <a asp-route-page="@Model.PageCount">@Model.PageCount</a>
-    }
+    <span condition="highPage < Model.PageCount - 1">...</span>
+    <a asp-route-page="@Model.PageCount" condition="highPage < Model.PageCount">@Model.PageCount</a>
     <a asp-route-page="@nextPage" disabled="@(Model.Page == Model.PageCount)"><i class="fa fa-angle-right"></i></a>
   </div>
 </div>

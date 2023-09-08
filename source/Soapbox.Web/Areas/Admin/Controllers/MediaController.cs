@@ -1,21 +1,16 @@
 namespace Soapbox.Web.Areas.Admin.Controllers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Soapbox.Core.FileManagement;
     using Soapbox.Models;
-    using Soapbox.Web.Areas.Admin.Models.Categories;
     using Soapbox.Web.Areas.Admin.Models.Media;
+    using Soapbox.Web.Controllers;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
-    public class MediaController : Controller
+    public class MediaController : BaseSoapboxController
     {
         private readonly MediaFileService _fileService;
         private readonly ILogger<MediaController> _logger;

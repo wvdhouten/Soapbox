@@ -1,10 +1,11 @@
 @{
-  var message = (string)TempData["StatusMessage"];
+  var statusMessage = (string)TempData["StatusMessage"];
+  var errorMessage = (string)TempData["ErrorMessage"];
 }
 
-@if (!string.IsNullOrEmpty(message))
-{
-  <section class="container centered">
-    <p class="alert" role="alert"><i class="fa fa-info-circle"></i> @message</p>
-  </section>
-}
+<section class="container centered" condition="!string.IsNullOrEmpty(errorMessage)">
+  <p class="alert" role="alert"><i class="fa fa-info-circle"></i> @errorMessage</p>
+</section>
+<section class="container centered" condition="!string.IsNullOrEmpty(statusMessage)">
+  <p class="alert" role="alert"><i class="fa fa-info-circle"></i> @statusMessage</p>
+</section>

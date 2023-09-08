@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="~/themes/default/css/style.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/css/prism-theme.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/lib/fork-awesome/css/fork-awesome.min.css" asp-append-version="true" />
+  @await RenderSectionAsync(Constants.StyleSheets, required: false)
 
   <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" asp-append-version="true" />
   <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" asp-append-version="true" />
