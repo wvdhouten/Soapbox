@@ -41,6 +41,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
   </ItemGroup>
