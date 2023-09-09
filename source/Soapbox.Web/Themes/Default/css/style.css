@@ -379,18 +379,19 @@ main {
   font-size: 0.9rem;
 }
 
-#toggle-nav:checked + * {
-  display: flex;
-}
-
 label[for=toggle-nav] {
   display: flex;
   margin-left: auto;
+  font-size: 1.6em;
 }
 @media (min-width: 768px) {
   label[for=toggle-nav] {
     display: none;
   }
+}
+
+#toggle-nav:checked + * {
+  display: flex;
 }
 
 #site-nav {
@@ -1016,8 +1017,8 @@ svg:not(:root) {
   text-align: right;
 }
 
-.tag-list {
-  display: inline-flex;
+.tag-list .tag {
+  display: inline-block;
 }
 .tag-list .tag + *.tag::before {
   display: inline-block;

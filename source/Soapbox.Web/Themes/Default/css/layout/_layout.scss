@@ -35,19 +35,20 @@ main {
   }
 }
 
-#toggle-nav:checked + * {
-  display: flex;
-}
-
 label[for=toggle-nav] {
   display: flex;
   margin-left: auto;
+  font-size: 1.6em;
 
   @if map-get($breakpoints, "md") {
     @media (min-width: map-get($breakpoints, "md")) {
       display: none;
     }
   }
+}
+
+#toggle-nav:checked + * {
+  display: flex;
 }
 
 #site-nav {

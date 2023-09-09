@@ -33,14 +33,12 @@
       <div class="read-more">
         <blog-link post="Model">Read more</blog-link>
       </div>
-      <div class="subtle" condition="@Model.Categories.Any()">
+      <div class="tag-list subtle" condition="@Model.Categories.Any()">
         <i class="fa fa-tags"></i>
-        <div class="tag-list">
         @foreach(var category in Model.Categories)
         {
           <div class="tag"><blog-link category="category" /></div>
         }
-        </div>
       </div>
     </footer>
   </div>

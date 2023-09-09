@@ -21,14 +21,12 @@
           <i class="fa fa-user-circle"></i>
           <blog-link author="Model.Author" />
         </div>
-        <div>
+        <div class="tag-list" condition="Model.Categories.Any()">
           <i class="fa fa-tags"></i>
-          <div class="tag-list">
-          @foreach(var category in Model.Categories)
+          @foreach (var category in Model.Categories)
           {
             <div class="tag"><blog-link category="category" /></div>
           }
-          </div>
         </div>
       </div>
     </div>

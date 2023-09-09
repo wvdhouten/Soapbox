@@ -132,7 +132,9 @@
 }
 
 .tag-list {
-  display: inline-flex;
+  .tag {
+    display: inline-block;
+  }
 
   .tag + *.tag::before {
     display: inline-block;
