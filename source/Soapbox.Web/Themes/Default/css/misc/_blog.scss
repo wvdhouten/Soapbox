@@ -216,3 +216,11 @@
     }
   }
 }
+
+div.editor-toolbar button {
+  color: var(--text-color);
+
+  + button {
+    margin-left: 4px;
+  }
+}

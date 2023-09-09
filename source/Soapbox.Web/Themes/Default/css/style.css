@@ -1087,6 +1087,13 @@ svg:not(:root) {
   white-space: nowrap;
 }
 
+div.editor-toolbar button {
+  color: var(--text-color);
+}
+div.editor-toolbar button + button {
+  margin-left: 4px;
+}
+
 /*
     Headings: h1-h6
     Paragraphs: p
