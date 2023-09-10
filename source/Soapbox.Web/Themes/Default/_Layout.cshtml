@@ -38,7 +38,10 @@
     </div>
   </header>
 
-  <partial name="_StatusMessagePartial" />
+  <section id="alerts" class="container">
+    <partial name="_CookieConsentPartial" />
+    <partial name="_StatusMessagePartial" />
+  </section>
 
   <main role="main">
     @RenderBody()

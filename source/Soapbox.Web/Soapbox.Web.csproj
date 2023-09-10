@@ -79,4 +79,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Themes\Default\css\components\_alerts.scss" />
+  </ItemGroup>
+
 </Project>

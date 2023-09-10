@@ -59,7 +59,8 @@ namespace Soapbox.Web.Extensions
 
             services.AddSingleton<SiteRepairService>();
 
-            services.Configure<SiteSettings>(configuration.GetSection(nameof(SiteSettings)));
+            var siteSettingsSection = configuration.GetSection(nameof(SiteSettings));
+            services.Configure<SiteSettings>(siteSettingsSection);
             services.AddScoped<ConfigFileService>();
             services.AddScoped<MediaFileService>();
 
@@ -82,9 +83,7 @@ namespace Soapbox.Web.Extensions
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                bool.TryParse(configuration.GetSection("CookieConsentEnabled").Value, out var flag);
-
-                options.CheckConsentNeeded = context => flag;
+                options.CheckConsentNeeded = context => siteSettingsSection.GetValue<bool>(nameof(SiteSettings.CookieConsentEnabled));
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 

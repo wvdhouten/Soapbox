@@ -29,3 +29,19 @@ document.addEventListener('click', event => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js').then(function () { console.log('Service worker registered'); });;
 };
+
+document.addEventListener('click', event => {
+  debugger;
+  if (!event.target.classList.contains('dismiss'))
+    return;
+
+  const targetSelector = event.target.dataset.dismissable;
+  const target = targetSelector
+    ? document.querySelector(targetSelector)
+    : event.target.closest('.dismissable');
+
+  if (!target)
+    return;
+
+  target.remove();
+});

@@ -18,11 +18,13 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     public class SiteController : BaseSoapboxController
     {
         private readonly ConfigFileService _configFileService;
+        private readonly IHostApplicationLifetime _appLifetime;
         private readonly ILogger<SiteController> _logger;
 
-        public SiteController(ConfigFileService configFileService, ILogger<SiteController> logger)
+        public SiteController(ConfigFileService configFileService, IHostApplicationLifetime appLifetime, ILogger<SiteController> logger)
         {
             _configFileService = configFileService;
+            _appLifetime = appLifetime;
             _logger = logger;
         }
 
@@ -35,8 +37,13 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Settings([FromForm] SiteSettings settings, [FromServices] IOptionsSnapshot<SiteSettings> config, [FromServices] IRazorViewEngine viewEngine)
+        public IActionResult Settings([FromForm] SiteSettings settings, [FromServices] IOptionsSnapshot<SiteSettings> config, [FromServices] IRazorViewEngine viewEngine, string action)
         {
+            if (action == nameof(Restart))
+            {
+                return Restart();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(settings);
@@ -53,10 +60,20 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 viewEngine.TryInvokeMethod(typeof(RazorViewEngine), "ClearCache");
             }
 
+            StatusMessage = "Settings saved successfully.";
+
             return View(settings);
         }
 
-        [HttpGet]
+        [HttpPost]
+        public IActionResult Restart()
+        {
+            _appLifetime.StopApplication();
+
+            throw new Exception("Application will restart.");
+        }
+
+            [HttpGet]
         public IActionResult Backup()
         {
             _logger.Log(LogLevel.Information, "Backup downloaded.");

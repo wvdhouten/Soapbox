@@ -1,0 +1,17 @@
+.alerts {
+  > *:not(:first-child) {
+    margin-top: 8px;
+  }
+}
+
+.alert {
+  padding: 8px;
+  text-align: center;
+  background: var(--accent1-x-dark);
+  border: 1px solid var(--accent1-light);
+  border-radius: 0.25rem;
+
+  > *:not(:first-child) {
+    margin-top: 8px;
+  }
+}

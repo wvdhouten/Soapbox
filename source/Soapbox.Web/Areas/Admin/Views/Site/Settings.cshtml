@@ -41,6 +41,10 @@
       <label asp-for="@Model.OwnerEmail" title="Will be visible on RSS feeds" class="label"></label>
       <input asp-for="@Model.OwnerEmail" />
     </div>
+    <div class="form-group">
+      <label asp-for="@Model.CookieConsentEnabled" class="label"></label>
+      <input asp-for="@Model.CookieConsentEnabled" />
+    </div>
     <h2>Blog</h2>
     <div class="form-group">
       <label asp-for="@Model.BlogPageLayout" class="label"></label>
@@ -60,6 +64,7 @@
     </div>
     <div class="button-group">
       <button type="submit">Save</button>
+      <button class="outline" type="submit" name="action" value="Restart" title="Restart the site after updating values that are read during startup (e.g. Cookie Consent).'">Restart</button>
     </div>
     <h2>Backup</h2>
     <div class="form-group">

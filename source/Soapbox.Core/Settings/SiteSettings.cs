@@ -66,6 +66,15 @@ namespace Soapbox.Core.Settings
         public string OwnerEmail { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [cookie consent is enabled].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [cookie consent is enabled]; otherwise, <c>false</c>.
+        /// </value>
+        [Display(Name = "Cookie Consent (GDPR)")]
+        public bool CookieConsentEnabled { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to [allow registration].
         /// </summary>
         /// <value>
