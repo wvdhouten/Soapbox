@@ -1,6 +1,5 @@
 namespace Soapbox.Web.Helpers
 {
-    using System.Linq;
     using AutoMapper;
     using Soapbox.Models;
     using Soapbox.Web.Areas.Admin.Models.Categories;

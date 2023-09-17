@@ -834,6 +834,10 @@ svg:not(:root) {
   overflow: hidden;
 }
 
+.alerts > *:not(:first-child) {
+  margin-top: 8px;
+}
+
 .alert {
   padding: 8px;
   text-align: center;
@@ -841,7 +845,6 @@ svg:not(:root) {
   border: 1px solid var(--accent1-light);
   border-radius: 0.25rem;
 }
-
 .alert > *:not(:first-child) {
   margin-top: 8px;
 }

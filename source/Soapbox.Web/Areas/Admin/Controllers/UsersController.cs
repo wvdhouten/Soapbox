@@ -20,7 +20,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class UsersController : BaseSoapboxController
+    public class UsersController : SoapboxBaseController
     {
         private readonly AccountService _accountService;
         private readonly UserManager<SoapboxUser> _userManager;

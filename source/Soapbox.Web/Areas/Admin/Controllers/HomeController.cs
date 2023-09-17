@@ -8,7 +8,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class HomeController : BaseSoapboxController
+    public class HomeController : SoapboxBaseController
     {
         private readonly ILogger<HomeController> _logger;
 

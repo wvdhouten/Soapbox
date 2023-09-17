@@ -2,7 +2,7 @@ namespace Soapbox.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
 
-    public abstract class BaseSoapboxController : Controller
+    public abstract class SoapboxBaseController : Controller
     {
 
         [TempData]

@@ -10,7 +10,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
-    public class MediaController : BaseSoapboxController
+    public class MediaController : SoapboxBaseController
     {
         private readonly MediaFileService _fileService;
         private readonly ILogger<MediaController> _logger;

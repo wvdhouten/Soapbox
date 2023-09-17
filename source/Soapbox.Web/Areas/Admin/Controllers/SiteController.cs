@@ -15,7 +15,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class SiteController : BaseSoapboxController
+    public class SiteController : SoapboxBaseController
     {
         private readonly ConfigFileService _configFileService;
         private readonly IHostApplicationLifetime _appLifetime;

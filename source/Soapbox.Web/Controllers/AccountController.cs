@@ -21,7 +21,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Services;
 
     [Authorize]
-    public partial class AccountController : BaseSoapboxController
+    public partial class AccountController : SoapboxBaseController
     {
         private readonly SiteSettings _siteSettings;
         private readonly AccountService _accountService;

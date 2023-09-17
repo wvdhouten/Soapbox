@@ -14,7 +14,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
-    public class CategoriesController : BaseSoapboxController
+    public class CategoriesController : SoapboxBaseController
     {
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;

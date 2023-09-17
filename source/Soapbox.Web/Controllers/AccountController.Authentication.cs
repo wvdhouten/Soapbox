@@ -17,7 +17,7 @@ namespace Soapbox.Web.Controllers
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Models.Email;
 
-    public partial class AccountController : BaseSoapboxController
+    public partial class AccountController : SoapboxBaseController
     {
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] string returnUrl = null)
