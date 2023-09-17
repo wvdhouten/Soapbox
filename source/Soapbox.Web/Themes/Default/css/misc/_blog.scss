@@ -161,7 +161,7 @@
 }
 
 .years-navigation {
-    text-align: center;
+  text-align: center;
 }
 
 .calendar-navigation {
@@ -217,10 +217,22 @@
   }
 }
 
-div.editor-toolbar button {
-  color: var(--text-color);
+div.editor-toolbar {
 
-  + button {
-    margin-left: 4px;
+  &.fullscreen {
+    background: var(--background-color);
+  }
+
+  button {
+    color: var(--text-color);
+
+    &.active, &:hover {
+      background: var(--accent1-x-dark);
+      color: var(--text-color);
+    }
+
+    + button {
+      margin-left: 4px;
+    }
   }
 }

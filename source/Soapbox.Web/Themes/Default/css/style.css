@@ -1102,7 +1102,14 @@ svg:not(:root) {
   white-space: nowrap;
 }
 
+div.editor-toolbar.fullscreen {
+  background: var(--background-color);
+}
 div.editor-toolbar button {
+  color: var(--text-color);
+}
+div.editor-toolbar button.active, div.editor-toolbar button:hover {
+  background: var(--accent1-x-dark);
   color: var(--text-color);
 }
 div.editor-toolbar button + button {

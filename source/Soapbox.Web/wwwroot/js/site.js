@@ -31,7 +31,6 @@ if ('serviceWorker' in navigator) {
 };
 
 document.addEventListener('click', event => {
-  debugger;
   if (!event.target.classList.contains('dismiss'))
     return;
 
