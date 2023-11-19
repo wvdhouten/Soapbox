@@ -131,6 +131,14 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Edit), new { id = post.Id });
         }
 
+        [HttpGet, ActionName(nameof(Delete))]
+        public async Task<IActionResult> ConfirmDelete(string id)
+        {
+            var model = await _blogService.GetPostByIdAsync(id);
+
+            return View(nameof(Delete), model);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {

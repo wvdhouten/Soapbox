@@ -41,9 +41,7 @@
               </span>
             </td>
             <td>
-              <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" method="post">
-                <button type="submit" class="small"><i class="fa fa-trash"></i></button>
-              </form>
+              <a asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" class="button small"><i class="fa fa-trash"></i></a>
             </td>
           </tr>
         }

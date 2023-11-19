@@ -21,7 +21,7 @@ namespace Soapbox.Web.Extensions
 
     public static class ServiceCollectionExtensions
     {
-        public static void Configure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        public static void ConfigureSoapbox(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             services.AddHealthChecks().AddCheck<SoapboxHealthChecks>("soapbox");
 

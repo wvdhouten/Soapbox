@@ -1,0 +1,16 @@
+@model Soapbox.Models.Post
+@{
+  ViewData[Constants.PageTitle] = "Delete post";
+}
+
+<div class="container content">
+  <header>
+    <h1>Delete post</h1>
+  </header>
+
+  <p>Are you sure you want to delete post "@Model.Title"?</p>
+
+  <form asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="small">Delete</button>
+  </form>
+</div>
