@@ -1,13 +1,12 @@
-namespace Soapbox.Core.Syndication
+namespace Soapbox.Application.Syndication;
+
+using System;
+
+public class FeedConfiguration<T>
 {
-    using System;
+    public string Title { get; set; }
 
-    public class FeedConfiguration<T>
-    {
-        public string Title { get; set; }
+    public string Description { get; set; }
 
-        public string Description { get; set; }
-
-        public Uri Link { get; set; }
-    }
+    public Uri Link { get; set; }
 }

@@ -1,3 +1,4 @@
+@using Soapbox.Application
 @model Soapbox.Web.Areas.Admin.Models.Posts.PostViewModel
 @{
   ViewData[Constants.PageTitle] = "Create post";
@@ -20,13 +21,13 @@
     </header>
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
-      <label asp-for="Title"></label>
-      <input asp-for="Title" />
+      <label asp-for="Post.Title"></label>
+      <input asp-for="Post.Title" />
     </div>
     <div class="form-group horizontal">
-      <label asp-for="Slug"></label>
+      <label asp-for="Post.Slug"></label>
       <div class="input-group">
-        <input asp-for="Slug" />
+        <input asp-for="Post.Slug" />
         <div class="input-addon">
           <input asp-for="UpdateSlugFromTitle" />
           <label asp-for="UpdateSlugFromTitle"></label>
@@ -34,18 +35,18 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="Categories"></label>
+      <label asp-for="Post.Categories"></label>
       <div class="input-container">
         <div class="pillbox" condition="Model.AllCategories.Any()">
           @for (int i = 0; i < Model.AllCategories.Count; i++)
           {
             <div class="pill">
               <span>
-                <input asp-for="@Model.AllCategories[i].Id" type="hidden" />
-                <input asp-for="@Model.AllCategories[i].Name" type="hidden" />
+                <input asp-for="@Model.AllCategories[i].Item.Id" type="hidden" />
+                <input asp-for="@Model.AllCategories[i].Item.Name" type="hidden" />
                 <input asp-for="@Model.AllCategories[i].Selected" type="checkbox" />
               </span>
-              <span><label asp-for="@Model.AllCategories[i].Selected">@Model.AllCategories[i].Name</label></span>
+              <span><label asp-for="@Model.AllCategories[i].Selected">@Model.AllCategories[i].Item.Name</label></span>
             </div>
           }
         </div>
@@ -56,9 +57,9 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="ModifiedOn"></label>
+      <label asp-for="Post.ModifiedOn"></label>
       <div class="input-group">
-        <input asp-for="ModifiedOn" readonly />
+        <input asp-for="Post.ModifiedOn" readonly />
         <div class="input-addon">
           <input asp-for="UpdateModifiedOn" />
           <label asp-for="UpdateModifiedOn"></label>
@@ -66,9 +67,9 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="PublishedOn"></label>
+      <label asp-for="Post.PublishedOn"></label>
       <div class="input-group">
-        <input asp-for="PublishedOn" />
+        <input asp-for="Post.PublishedOn" />
         <div class="input-addon">
           <input asp-for="UpdatePublishedOn" />
           <label asp-for="UpdatePublishedOn"></label>
@@ -76,16 +77,16 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="Status"></label>
-      <select asp-for="Status" asp-items="Html.GetEnumSelectList<PostStatus>()"></select>
+      <label asp-for="Post.Status"></label>
+      <select asp-for="Post.Status" asp-items="Html.GetEnumSelectList<PostStatus>()"></select>
     </div>
     <div class="form-group">
-      <label asp-for="Excerpt"></label>
-      <textarea asp-for="Excerpt"></textarea>
+      <label asp-for="Post.Excerpt"></label>
+      <textarea asp-for="Post.Excerpt"></textarea>
     </div>
     <div class="form-group">
-      <label asp-for="Content"></label>
-      <textarea asp-for="Content" class="editor"></textarea>
+      <label asp-for="Post.Content"></label>
+      <textarea asp-for="Post.Content" class="editor"></textarea>
     </div>
     <div class="button-group">
       <button type="submit">Create</button>

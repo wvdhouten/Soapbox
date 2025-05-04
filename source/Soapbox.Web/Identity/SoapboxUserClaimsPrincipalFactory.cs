@@ -5,7 +5,8 @@ namespace Soapbox.Web.Identity
     using IdentityModel;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Options;
-    using Soapbox.Models;
+    using Soapbox.Domain.Users;
+    using Soapbox.Web.Identity.Managers;
 
     /// <summary>
     /// Provides methods to create a claims principal for a given soapbox user.
@@ -18,7 +19,7 @@ namespace Soapbox.Web.Identity
         /// </summary>
         /// <param name="userManager">The <see cref="T:Microsoft.AspNetCore.Identity.UserManager`1" /> to retrieve user information from.</param>
         /// <param name="optionsAccessor">The configured <see cref="T:Microsoft.AspNetCore.Identity.IdentityOptions" />.</param>
-        public SoapboxUserClaimsPrincipalFactory(UserManager<SoapboxUser> userManager, IOptions<IdentityOptions> optionsAccessor)
+        public SoapboxUserClaimsPrincipalFactory(TransactionalUserManager<SoapboxUser> userManager, IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, optionsAccessor)
         { }
 

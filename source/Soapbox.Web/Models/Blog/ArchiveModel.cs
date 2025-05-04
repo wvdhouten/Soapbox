@@ -1,19 +1,18 @@
-namespace Soapbox.Web.Models.Blog
+namespace Soapbox.Web.Models.Blog;
+
+using System;
+using System.Collections.Generic;
+using Soapbox.Domain.Blog;
+
+public class ArchiveModel
 {
-    using System;
-    using System.Collections.Generic;
-    using Soapbox.Models;
+    public DayOfWeek StartOfWeek { get; set; } = DayOfWeek.Monday;
 
-    public class ArchiveModel
-    {
-        public DayOfWeek StartOfWeek { get; set; } = DayOfWeek.Monday;
+    public int FirstYear { get; set; } = DateTime.UtcNow.Year;
 
-        public int FirstYear { get; set; } = DateTime.UtcNow.Year;
+    public int Year { get; set; } = DateTime.UtcNow.Year;
 
-        public int Year { get; set; } = DateTime.UtcNow.Year;
+    public int? Month { get; set; }
 
-        public int? Month { get; set; }
-
-        public IDictionary<DateTime, ICollection<Post>> Days { get; } = new Dictionary<DateTime, ICollection<Post>>();
-    }
+    public IDictionary<DateTime, ICollection<Post>> Days { get; } = new Dictionary<DateTime, ICollection<Post>>();
 }

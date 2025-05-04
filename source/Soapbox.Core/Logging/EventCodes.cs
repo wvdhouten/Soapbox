@@ -1,6 +1,5 @@
-namespace Soapbox.Core.Logging
+namespace Soapbox.Application.Logging;
+
+public enum EventCodes : int
 {
-    public enum EventCodes : int
-    {
-    }
 }

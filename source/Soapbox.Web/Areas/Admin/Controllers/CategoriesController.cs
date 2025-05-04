@@ -2,28 +2,25 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Extensions;
+    using Soapbox.Application.Extensions;
     using Soapbox.DataAccess.Abstractions;
-    using Soapbox.Models;
+    using Soapbox.Domain.Users;
     using Soapbox.Web.Areas.Admin.Models.Categories;
-    using Soapbox.Web.Controllers;
+    using Soapbox.Web.Controllers.Base;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
-    public class CategoriesController : SoapboxBaseController
+    public class CategoriesController : SoapboxControllerBase
     {
-        private readonly IBlogService _blogService;
-        private readonly IMapper _mapper;
+        private readonly IBlogRepository _blogService;
         private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(IBlogService blogService, IMapper mapper, ILogger<CategoriesController> logger)
+        public CategoriesController(IBlogRepository blogService, ILogger<CategoriesController> logger)
         {
             _blogService = blogService;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -44,11 +41,11 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] PostCategoryViewModel category)
+        public async Task<IActionResult> Create([FromForm] PostCategoryViewModel model)
         {
-            category.Slug = category.GenerateSlugFromName || string.IsNullOrWhiteSpace(category.Slug) ? CreateSlug(category.Name) : category.Slug;
+            model.Category.Slug = model.GenerateSlugFromName || string.IsNullOrWhiteSpace(model.Category.Slug) ? CreateSlug(model.Category.Name) : model.Category.Slug;
 
-            await _blogService.CreateCategoryAsync(category);
+            await _blogService.CreateCategoryAsync(model.Category);
 
             return RedirectToAction(nameof(Index));
         }
@@ -58,20 +55,23 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         {
             var category = await _blogService.GetCategoryByIdAsync(id) ?? throw new Exception("Not Found");
 
-            var model = _mapper.Map<PostCategoryViewModel>(category);
-            model.GenerateSlugFromName = category.Slug == CreateSlug(category.Name);
+            var model = new PostCategoryViewModel
+            {
+                Category = category,
+                GenerateSlugFromName = category.Slug == CreateSlug(category.Name)
+            };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] PostCategoryViewModel category)
+        public async Task<IActionResult> Edit([FromForm] PostCategoryViewModel model)
         {
-            category.Slug = category.GenerateSlugFromName || string.IsNullOrWhiteSpace(category.Slug) ? CreateSlug(category.Name) : category.Slug;
+            model.Category.Slug = model.GenerateSlugFromName || string.IsNullOrWhiteSpace(model.Category.Slug) ? CreateSlug(model.Category.Name) : model.Category.Slug;
 
-            await _blogService.UpdateCategoryAsync(category);
+            await _blogService.UpdateCategoryAsync(model.Category);
 
-            return RedirectToAction(nameof(Edit), new { id = category.Id });
+            return RedirectToAction(nameof(Edit), new { id = model.Category.Id });
         }
 
         [HttpPost]

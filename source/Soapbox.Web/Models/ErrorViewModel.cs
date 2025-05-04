@@ -1,32 +1,19 @@
-namespace Soapbox.Web.Models
+namespace Soapbox.Web.Models;
+
+public record ErrorViewModel
 {
-    /// <summary>
-    /// Represents the error view model.
-    /// </summary>
-    public class ErrorViewModel
+    public string RequestId { get; init; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    public string Message { get; set; }
+
+    public string RequestedUrl { get; internal set; }
+
+    public string RedirectUrl { get; internal set; }
+
+    public ErrorViewModel(string requestId)
     {
-        /// <summary>
-        /// Gets or sets the request identifier.
-        /// </summary>
-        /// <value>
-        /// The request identifier.
-        /// </value>
-        public string RequestId { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether to [show request identifier].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if to [show request identifier]; otherwise, <c>false</c>.
-        /// </value>
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-        /// <summary>
-        /// Gets or sets the error message.
-        /// </summary>
-        /// <value>
-        /// The error message.
-        /// </value>
-        public string Message { get; set; }
+        RequestId = requestId;
     }
 }

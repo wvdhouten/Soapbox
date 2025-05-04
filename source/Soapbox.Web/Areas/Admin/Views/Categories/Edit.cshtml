@@ -1,3 +1,4 @@
+@using Soapbox.Application
 @model Soapbox.Web.Areas.Admin.Models.Categories.PostCategoryViewModel
 @{
   ViewData[Constants.PageTitle] = "Edit category";
@@ -8,18 +9,18 @@
     <header>
       <h1>Edit category</h1>
     </header>
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Category.Id" />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
-      <label asp-for="Name"></label>
-      <input asp-for="Name" />
+      <label asp-for="Category.Name"></label>
+      <input asp-for="Category.Name" />
     </div>
     <div class="form-group horizontal">
       <div class="label">
-        <label asp-for="Slug"></label>
+        <label asp-for="Category.Slug"></label>
       </div>
       <div class="input-group">
-        <input asp-for="Slug" />
+        <input asp-for="Category.Slug" />
         <div class="input-addon">
           <input asp-for="GenerateSlugFromName" />
           <label asp-for="GenerateSlugFromName">Generate from name</label>

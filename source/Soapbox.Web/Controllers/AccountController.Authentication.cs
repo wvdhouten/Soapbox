@@ -12,12 +12,13 @@ namespace Soapbox.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Common;
-    using Soapbox.Models;
+    using Soapbox.Application;
+    using Soapbox.Domain.Users;
+    using Soapbox.Web.Controllers.Base;
     using Soapbox.Web.Models.Account;
     using Soapbox.Web.Models.Email;
 
-    public partial class AccountController : SoapboxBaseController
+    public partial class AccountController : SoapboxControllerBase
     {
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] string returnUrl = null)

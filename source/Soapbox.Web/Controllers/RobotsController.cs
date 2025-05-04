@@ -1,59 +1,58 @@
-namespace Soapbox.Web.Controllers
+namespace Soapbox.Web.Controllers;
+
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using Microsoft.AspNetCore.Mvc;
+
+public class RobotsController : Controller
 {
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml;
-    using Microsoft.AspNetCore.Mvc;
-
-    public class RobotsController : Controller
+    public IActionResult Index()
     {
-        public IActionResult Index()
+        // TODO: Implement robots.txt generation logic
+        return View();
+    }
+
+    [Route("/rsd.xml")]
+    public async Task RsdXml()
+    {
+        var host = $"{Request.Scheme}://{Request.Host}";
+        Response.ContentType = "application/xml";
+        Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+
+        var settings = new XmlWriterSettings
         {
-            return View();
-        }
+            Async = true,
+            Encoding = Encoding.UTF8,
+            NewLineHandling = NewLineHandling.Entitize,
+            NewLineOnAttributes = true,
+            Indent = true
+        };
 
-        [Route("/rsd.xml")]
-        public async Task RsdXml()
-        {
-            var host = $"{Request.Scheme}://{Request.Host}";
+        await using var writer = XmlWriter.Create(Response.Body, settings);
+        writer.WriteStartDocument();
+        writer.WriteStartElement("rsd");
+        writer.WriteAttributeString("version", "1.0");
 
-            Response.ContentType = "application/xml";
-            Response.Headers["cache-control"] = "no-cache, no-store, must-revalidate";
+        writer.WriteStartElement("service");
 
-            var settings = new XmlWriterSettings
-            {
-                Async = true,
-                Encoding = Encoding.UTF8,
-                NewLineHandling = NewLineHandling.Entitize,
-                NewLineOnAttributes = true,
-                Indent = true
-            };
+        writer.WriteElementString("engineName", "Soapbox");
+        writer.WriteElementString("engineLink", "https://github.com/wvdhouten/Soapbox");
+        writer.WriteElementString("homePageLink", host);
 
-            await using var writer = XmlWriter.Create(Response.Body, settings);
-            writer.WriteStartDocument();
-            writer.WriteStartElement("rsd");
-            writer.WriteAttributeString("version", "1.0");
+        writer.WriteStartElement("apis");
+        writer.WriteStartElement("api");
+        writer.WriteAttributeString("name", "MetaWeblog");
+        writer.WriteAttributeString("preferred", "true");
+        writer.WriteAttributeString("apiLink", $"{host}/livewriter");
+        writer.WriteAttributeString("blogId", "1");
 
-            writer.WriteStartElement("service");
+        writer.WriteEndElement();
+        writer.WriteEndElement();
+        writer.WriteEndElement();
+        writer.WriteEndElement();
+        writer.WriteEndDocument();
 
-            writer.WriteElementString("engineName", "Soapbox");
-            writer.WriteElementString("engineLink", "https://github.com/wvdhouten/Soapbox");
-            writer.WriteElementString("homePageLink", host);
-
-            writer.WriteStartElement("apis");
-            writer.WriteStartElement("api");
-            writer.WriteAttributeString("name", "MetaWeblog");
-            writer.WriteAttributeString("preferred", "true");
-            writer.WriteAttributeString("apiLink", $"{host}/livewriter");
-            writer.WriteAttributeString("blogId", "1");
-
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-            writer.WriteEndDocument();
-
-            await writer.FlushAsync();
-        }
+        await writer.FlushAsync();
     }
 }

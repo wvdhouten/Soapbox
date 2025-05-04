@@ -4,55 +4,36 @@ namespace Soapbox.Web.Identity.Extensions
     using System.Linq;
     using System.Security.Claims;
     using IdentityModel;
-    using Soapbox.Models;
+    using Soapbox.Domain.Users;
 
-    /// <summary>
-    /// Provides extensions for the user/claims principal.
-    /// </summary>
     public static class UserExtensions
     {
-        /// <summary>
-        /// Gets the user's identifier.
-        /// </summary>
-        /// <param name="principal">The principal.</param>
-        /// <returns>The user's identifier.</returns>
         public static string GetUserId(this ClaimsPrincipal principal)
         {
             return GetUserId<string>(principal);
         }
 
-        private static T GetUserId<T>(this ClaimsPrincipal principal)
+        private static TId GetUserId<TId>(this ClaimsPrincipal principal)
         {
-            if (principal is null)
-            {
-                throw new ArgumentNullException(nameof(principal));
-            }
+            ArgumentNullException.ThrowIfNull(principal);
 
             var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (typeof(T) == typeof(string))
-            {
-                return (T)Convert.ChangeType(loggedInUserId, typeof(T));
-            }
-            else if (typeof(T) == typeof(int) || typeof(T) == typeof(long))
-            {
+            if (typeof(TId) == typeof(string))
+                return (TId)Convert.ChangeType(loggedInUserId, typeof(TId));
+            else if (typeof(TId) == typeof(int) || typeof(TId) == typeof(long))
                 return loggedInUserId != null
-                    ? (T)Convert.ChangeType(loggedInUserId, typeof(T))
-                    : (T)Convert.ChangeType(0, typeof(T));
-            }
+                    ? (TId)Convert.ChangeType(loggedInUserId, typeof(TId))
+                    : (TId)Convert.ChangeType(0, typeof(TId));
             else
-            {
                 throw new Exception("Invalid type provided");
-            }
         }
 
         public static bool IsInRole(this ClaimsPrincipal principal, params UserRole[] roles)
         {
             var claimValue = principal.FindFirstValue(JwtClaimTypes.Role);
             if (!Enum.TryParse<UserRole>(claimValue, out var role))
-            {
                 return false;
-            }
 
             return roles.Contains(role);
         }

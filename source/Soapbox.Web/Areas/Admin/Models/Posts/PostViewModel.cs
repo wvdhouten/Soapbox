@@ -2,11 +2,14 @@ namespace Soapbox.Web.Areas.Admin.Models.Posts
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using Soapbox.Models;
+    using Soapbox.Domain.Blog;
+    using Soapbox.Web.Areas.Admin.Models.Shared;
 
-    public class PostViewModel : Post
+    public class PostViewModel
     {
-        public IList<SelectableCategoryViewModel> AllCategories { get; set; } = new List<SelectableCategoryViewModel>();
+        public Post Post { get; set; }
+
+        public IList<SelectableItemViewModel<PostCategory>> AllCategories { get; set; } = [];
 
         [Display(Name = "Update from title")]
         public bool UpdateSlugFromTitle { get; set; } = true;

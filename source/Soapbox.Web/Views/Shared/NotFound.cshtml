@@ -1,5 +1,15 @@
-<dir class="container">
-  <header>
-    <h1>Not Found.</h1>
-  </header>
-</dir>
+@model ErrorViewModel
+@{
+    var message = Model.Message ?? "An error occurred while processing your request.";
+}
+
+<div class="container">
+    <header>
+        <h1>Not Found.</h1>
+        <p>Page "@Model.RequestedUrl" was not found.</p>
+    </header>
+
+    <p condition="Model.ShowRequestId">
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+</div>

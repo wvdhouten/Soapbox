@@ -1,42 +1,41 @@
-namespace Soapbox.Core.Email
+namespace Soapbox.Application.Email;
+
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Soapbox.Application.Email.Abstractions;
+
+public class SmtpEmailService : IEmailService
 {
-    using System.Net;
-    using System.Net.Mail;
-    using System.Threading.Tasks;
-    using Microsoft.Extensions.Options;
-    using Soapbox.Core.Email.Abstractions;
+    private readonly SmtpSettings _settings;
+    private readonly IEmailRenderer _renderer;
 
-    public class SmtpEmailService : IEmailService
+    public SmtpEmailService(IOptionsSnapshot<SmtpSettings> options, IEmailRenderer renderer)
     {
-        private readonly SmtpSettings _settings;
-        private readonly IEmailRenderer _renderer;
+        _settings = options.Value;
+        _renderer = renderer;
+    }
 
-        public SmtpEmailService(IOptionsSnapshot<SmtpSettings> options, IEmailRenderer renderer)
+    public async Task SendEmailAsync<TModel>(string recipient, string subject, TModel model)
+    {
+        var htmlBody = await _renderer.Render(typeof(TModel).Name, model);
+
+        using var client = GetClient();
+        var mailMessage = new MailMessage(_settings.Sender, recipient, subject, htmlBody)
         {
-            _settings = options.Value;
-            _renderer = renderer;
-        }
+            IsBodyHtml = true
+        };
 
-        public async Task SendEmailAsync<T>(string recipient, string subject, T model)
+        await client.SendMailAsync(mailMessage);
+    }
+
+    private SmtpClient GetClient()
+    {
+        return new SmtpClient(_settings.Host, _settings.Port)
         {
-            var htmlBody = await _renderer.Render(typeof(T).Name, model);
-
-            using var client = GetClient();
-            var mailMessage = new MailMessage(_settings.Sender, recipient, subject, htmlBody)
-            {
-                IsBodyHtml = true
-            };
-
-            await client.SendMailAsync(mailMessage);
-        }
-
-        private SmtpClient GetClient()
-        {
-            return new SmtpClient(_settings.Host, _settings.Port)
-            {
-                Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
-                EnableSsl = _settings.EnableSsl,
-            };
-        }
+            Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
+            EnableSsl = _settings.EnableSsl,
+        };
     }
 }

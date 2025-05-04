@@ -1,59 +1,31 @@
-namespace Soapbox.Web.Controllers
+namespace Soapbox.Web.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Soapbox.Web.Controllers.Base;
+
+[Route("[controller]")]
+public class PagesController : SoapboxControllerBase
 {
-    using System;
-    using System.Diagnostics;
-    using Microsoft.AspNetCore.Diagnostics;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Soapbox.Web.Models;
+    private const string ContentViewPath = "~/Content/Pages/{0}.cshtml";
 
-    public class PagesController : SoapboxBaseController
+    [HttpGet("{view}")]
+    public IActionResult Index(string view = "")
     {
-        private readonly ILogger<PagesController> _logger;
+        var viewPath = string.Format(ContentViewPath, view);
+        if (!ViewExists(viewPath))
+            return NotFound();
 
-        public PagesController(ILogger<PagesController> logger)
-        {
-            _logger = logger;
-        }
+        return View(viewPath);
+    }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+    private bool ViewExists(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return false;
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(int? statusCode = null)
-        {
-            switch (statusCode)
-            {
-                case 404:
-                    return View("NotFound");
-            }
-
-            var model = new ErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-
-            var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-
-            // TODO: Better public exception management.
-            if (exceptionHandlerPathFeature?.Error is InvalidOperationException)
-            {
-                model.Message = exceptionHandlerPathFeature.Error.Message;
-            }
-
-            return View(model);
-        }
-
-        public IActionResult AccessDenied()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public IActionResult Offline()
-        {
-            return View();
-        }
+        var viewEngine = HttpContext.RequestServices.GetRequiredService<ICompositeViewEngine>();
+        return viewEngine.GetView(null, name, true).Success
+            || viewEngine.FindView(ControllerContext, name, true).Success;
     }
 }

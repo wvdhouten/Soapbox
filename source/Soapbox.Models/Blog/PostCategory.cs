@@ -1,15 +1,14 @@
-namespace Soapbox.Models
+namespace Soapbox.Domain.Blog;
+
+using System.Collections.Generic;
+
+public class PostCategory
 {
-    using System.Collections.Generic;
+    public long Id { get; set; }
 
-    public class PostCategory
-    {
-        public long Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string Slug { get; set; }
 
-        public string Slug { get; set; }
-
-        public IList<Post> Posts { get; set; } = new List<Post>();
-    }
+    public IList<Post> Posts { get; set; } = [];
 }

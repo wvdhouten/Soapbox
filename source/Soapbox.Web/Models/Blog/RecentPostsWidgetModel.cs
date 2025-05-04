@@ -1,7 +1,6 @@
-namespace Soapbox.Web.Models.Blog
+namespace Soapbox.Web.Models.Blog;
+
+public class RecentPostsWidgetModel
 {
-    public class RecentPostsWidgetModel
-    {
-        public int PostCount { get; set; } = 5;
-    }
+    public int PostCount { get; set; } = 5;
 }

@@ -1,3 +1,4 @@
+@using Soapbox.Application
 @model IAsyncEnumerable<PostCategory>
 @{
   ViewData[Constants.PageTitle] = "Categories";
@@ -22,7 +23,7 @@
       <div class="item-list">
         @foreach (var post in category.Posts)
         {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <edit-post-link post="post" /></div>
         }
       </div>
     </section>

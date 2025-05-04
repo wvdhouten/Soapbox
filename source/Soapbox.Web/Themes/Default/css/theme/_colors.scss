@@ -87,10 +87,10 @@ main {
 }
 
 *:focus {
-  outline: 2px solid var(--accent1-medium);
+  outline: 1px solid var(--accent1-medium);
 }
 
 input:focus, select:focus, textarea:focus, button:focus, a.button:focus {
   outline: 0;
-  box-shadow: 0 0 0 0.2rem var(--accent1-medium);
+  box-shadow: 0 0 0 0.1rem var(--accent1-medium);
 }

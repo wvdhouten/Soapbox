@@ -1,7 +1,6 @@
-namespace Soapbox.Web.Models.Email
+namespace Soapbox.Web.Models.Email;
+
+public class ConfirmEmail
 {
-    public class ConfirmEmail
-    {
-        public string CallbackUrl { get; set; }
-    }
+    public string CallbackUrl { get; set; }
 }

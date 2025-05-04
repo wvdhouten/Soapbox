@@ -1,8 +1,7 @@
-namespace Soapbox.Core.Syndication
+namespace Soapbox.Application.Syndication;
+
+public enum FeedFormat
 {
-    public enum FeedFormat
-    {
-        Rss,
-        Atom
-    }
+    Rss,
+    Atom
 }

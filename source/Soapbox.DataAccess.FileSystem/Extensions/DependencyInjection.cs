@@ -1,38 +1,37 @@
-namespace Soapbox.DataAccess.FileSystem
+namespace Soapbox.DataAccess.FileSystem.Extensions;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Soapbox.DataAccess.Abstractions;
+using Microsoft.AspNetCore.Identity;
+using Alkaline64.Injectable.Extensions;
+using Soapbox.Domain.Users;
+using Soapbox.DataAccess.FileSystem.Abstractions;
+
+public static class DependencyInjection
 {
-    using System.Diagnostics.CodeAnalysis;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Soapbox.DataAccess.Abstractions;
-    using Microsoft.AspNetCore.Identity;
-
-    public static class DependencyInjection
+    public static IServiceCollection AddFileSystemStorage(this IServiceCollection services)
     {
-        public static IServiceCollection AddFileSystemStorage([NotNull] this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
-        {
-            services.AddSingleton<IBlogStore, BlogStore>();
-            services.AddScoped<IBlogService, BlogService>();
+        services.RegisterInjectables<UserFileSystemStore>();
 
-            return services;
-        }
+        return services;
+    }
 
-        public static IdentityBuilder AddFileSystemStore(this IdentityBuilder builder)
-        {
-            builder.AddUserStore<UserStore>();
+    public static IdentityBuilder AddFileSystemStore(this IdentityBuilder builder)
+    {
+        builder.AddUserStore<UserFileSystemStore>();
+        // builder.AddRoleStore<RoleStore>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        public static IApplicationBuilder UseFileSystemStorage(this IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-            }
+    public static IApplicationBuilder UseFileSystemStorageAsync(this IApplicationBuilder app)
+    {
+        new Task(async () => await app.ApplicationServices
+            .CreateScope().ServiceProvider
+            .GetRequiredService<ITransactionalUserStore<SoapboxUser>>()
+            .InitAsync()).RunSynchronously();
 
-            return app;
-        }
+        return app;
     }
 }

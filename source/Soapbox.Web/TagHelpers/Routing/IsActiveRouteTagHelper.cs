@@ -1,115 +1,90 @@
-namespace Soapbox.Web.TagHelpers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Microsoft.AspNetCore.Razor.TagHelpers;
+namespace Soapbox.Web.TagHelpers.Routing;
 
-    public enum ActiveRoutePrecision
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+public enum ActiveRoutePrecision
+{
+    All,
+    Action,
+    Controller,
+    Area
+}
+
+[HtmlTargetElement(Attributes = IsActiveRouteAttribute)]
+public class IsActiveRouteTagHelper : TagHelper
+{
+    private const string IsActiveRouteAttribute = "is-active-route";
+
+    private IDictionary<string, string> _routeValues;
+
+    [HtmlAttributeName("asp-action")]
+    public string Action { get; set; }
+
+    [HtmlAttributeName("asp-controller")]
+    public string Controller { get; set; }
+
+    [HtmlAttributeName("asp-area")]
+    public string Area { get; set; }
+
+    [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
+    public IDictionary<string, string> RouteValues
     {
-        All,
-        Action,
-        Controller,
-        Area
+        get => _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        set => _routeValues = value;
     }
 
-    [HtmlTargetElement(Attributes = IsActiveRouteAttribute)]
-    public class IsActiveRouteTagHelper : TagHelper
+    [HtmlAttributeName(IsActiveRouteAttribute)]
+    public ActiveRoutePrecision Precision { get; set; }
+
+    [HtmlAttributeNotBound]
+    [ViewContext]
+    public ViewContext ViewContext { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        private const string IsActiveRouteAttribute = "is-active-route";
-        private IDictionary<string, string> _routeValues;
+        base.Process(context, output);
 
-        /// <summary>The name of the action method.</summary>
-        /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
-        [HtmlAttributeName("asp-action")]
-        public string Action { get; set; }
+        if (ShouldBeActive())
+            MakeActive(output);
 
-        /// <summary>The name of the controller.</summary>
-        /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
-        [HtmlAttributeName("asp-controller")]
-        public string Controller { get; set; }
+        output.Attributes.RemoveAll(IsActiveRouteAttribute);
+    }
 
-        /// <summary>The name of the area.</summary>
-        /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
-        [HtmlAttributeName("asp-area")]
-        public string Area { get; set; }
+    private bool ShouldBeActive()
+    {
+        var desiredArea = Area ?? string.Empty;
+        var currentArea = ViewContext.RouteData.Values["Area"]?.ToString() ?? string.Empty;
+        var desiredController = Controller ?? string.Empty;
+        var currentController = ViewContext.RouteData.Values["Controller"].ToString();
+        var desiredAction = Action ?? string.Empty;
+        var currentAction = ViewContext.RouteData.Values["Action"].ToString();
 
-        /// <summary>Additional parameters for the route.</summary>
-        [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
-        public IDictionary<string, string> RouteValues
+        return Precision switch
         {
-            get
-            {
-                if (_routeValues is null)
-                {
-                    _routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                }
+            ActiveRoutePrecision.Area => currentArea == desiredArea,
+            ActiveRoutePrecision.Controller => currentArea == desiredArea
+                && currentController == desiredController,
+            ActiveRoutePrecision.Action => currentArea == desiredArea
+                && currentController == desiredController
+                && currentAction == desiredAction,
+            // TODO: Add Route Values
+            ActiveRoutePrecision.All
+            or _ => currentArea == desiredArea
+                && currentController == desiredController
+                && currentAction == desiredAction,
+        };
+    }
 
-                return _routeValues;
-            }
-            set => _routeValues = value;
-        }
+    private static void MakeActive(TagHelperOutput output)
+    {
+        var value = "active";
+        if (output.Attributes.TryGetAttribute("class", out var classAttribute))
+            value = classAttribute.Value?.ToString() + " active" ?? "active";
 
-        [HtmlAttributeName(IsActiveRouteAttribute)]
-        public ActiveRoutePrecision Precision { get; set; }
-
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            base.Process(context, output);
-
-            if (ShouldBeActive())
-            {
-                MakeActive(output);
-            }
-
-            output.Attributes.RemoveAll(IsActiveRouteAttribute);
-        }
-
-        private bool ShouldBeActive()
-        {
-            var desiredArea = Area ?? string.Empty;
-            var currentArea = ViewContext.RouteData.Values["Area"]?.ToString() ?? string.Empty;
-            var desiredController = Controller ?? string.Empty;
-            var currentController = ViewContext.RouteData.Values["Controller"].ToString();
-            var desiredAction = Action ?? string.Empty;
-            var currentAction = ViewContext.RouteData.Values["Action"].ToString();
-
-            // TODO: Add Route values.
-            return Precision switch
-            {
-                ActiveRoutePrecision.Area => currentArea == desiredArea,
-                ActiveRoutePrecision.Controller => currentArea == desiredArea
-                    && currentController == desiredController,
-                ActiveRoutePrecision.Action => currentArea == desiredArea
-                    && currentController == desiredController
-                    && currentAction == desiredAction,
-                ActiveRoutePrecision.All
-                or _ => currentArea == desiredArea
-                    && currentController == desiredController
-                    && currentAction == desiredAction,
-            };
-        }
-
-        private static void MakeActive(TagHelperOutput output)
-        {
-            var classAttribute = output.Attributes.FirstOrDefault(a => a.Name == "class");
-            if (classAttribute is null)
-            {
-                classAttribute = new TagHelperAttribute("class", "active");
-                output.Attributes.Add(classAttribute);
-            }
-            else if (classAttribute.Value is null || classAttribute.Value.ToString().IndexOf("active") < 0)
-            {
-                output.Attributes.SetAttribute("class", classAttribute.Value is null
-                    ? "active"
-                    : classAttribute.Value.ToString() + " active");
-            }
-        }
+        output.Attributes.SetAttribute("class", value);
     }
 }

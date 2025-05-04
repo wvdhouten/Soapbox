@@ -1,21 +1,21 @@
-namespace Soapbox.DataAccess.Data
+namespace Soapbox.DataAccess.Data;
+
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Soapbox.Domain.Blog;
+using Soapbox.Domain.Users;
+
+public class ApplicationDbContext : IdentityDbContext<SoapboxUser>
 {
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore;
-    using Soapbox.Models;
-
-    public class ApplicationDbContext : IdentityDbContext<SoapboxUser>
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-            Database.Migrate();
-        }
-
-        public DbSet<Post> Posts { get; set; }
-
-        public DbSet<PostCategory> PostCategories { get; set; }
-
-        public DbSet<PostMetadata> PostMetadata { get; set; }
+        Database.Migrate();
     }
+
+    public DbSet<Post> Posts { get; set; }
+
+    public DbSet<PostCategory> PostCategories { get; set; }
+
+    public DbSet<PostMetadata> PostMetadata { get; set; }
 }

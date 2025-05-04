@@ -1,9 +1,5 @@
-namespace Soapbox.Web.Models.Account
+namespace Soapbox.Web.Models.Account;
+public class RecoveryCodesModel
 {
-    using Microsoft.AspNetCore.Mvc;
-
-    public class RecoveryCodesModel
-    {
-        public string[] RecoveryCodes { get; set; }
-    }
+    public string[] RecoveryCodes { get; set; }
 }

@@ -1,6 +1,5 @@
-namespace Soapbox.DataAccess.Abstractions
+namespace Soapbox.DataAccess.Abstractions;
+
+public interface IOrderOptions
 {
-    public interface IOrderOptions
-    {
-    }
 }

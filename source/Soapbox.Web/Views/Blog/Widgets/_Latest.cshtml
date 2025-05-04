@@ -1,5 +1,5 @@
 @model Models.Blog.RecentPostsWidgetModel
-@inject DataAccess.Abstractions.IBlogService BlogService
+@inject DataAccess.Abstractions.IBlogRepository BlogService
 @{
     var model = Model ?? new Models.Blog.RecentPostsWidgetModel();
     var page = await BlogService.GetPostsPageAsync(1, model.PostCount);

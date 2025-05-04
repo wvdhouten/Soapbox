@@ -1,7 +1,7 @@
-@using Soapbox.Core.Extensions
+@using Soapbox.Application
 @model SoapboxUser
 @{
-  ViewData[Constants.PageTitle] = $"Author: {Model.ShownName()}";
+  ViewData[Constants.PageTitle] = $"Author: {Model.ShownName}";
 }
 
 <div class="container content">
@@ -15,7 +15,7 @@
       {
         foreach (var post in Model.Posts)
         {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <edit-post-link post="post" /></div>
         }
       }
       else

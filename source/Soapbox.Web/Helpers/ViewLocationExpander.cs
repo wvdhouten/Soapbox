@@ -4,7 +4,7 @@ namespace Soapbox.Web.Helpers
     using System.Linq;
     using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.Settings;
+    using Soapbox.Application.Settings;
 
     public class ViewLocationExpander : IViewLocationExpander
     {

@@ -1,103 +1,103 @@
-namespace Soapbox.Web.Controllers
+namespace Soapbox.Web.Controllers;
+
+using System;
+using System.Linq;
+using System.ServiceModel.Syndication;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Soapbox.Application.Extensions;
+using Soapbox.Application.Settings;
+using Soapbox.Application.Syndication;
+using Soapbox.DataAccess.Abstractions;
+using Soapbox.Domain.Markdown;
+
+public class FeedController : Controller
 {
-    using System;
-    using System.Linq;
-    using System.ServiceModel.Syndication;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
-    using Soapbox.Core.Extensions;
-    using Soapbox.Core.Markdown;
-    using Soapbox.Core.Settings;
-    using Soapbox.Core.Syndication;
-    using Soapbox.DataAccess.Abstractions;
+    private readonly SiteSettings _settings;
+    private readonly IBlogRepository _blogService;
+    private readonly IMarkdownParser _markdownParser;
 
-    public class FeedController : Controller
+    public FeedController(IOptionsSnapshot<SiteSettings> settings, IBlogRepository blogService, IMarkdownParser markdownParser)
     {
-        private readonly SiteSettings _settings;
-        private readonly IBlogService _blogService;
-        private readonly IMarkdownParser _markdownParser;
+        _settings = settings.Value;
+        _blogService = blogService;
+        _markdownParser = markdownParser;
+    }
 
-        public FeedController(IOptionsSnapshot<SiteSettings> settings, IBlogService blogService, IMarkdownParser markdownParser)
-        {
-            _settings = settings.Value;
-            _blogService = blogService;
-            _markdownParser = markdownParser;
-        }
+    [Produces("application/rss+xml")]
+    public async Task Rss()
+    {
+        await WriteFeedAsync(FeedFormat.Rss);
+    }
 
-        [Produces("application/rss+xml")]
-        public async Task Rss()
-        {
-            await WriteFeed(FeedFormat.Rss);
-        }
+    [Produces("application/atom+xml")]
+    public async Task Atom()
+    {
+        await WriteFeedAsync(FeedFormat.Atom);
+    }
 
-        [Produces("application/atom+xml")]
-        public async Task Atom()
-        {
-            await WriteFeed(FeedFormat.Atom);
-        }
+    private async Task WriteFeedAsync(FeedFormat format = FeedFormat.Rss)
+    {
+        var baseUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
+        var imageUri = !string.IsNullOrWhiteSpace(_settings.SyndicationFeedImage)
+            ? _settings.SyndicationFeedImage.StartsWith("http")
+                ? new Uri(_settings.SyndicationFeedImage)
+                : new Uri(baseUri, _settings.SyndicationFeedImage)
+            : null;
+        var blogUri = new Uri(baseUri, "blog/");
 
-        private async Task WriteFeed(FeedFormat format = FeedFormat.Rss)
+        var builder = new FeedBuilder(new Uri(baseUri, "blog/"), _settings.Title, _settings.Description);
+        builder.SetSelfLink(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}"));
+        builder.SetImage(imageUri);
+        builder.SetOwner(_settings.Owner, _settings.OwnerEmail);
+        builder.SetCategories(_settings.Keywords.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+
+        var postsPage = await _blogService.GetPostsPageAsync(0, 30);
+        builder.SetItems(postsPage.Items, post =>
         {
-            var baseUri = new Uri($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
-            var imageUri = !string.IsNullOrWhiteSpace(_settings.SyndicationFeedImage)
-                ? _settings.SyndicationFeedImage.StartsWith("http")
-                    ? new Uri(_settings.SyndicationFeedImage)
-                    : new Uri(baseUri, _settings.SyndicationFeedImage)
+            var content = _markdownParser.ToHtml(post.Content, out var images);
+            var image = images.FirstOrDefault() ?? string.Empty;
+            var postUri = new Uri(blogUri, post.Slug);
+            var idUri = new Uri(blogUri, $"post/{post.Id}");
+            var item = new SyndicationItem(post.Title, string.Empty, postUri, idUri.AbsoluteUri, post.ModifiedOn)
+            .WithBaseUri(baseUri)
+            .WithContent(content)
+            .WithAuthor(post.Author.ShownName)
+            .WithPublishDate(post.PublishedOn);
+
+            var imageUri = !string.IsNullOrWhiteSpace(image)
+                ? image.StartsWith("http")
+                    ? new Uri(image)
+                    : new Uri(baseUri, image)
                 : null;
-            var blogUri = new Uri(baseUri, "blog/");
 
-            var builder = new FeedBuilder(new Uri(baseUri, "blog/"), _settings.Title, _settings.Description);
-            builder.SetSelfLink(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}"));
-            builder.SetImage(imageUri);
-            builder.SetOwner(_settings.Owner, _settings.OwnerEmail);
-            builder.SetCategories(_settings.Keywords.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
-
-            var postsPage = await _blogService.GetPostsPageAsync(0, 30);
-            builder.SetItems(postsPage.Items, post =>
+            if (imageUri != null)
             {
-                var content = _markdownParser.ToHtml(post.Content, out var image);
-                var postUri = new Uri(blogUri, post.Slug);
-                var idUri = new Uri(blogUri, $"post/{post.Id}");
-                var item = new SyndicationItem(post.Title, string.Empty, postUri, idUri.AbsoluteUri, post.ModifiedOn)
-                .WithBaseUri(baseUri)
-                .WithContent(content)
-                .WithAuthor(post.Author.ShownName())
-                .WithPublishDate(post.PublishedOn);
+                item.WithImage(imageUri);
+            }
+            item.WithCategories(post.Categories.Select(c => c.Name));
 
-                var imageUri = !string.IsNullOrWhiteSpace(image)
-                    ? image.StartsWith("http")
-                        ? new Uri(image)
-                        : new Uri(baseUri, image)
-                    : null;
+            // TODO: Add comments
 
-                if (imageUri != null)
-                {
-                    item.WithImage(imageUri);
-                }
-                item.WithCategories(post.Categories.Select(c => c.Name));
+            return item;
+        });
 
-                // TODO: Add comments
+        var feed = builder.GetFeed();
 
-                return item;
-            });
-
-            var feed = builder.GetFeed();
-
-            var settings = new XmlWriterSettings
-            {
-                Async = true,
-                Encoding = Encoding.UTF8,
-                NewLineHandling = NewLineHandling.Entitize,
-                NewLineOnAttributes = true,
-                Indent = true
-            };
-            await using var writer = XmlWriter.Create(Response.Body, settings);
-            var formatter = feed.GetFormatter(format);
-            formatter.WriteTo(writer);
-            await writer.FlushAsync();
-        }
+        var settings = new XmlWriterSettings
+        {
+            Async = true,
+            Encoding = Encoding.UTF8,
+            NewLineHandling = NewLineHandling.Entitize,
+            NewLineOnAttributes = true,
+            Indent = true
+        };
+        await using var writer = XmlWriter.Create(Response.Body, settings);
+        var formatter = feed.GetFormatter(format);
+        formatter.WriteTo(writer);
+        await writer.FlushAsync();
     }
 }

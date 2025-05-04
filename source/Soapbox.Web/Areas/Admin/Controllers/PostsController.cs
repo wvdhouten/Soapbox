@@ -3,14 +3,15 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Extensions;
+    using Soapbox.Application.Extensions;
     using Soapbox.DataAccess.Abstractions;
-    using Soapbox.Models;
+    using Soapbox.Domain.Blog;
+    using Soapbox.Domain.Users;
     using Soapbox.Web.Areas.Admin.Models.Posts;
-    using Soapbox.Web.Controllers;
+    using Soapbox.Web.Areas.Admin.Models.Shared;
+    using Soapbox.Web.Controllers.Base;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
 
@@ -25,16 +26,14 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author, UserRole.Contributor)]
-    public class PostsController : SoapboxBaseController
+    public class PostsController : SoapboxControllerBase
     {
-        private readonly IBlogService _blogService;
-        private readonly IMapper _mapper;
+        private readonly IBlogRepository _blogService;
         private readonly ILogger<PostsController> _logger;
 
-        public PostsController(IBlogService blogService, IMapper mapper, ILogger<PostsController> logger)
+        public PostsController(IBlogRepository blogService, ILogger<PostsController> logger)
         {
             _blogService = blogService;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -52,7 +51,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             var categories = await _blogService.GetAllCategoriesAsync();
             var model = new PostViewModel
             {
-                AllCategories = await categories.Select(c => _mapper.Map<SelectableCategoryViewModel>(c)).ToListAsync(),
+                Post = new Post(),
+                AllCategories = [.. categories.Select(c => new SelectableItemViewModel<PostCategory> { Item = c })],
                 UpdateSlugFromTitle = true
             };
 
@@ -60,26 +60,26 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] PostViewModel post, string action)
+        public async Task<IActionResult> Create([FromForm] PostViewModel model, string action)
         {
             if (action == nameof(AddCategory))
             {
-                return AddCategory(post);
+                return AddCategory(model);
             }
 
             if (!ModelState.IsValid)
             {
-                return View(post);
+                return View(model);
             }
 
-            post.Author = new SoapboxUser { Id = User.GetUserId() };
+            model.Post.Author = new SoapboxUser { Id = User.GetUserId() };
             var now = DateTime.UtcNow;
-            post.ModifiedOn = post.UpdateModifiedOn ? now : post.ModifiedOn;
-            post.PublishedOn = post.UpdatePublishedOn ? now : post.PublishedOn;
-            post.Slug = post.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
-            SetSelectedCategories(post);
+            model.Post.ModifiedOn = model.UpdateModifiedOn ? now : model.Post.ModifiedOn;
+            model.Post.PublishedOn = model.UpdatePublishedOn ? now : model.Post.PublishedOn;
+            model.Post.Slug = model.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(model.Post.Slug) ? CreateSlug(model.Post.Title) : model.Post.Slug;
+            SetSelectedCategories(model);
 
-            await _blogService.CreatePostAsync(post);
+            await _blogService.CreatePostAsync(model.Post);
 
             StatusMessage = "Post created successfully.";
 
@@ -91,44 +91,45 @@ namespace Soapbox.Web.Areas.Admin.Controllers
         {
             var post = await _blogService.GetPostByIdAsync(id) ?? throw new Exception("Not Found");
 
-            var model = _mapper.Map<PostViewModel>(post);
-            model.UpdateSlugFromTitle = post.Slug == CreateSlug(post.Title);
-            model.UpdatePublishedOn = model.UpdateModifiedOn = post.Status == PostStatus.Draft && post.ModifiedOn == post.PublishedOn;
-            model.AllCategories = await (await _blogService.GetAllCategoriesAsync()).Select(category =>
+            var model = new PostViewModel
             {
-                return _mapper.Map<PostCategory, SelectableCategoryViewModel>(category, opts =>
-                {
-                    opts.AfterMap((source, destination) => { destination.Selected = post.Categories.Any(c => destination.Id == c.Id); });
-                });
-            }).ToListAsync();
+                Post = post,
+                UpdateSlugFromTitle = post.Slug == CreateSlug(post.Title),
+                UpdatePublishedOn = post.Status == PostStatus.Draft && post.ModifiedOn == post.PublishedOn,
+                UpdateModifiedOn = post.Status == PostStatus.Draft && post.ModifiedOn == post.PublishedOn,
+                AllCategories = [.. (await _blogService.GetAllCategoriesAsync()).Select(category =>
+                    {
+                        return new SelectableItemViewModel<PostCategory> { Item = category, Selected = post.Categories.Any(c => category.Id == c.Id) };
+                    })]
+            };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] PostViewModel post, string action)
+        public async Task<IActionResult> Edit([FromForm] PostViewModel model, string action)
         {
             if (action == nameof(AddCategory))
             {
-                return AddCategory(post);
+                return AddCategory(model);
             }
 
             if (!ModelState.IsValid)
             {
-                return View(post);
+                return View(model);
             }
 
             var now = DateTime.UtcNow;
-            post.ModifiedOn = post.UpdateModifiedOn ? now : post.ModifiedOn;
-            post.PublishedOn = post.UpdatePublishedOn ? now : post.PublishedOn;
-            post.Slug = post.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(post.Slug) ? CreateSlug(post.Title) : post.Slug;
-            SetSelectedCategories(post);
+            model.Post.ModifiedOn = model.UpdateModifiedOn ? now : model.Post.ModifiedOn;
+            model.Post.PublishedOn = model.UpdatePublishedOn ? now : model.Post.PublishedOn;
+            model.Post.Slug = model.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(model.Post.Slug) ? CreateSlug(model.Post.Title) : model.Post.Slug;
+            SetSelectedCategories(model);
 
-            await _blogService.UpdatePostAsync(post);
+            await _blogService.UpdatePostAsync(model.Post);
 
             StatusMessage = "Post updated successfully.";
 
-            return RedirectToAction(nameof(Edit), new { id = post.Id });
+            return RedirectToAction(nameof(Edit), new { id = model.Post.Id });
         }
 
         [HttpGet, ActionName(nameof(Delete))]
@@ -156,7 +157,7 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private IActionResult AddCategory(PostViewModel model)
+        private ViewResult AddCategory(PostViewModel model)
         {
             ModelState.ClearValidationState(string.Empty);
             if (string.IsNullOrWhiteSpace(model.NewCategory))
@@ -165,8 +166,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var newCategory = new SelectableCategoryViewModel { Name = model.NewCategory.Trim(), Selected = true };
-            if (model.AllCategories.Any(c => c.Name == newCategory.Name))
+            var newCategory = new SelectableItemViewModel<PostCategory> { Item = new PostCategory { Name = model.NewCategory.Trim() }, Selected = true };
+            if (model.AllCategories.Any(c => c.Item.Name == newCategory.Item.Name))
             {
                 ModelState.AddModelError(nameof(model.NewCategory), $"The category '{model.NewCategory}' already exists");
             }
@@ -180,15 +181,15 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        private static void SetSelectedCategories(PostViewModel post)
+        private static void SetSelectedCategories(PostViewModel model)
         {
-            foreach (var category in post.AllCategories.Where(c => c.Selected))
+            foreach (var category in model.AllCategories.Where(c => c.Selected))
             {
-                if (category.Id == default)
+                if (category.Item.Id == default)
                 {
-                    category.Slug = CreateSlug(category.Name);
+                    category.Item.Slug = CreateSlug(category.Item.Name);
                 }
-                post.Categories.Add(category);
+                model.Post.Categories.Add(category.Item);
             }
         }
 

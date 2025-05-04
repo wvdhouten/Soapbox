@@ -1,16 +1,15 @@
-namespace Soapbox.Core.Settings
+namespace Soapbox.Application.Settings;
+
+using System.ComponentModel.DataAnnotations;
+
+public enum BlogPageLayout
 {
-    using System.ComponentModel.DataAnnotations;
+    [Display(Name = "Posts")]
+    Posts,
 
-    public enum BlogPageLayout
-    {
-        [Display(Name = "Posts")]
-        Posts,
+    [Display(Name = "Excerpts")]
+    Excerpts,
 
-        [Display(Name = "Excerpts")]
-        Excerpts,
-
-        [Display(Name = "Cards")]
-        Cards
-    }
+    [Display(Name = "Cards")]
+    Cards
 }

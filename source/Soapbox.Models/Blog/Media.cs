@@ -1,13 +1,12 @@
-namespace Soapbox.Models
+namespace Soapbox.Domain.Blog;
+
+using System;
+
+public class Media
 {
-    using System;
+    public string Name { get; set; }
 
-    public class Media
-    {
-        public string Name { get; set; }
+    public long Size { get; set; }
 
-        public long Size { get; set; }
-
-        public DateTime ModifiedOn { get; set; }
-    }
+    public DateTime ModifiedOn { get; set; }
 }

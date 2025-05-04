@@ -1,7 +1,8 @@
-namespace Soapbox.Core.Settings
+namespace Soapbox.Web.Models
 {
+    using Soapbox.Application.Settings;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Soapbox.Core.Common;
+    using Soapbox.Application;
 
     public class SeoValues
     {

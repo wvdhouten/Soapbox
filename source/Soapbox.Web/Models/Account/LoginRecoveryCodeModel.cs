@@ -1,15 +1,13 @@
-namespace Soapbox.Web.Models.Account
+namespace Soapbox.Web.Models.Account;
+
+using System.ComponentModel.DataAnnotations;
+
+public class LoginRecoveryCodeModel
 {
-    using System.ComponentModel.DataAnnotations;
-    using Microsoft.AspNetCore.Mvc;
+    public string ReturnUrl { get; set; }
 
-    public class LoginRecoveryCodeModel
-    {
-        public string ReturnUrl { get; set; }
-
-        [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Recovery Code")]
-        public string RecoveryCode { get; set; }
-    }
+    [Required]
+    [DataType(DataType.Text)]
+    [Display(Name = "Recovery Code")]
+    public string RecoveryCode { get; set; }
 }

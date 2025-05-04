@@ -2,20 +2,21 @@ namespace Soapbox.Web.Areas.Admin.Controllers
 {
     using System;
     using System.IO;
+    using System.IO.Compression;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Razor;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Soapbox.Core.FileManagement;
-    using Soapbox.Core.Settings;
-    using Soapbox.Models;
-    using Soapbox.Web.Controllers;
+    using Soapbox.Application.FileManagement;
+    using Soapbox.Application.Settings;
+    using Soapbox.Domain.Users;
+    using Soapbox.Web.Controllers.Base;
     using Soapbox.Web.Extensions;
     using Soapbox.Web.Identity.Attributes;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class SiteController : SoapboxBaseController
+    public class SiteController : SoapboxControllerBase
     {
         private readonly ConfigFileService _configFileService;
         private readonly IHostApplicationLifetime _appLifetime;
@@ -73,21 +74,29 @@ namespace Soapbox.Web.Areas.Admin.Controllers
             throw new Exception("Application will restart.");
         }
 
-            [HttpGet]
+        [HttpGet]
         public IActionResult Backup()
         {
             _logger.Log(LogLevel.Information, "Backup downloaded.");
 
-            var filePath = Path.Combine(Environment.CurrentDirectory, "Content", "Soapbox.sqlite");
+            var contentPath = Path.Combine(Environment.CurrentDirectory, "Content");
             var memoryStream = new MemoryStream();
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+
+            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
-                stream.Position = 0;
-                stream.CopyTo(memoryStream);
+                foreach (var filePath in Directory.GetFiles(contentPath, "*", SearchOption.AllDirectories))
+                {
+                    var relativePath = Path.GetRelativePath(contentPath, filePath);
+                    var entry = archive.CreateEntry(relativePath, CompressionLevel.Fastest);
+
+                    using var entryStream = entry.Open();
+                    using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    fileStream.CopyTo(entryStream);
+                }
             }
 
             memoryStream.Position = 0;
-            return File(memoryStream, "application/octet-stream", $"Backup-Soapbox-{DateTime.UtcNow:yyyy-MM-dd}.sqlite");
+            return File(memoryStream, "application/zip", $"Backup-Soapbox-{DateTime.UtcNow:yyyy-MM-dd}.zip");
         }
     }
 }

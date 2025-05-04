@@ -1,14 +1,12 @@
-namespace Soapbox.Web.Models.Account
+namespace Soapbox.Web.Models.Account;
+
+using System.ComponentModel.DataAnnotations;
+
+public class DeleteModel
 {
-    using System.ComponentModel.DataAnnotations;
-    using Microsoft.AspNetCore.Mvc;
+    public bool RequirePassword { get; set; }
 
-    public class DeleteModel
-    {
-        public bool RequirePassword { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-    }
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
 }

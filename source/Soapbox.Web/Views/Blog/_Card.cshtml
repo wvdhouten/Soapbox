@@ -1,6 +1,6 @@
-@using Soapbox.Core.Extensions
+@using Soapbox.Domain.Markdown
 @model Post
-@inject Soapbox.Core.Markdown.IMarkdownParser Parser
+@inject Soapbox.Domain.Markdown.IMarkdownParser Parser
 @{
     var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
     var content = Parser.ToHtml(Model.Content, out var image).StripHtml();

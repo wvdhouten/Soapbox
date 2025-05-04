@@ -1,3 +1,4 @@
+@using Soapbox.Application
 @model PostCategory
 @{
   ViewData[Constants.PageTitle] = $"Category: {Model.Name}";
@@ -14,7 +15,7 @@
       {
         foreach (var post in Model.Posts)
         {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <blog-link post="post" /></div>
+          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <edit-post-link post="post" /></div>
         }
       }
       else

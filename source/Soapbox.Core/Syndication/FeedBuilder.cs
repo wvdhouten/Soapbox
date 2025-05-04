@@ -1,69 +1,66 @@
-namespace Soapbox.Core.Syndication
+namespace Soapbox.Application.Syndication;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.ServiceModel.Syndication;
+
+public class FeedBuilder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.ServiceModel.Syndication;
+    private const string GeneratorName = "Soapbox";
+    private const string GeneratorUrl = "https://github.com/wvdhouten/Soapbox";
 
-    public class FeedBuilder
+    private readonly SyndicationFeed _feed;
+
+    public FeedBuilder(Uri sourceUri, string title, string description)
     {
-        private const string GeneratorName = "Soapbox";
-        private const string GeneratorUrl = "https://github.com/wvdhouten/Soapbox";
-
-        private readonly SyndicationFeed _feed;
-
-        public FeedBuilder(Uri sourceUri, string title, string description)
+        _feed = new SyndicationFeed(title, description, sourceUri)
         {
-            _feed = new SyndicationFeed(title, description, sourceUri)
-            {
-                Id = sourceUri.ToString(),
-                LastUpdatedTime = DateTimeOffset.MinValue,
-                TimeToLive = TimeSpan.FromHours(24)
-            }
-            .WithGenerator(GeneratorName, Assembly.GetExecutingAssembly().GetName().Version.ToString(), new Uri(GeneratorUrl));
+            Id = sourceUri.ToString(),
+            LastUpdatedTime = DateTimeOffset.MinValue,
+            TimeToLive = TimeSpan.FromHours(24)
+        }
+        .WithGenerator(GeneratorName, Assembly.GetExecutingAssembly().GetName().Version.ToString(), new Uri(GeneratorUrl));
+    }
+
+    public void SetSelfLink(Uri feedUri)
+    {
+        _feed.Links.Add(new SyndicationLink(feedUri, "self", null, null, 0));
+    }
+
+    public void SetOwner(string owner, string ownerEmail)
+    {
+        _feed.WithCopyright(owner)
+            .WithManagingEditor(ownerEmail)
+            .WithWebMaster(ownerEmail);
+    }
+
+    public void SetImage(Uri imageUri)
+    {
+        _feed.ImageUrl = imageUri;
+    }
+
+    public void SetCategories(IEnumerable<string> categories)
+    {
+        foreach (var category in categories)
+            _feed.WithCategory(category);
+    }
+
+    public void SetItems<T>(IEnumerable<T> items, Func<T, SyndicationItem> mapper)
+    {
+        var syndicationItems = items.Select(mapper);
+        if (syndicationItems.Any())
+        {
+            syndicationItems = syndicationItems.OrderByDescending(i => i.PublishDate);
+            _feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
         }
 
-        public void SetSelfLink(Uri feedUri)
-        {
-            _feed.Links.Add(new SyndicationLink(feedUri, "self", null, null, 0));
-        }
+        _feed.Items = syndicationItems;
+    }
 
-        public void SetOwner(string owner, string ownerEmail)
-        {
-            _feed.WithCopyright(owner)
-                .WithManagingEditor(ownerEmail)
-                .WithWebMaster(ownerEmail);
-        }
-
-        public void SetImage(Uri imageUri)
-        {
-            _feed.ImageUrl = imageUri;
-        }
-
-        public void SetCategories(IEnumerable<string> categories)
-        {
-            foreach (var category in categories)
-            {
-                _feed.WithCategory(category);
-            }
-        }
-
-        public void SetItems<T>(IEnumerable<T> items, Func<T, SyndicationItem> mapper)
-        {
-            var syndicationItems = items.Select(mapper);
-            if (syndicationItems.Any())
-            {
-                syndicationItems = syndicationItems.OrderByDescending(i => i.PublishDate);
-                _feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
-            }
-
-            _feed.Items = syndicationItems;
-        }
-
-        public SyndicationFeed GetFeed()
-        {
-            return _feed;
-        }
+    public SyndicationFeed GetFeed()
+    {
+        return _feed;
     }
 }

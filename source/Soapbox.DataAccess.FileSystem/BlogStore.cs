@@ -6,34 +6,27 @@ namespace Soapbox.DataAccess.FileSystem
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
-    using AutoMapper;
-    using Soapbox.DataAccess.FileSystem.Models;
-    using Soapbox.Models;
+    using Alkaline64.Injectable;
+    using Soapbox.DataAccess.FileSystem.Abstractions;
+    using Soapbox.DataAccess.FileSystem.Blog;
+    using Soapbox.Domain.Blog;
     using YamlDotNet.Serialization;
 
+    [Injectable<IBlogStore>(Lifetime.Singleton)]
     public partial class BlogStore : IBlogStore
     {
-        public enum StorageResult
-        {
-            Success,
-            Fail,
-        }
-
         private static readonly ISerializer YamlSerializer = new SerializerBuilder().Build();
         private static readonly IDeserializer YamlDeserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
-        private readonly IMapper _mapper;
         private readonly string _contentPath = Path.Combine(Environment.CurrentDirectory, "Content");
-        private IList<Post> _posts;
-        private IList<PostCategory> _categories;
+        private IList<Post> _posts = [];
+        private IList<PostCategory> _categories = [];
 
         public IList<Post> Posts
         {
             get
             {
-                if (_posts == null)
-                {
+                if (_posts.Count < 1)
                     Restore();
-                }
 
                 return _posts;
             }
@@ -43,18 +36,11 @@ namespace Soapbox.DataAccess.FileSystem
         {
             get
             {
-                if (_categories == null)
-                {
+                if (_categories.Count < 1)
                     Restore();
-                }
 
                 return _categories;
             }
-        }
-
-        public BlogStore(IMapper mapper)
-        {
-            _mapper = mapper;
         }
 
         public StorageResult UpdatePost(Post post)
@@ -68,7 +54,7 @@ namespace Soapbox.DataAccess.FileSystem
 
                 var filePath = Path.Combine(_contentPath, $"{post.Id}.md");
 
-                var frontmatter = _mapper.Map<PostRecord>(post);
+                PostRecord frontmatter = post;
 
                 var contentBuilder = new StringBuilder();
                 contentBuilder.AppendLine("---");
@@ -130,7 +116,7 @@ namespace Soapbox.DataAccess.FileSystem
             var match = frontMatterRegex.Match(fileContent);
 
             var frontMatter = YamlDeserializer.Deserialize<PostRecord>(match.Groups["frontMatter"].Value);
-            var post = _mapper.Map<Post>(frontMatter);
+            Post post = frontMatter;
             post.Content = fileContent[match.Length..];
 
             return post;
@@ -148,8 +134,8 @@ namespace Soapbox.DataAccess.FileSystem
 
         public void Restore()
         {
-            _posts = new List<Post>();
-            _categories = new List<PostCategory>();
+            _posts = [];
+            _categories = [];
 
             var files = Directory.GetFiles(_contentPath, "*.md");
             foreach (var file in files)

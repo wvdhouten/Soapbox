@@ -1,9 +1,8 @@
-namespace Soapbox.DataAccess.Abstractions
-{
-    public interface IPagingOptions
-    {
-        int Page { get; set; }
+namespace Soapbox.DataAccess.Abstractions;
 
-        int? PageSize { get; set; }
-    }
+public interface IPagingOptions
+{
+    public int Page { get; set; }
+
+    public int? PageSize { get; set; }
 }

@@ -7,7 +7,7 @@ namespace Soapbox.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "PostMeta",
+                name: "PostMetadata",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
@@ -18,9 +18,9 @@ namespace Soapbox.Web.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostMeta", x => x.Id);
+                    table.PrimaryKey("PK_PostMetadata", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PostMeta_Posts_PostId",
+                        name: "FK_PostMetadata_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
@@ -28,14 +28,14 @@ namespace Soapbox.Web.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostMeta_PostId",
-                table: "PostMeta",
+                name: "IX_PostMetadata_PostId",
+                table: "PostMetadata",
                 column: "PostId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "PostMeta");
+            migrationBuilder.DropTable(name: "PostMetadata");
         }
     }
 }

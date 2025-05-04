@@ -1,6 +1,5 @@
-namespace Soapbox.Core.Logging
+namespace Soapbox.Application.Logging;
+
+public static class LoggingExtensions
 {
-    public static class LoggingExtensions
-    {
-    }
 }

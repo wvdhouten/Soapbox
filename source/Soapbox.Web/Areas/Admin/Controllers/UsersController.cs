@@ -8,26 +8,27 @@ namespace Soapbox.Web.Areas.Admin.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
-    using Soapbox.Core.Email;
-    using Soapbox.Core.Extensions;
-    using Soapbox.Models;
+    using Soapbox.Application.Email.Abstractions;
+    using Soapbox.Domain.Users;
     using Soapbox.Web.Areas.Admin.Models.Users;
-    using Soapbox.Web.Controllers;
+    using Soapbox.Web.Controllers.Base;
     using Soapbox.Web.Identity.Attributes;
     using Soapbox.Web.Identity.Extensions;
     using Soapbox.Web.Models.Email;
-    using Soapbox.Web.Services;
+    using Soapbox.Web.Identity.Managers;
+    using Soapbox.Web.Identity;
+    using Soapbox.Application.Utils;
 
     [Area("Admin")]
     [RoleAuthorize(UserRole.Administrator)]
-    public class UsersController : SoapboxBaseController
+    public class UsersController : SoapboxControllerBase
     {
         private readonly AccountService _accountService;
-        private readonly UserManager<SoapboxUser> _userManager;
+        private readonly TransactionalUserManager<SoapboxUser> _userManager;
         private readonly IEmailService _emailClient;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(AccountService accountService, UserManager<SoapboxUser> userManager, IEmailService emailClient, ILogger<UsersController> logger)
+        public UsersController(AccountService accountService, TransactionalUserManager<SoapboxUser> userManager, IEmailService emailClient, ILogger<UsersController> logger)
         {
             _accountService = accountService;
             _userManager = userManager;

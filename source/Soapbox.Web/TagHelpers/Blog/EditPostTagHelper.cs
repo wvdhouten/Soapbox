@@ -1,49 +1,46 @@
-namespace Soapbox.Web.TagHelpers.Blog
+namespace Soapbox.Web.TagHelpers.Blog;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Soapbox.Domain.Blog;
+
+public class EditPostTagHelper : TagHelper
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.AspNetCore.Mvc.TagHelpers;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Microsoft.AspNetCore.Razor.TagHelpers;
-    using Soapbox.Models;
+    private readonly IHtmlGenerator _generator;
 
-    public class EditPostTagHelper : TagHelper
+    public Post Post { get; set; }
+
+    [HtmlAttributeNotBound]
+    [ViewContext]
+    public ViewContext ViewContext { get; set; }
+
+    public EditPostTagHelper(IHtmlGenerator generator)
     {
-        private readonly IHtmlGenerator _generator;
+        _generator = generator;
+    }
 
-        public Post Post { get; set; }
+    public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
+        output.TagName = "a";
+        output.TagMode = TagMode.StartTagAndEndTag;
 
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
+        var routeValues = new Dictionary<string, object> { { "id", Post.Id } };
 
-        public EditPostTagHelper(IHtmlGenerator generator)
-        {
-            _generator = generator;
-        }
+        var builder = GetTagBuilder("Edit", routeValues);
 
-        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        {
-            base.Process(context, output);
+        output.MergeAttributes(builder);
 
-            output.TagName = "a";
-            output.TagMode = TagMode.StartTagAndEndTag;
+        return Task.Run(() => Process(context, output));
+    }
 
-            var routeValues = new Dictionary<string, object> { { "id", Post.Id } };
+    private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
+    {
+        routeValues.Add("Area", "Admin");
 
-            var builder = GetTagBuilder("Edit", routeValues);
-
-            output.MergeAttributes(builder);
-
-            return Task.Run(() => Process(context, output));
-        }
-
-        private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
-        {
-            routeValues.Add("Area", "Admin");
-
-            return _generator.GenerateActionLink(ViewContext, string.Empty, action, "Posts", null, null, null, routeValues, null);
-        }
+        return _generator.GenerateActionLink(ViewContext, string.Empty, action, "Posts", null, null, null, routeValues, null);
     }
 }

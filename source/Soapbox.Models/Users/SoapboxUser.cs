@@ -1,15 +1,18 @@
-namespace Soapbox.Models
+namespace Soapbox.Domain.Users;
+
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Soapbox.Domain.Blog;
+
+public class SoapboxUser : IdentityUser
 {
-    using System.Collections.Generic;
-    using Microsoft.AspNetCore.Identity;
+    [PersonalData]
+    public string DisplayName { get; set; }
 
-    public class SoapboxUser : IdentityUser
-    {
-        [PersonalData]
-        public string DisplayName { get; set; }
+    public string ShownName => !string.IsNullOrWhiteSpace(DisplayName) ? DisplayName : UserName;
 
-        public UserRole Role { get; set; }
+    public UserRole Role { get; set; }
 
-        public IList<Post> Posts { get; set; } = new List<Post>();
-    }
+    public IList<Post> Posts { get; set; } = [];
+
 }

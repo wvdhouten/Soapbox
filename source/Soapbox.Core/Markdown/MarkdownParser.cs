@@ -1,26 +1,28 @@
-namespace Soapbox.Core.Markdown
+namespace Soapbox.Application.Markdown;
+
+using System.Linq;
+using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+using Soapbox.Domain.Markdown;
+
+public class MarkdownParser : IMarkdownParser
 {
-    using System.Linq;
-    using Markdig;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
+    private readonly MarkdownPipeline _pipeline;
 
-    public class MarkdownParser : IMarkdownParser
+    public MarkdownParser()
     {
-        private readonly MarkdownPipeline _pipeline;
+        _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+    }
 
-        public MarkdownParser()
-        {
-            _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-        }
+    public string ToHtml(string content, out IEnumerable<string> images)
+    {
+        var parsed = Markdown.Parse(content, _pipeline);
 
-        public string ToHtml(string content, out string image)
-        {
-            var parsed = Markdown.Parse(content, _pipeline);
+        images = parsed.Descendants<ParagraphBlock>()
+            .SelectMany(x => x.Inline.Descendants<LinkInline>())
+            .Where(l => l.IsImage).Select(l => l.Url);
 
-            image = parsed.Descendants<ParagraphBlock>().SelectMany(x => x.Inline.Descendants<LinkInline>()).FirstOrDefault(l => l.IsImage)?.Url ?? string.Empty;
-
-            return parsed.ToHtml();
-        }
+        return parsed.ToHtml();
     }
 }

@@ -1,5 +1,6 @@
+@using Soapbox.Domain.Markdown
 @model Post
-@inject Soapbox.Core.Markdown.IMarkdownParser Parser
+@inject Soapbox.Domain.Markdown.IMarkdownParser Parser
 @{
   var isFullPost = string.IsNullOrWhiteSpace(Model.Excerpt);
   var content = !isFullPost ? Model.Excerpt : Model.Content;
@@ -9,8 +10,8 @@
   <header>
     <div class="container relative">
       <h1><blog-link post="Model" /></h1>
-      <div class="quick-actions" is-authorized>
-        <edit-post post="Model"><i class="fa fa-edit"></i></edit-post>
+      <div class="quick-actions" is-signed-in>
+        <edit-post-link post="Model"><i class="fa fa-edit"></i></edit-post-link>
       </div>
       <div class="meta-data">
         <div>
