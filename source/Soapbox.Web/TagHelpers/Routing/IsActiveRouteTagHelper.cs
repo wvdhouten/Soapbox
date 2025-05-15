@@ -19,19 +19,19 @@ public class IsActiveRouteTagHelper : TagHelper
 {
     private const string IsActiveRouteAttribute = "is-active-route";
 
-    private IDictionary<string, string> _routeValues;
+    private Dictionary<string, string> _routeValues = [];
 
     [HtmlAttributeName("asp-action")]
-    public string Action { get; set; }
+    public string? Action { get; set; }
 
     [HtmlAttributeName("asp-controller")]
-    public string Controller { get; set; }
+    public string? Controller { get; set; }
 
     [HtmlAttributeName("asp-area")]
-    public string Area { get; set; }
+    public string? Area { get; set; }
 
     [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
-    public IDictionary<string, string> RouteValues
+    public Dictionary<string, string> RouteValues
     {
         get => _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         set => _routeValues = value;
@@ -42,7 +42,7 @@ public class IsActiveRouteTagHelper : TagHelper
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
@@ -59,9 +59,9 @@ public class IsActiveRouteTagHelper : TagHelper
         var desiredArea = Area ?? string.Empty;
         var currentArea = ViewContext.RouteData.Values["Area"]?.ToString() ?? string.Empty;
         var desiredController = Controller ?? string.Empty;
-        var currentController = ViewContext.RouteData.Values["Controller"].ToString();
+        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
         var desiredAction = Action ?? string.Empty;
-        var currentAction = ViewContext.RouteData.Values["Action"].ToString();
+        var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
 
         return Precision switch
         {

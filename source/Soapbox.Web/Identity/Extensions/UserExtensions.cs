@@ -17,8 +17,10 @@ namespace Soapbox.Web.Identity.Extensions
         {
             ArgumentNullException.ThrowIfNull(principal);
 
-            var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new Exception("User ID not found in claims");
 
+            // TODO: Add Guid support
             if (typeof(TId) == typeof(string))
                 return (TId)Convert.ChangeType(loggedInUserId, typeof(TId));
             else if (typeof(TId) == typeof(int) || typeof(TId) == typeof(long))

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Soapbox.Application.Extensions;
 using Soapbox.Domain.Blog;
 using Soapbox.Domain.Users;
 
@@ -19,13 +18,13 @@ public class BlogLinkTagHelper : TagHelper
 
     public int? Page { get; set; }
 
-    public Post Post { get; set; }
+    public Post? Post { get; set; }
 
     public bool Categories { get; set; }
 
-    public PostCategory Category { get; set; }
+    public PostCategory? Category { get; set; }
 
-    public SoapboxUser Author { get; set; }
+    public SoapboxUser? Author { get; set; }
 
     public bool Archive { get; set; }
 
@@ -35,7 +34,7 @@ public class BlogLinkTagHelper : TagHelper
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public BlogLinkTagHelper(IHtmlGenerator generator)
     {
@@ -63,8 +62,8 @@ public class BlogLinkTagHelper : TagHelper
 
     private (TagBuilder builder, Func<string> defaultContent) PrepareOutput()
     {
-        TagBuilder builder = null;
-        Func<string> defaultContent = null;
+        TagBuilder? builder = null;
+        Func<string>? defaultContent = null;
 
         if (Index)
         {
@@ -151,7 +150,7 @@ public class BlogLinkTagHelper : TagHelper
         return (builder, defaultContent);
     }
 
-    private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
+    private TagBuilder GetTagBuilder(string action, IDictionary<string, object>? routeValues)
     {
         routeValues ??= new Dictionary<string,object>();
         routeValues.TryAdd("Area", string.Empty);

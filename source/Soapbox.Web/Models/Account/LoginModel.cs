@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Authentication;
 
 public class LoginModel
 {
-    public IList<AuthenticationScheme> ExternalLogins { get; set; }
+    public IList<AuthenticationScheme> ExternalLogins { get; set; } = [];
 
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
     [Required]
     [MinLength(8)]
     [Display(Name = "Username", Prompt = "Username")]
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
     [Required]
     [DataType(DataType.Password)]
     [Display(Name = "Password", Prompt = "Password")]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     [Display(Name = "Remember me")]
     public bool RememberMe { get; set; }

@@ -7,5 +7,5 @@ public class ForgotPasswordModel
     [Required]
     [EmailAddress]
     [Display(Name = "Email", Prompt = "Email")]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 }

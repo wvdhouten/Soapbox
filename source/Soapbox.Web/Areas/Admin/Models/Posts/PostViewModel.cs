@@ -7,7 +7,7 @@ namespace Soapbox.Web.Areas.Admin.Models.Posts
 
     public class PostViewModel
     {
-        public Post Post { get; set; }
+        public Post Post { get; set; } = default!;
 
         public IList<SelectableItemViewModel<PostCategory>> AllCategories { get; set; } = [];
 
@@ -20,6 +20,6 @@ namespace Soapbox.Web.Areas.Admin.Models.Posts
         [Display(Name = "Update")]
         public bool UpdatePublishedOn { get; set; } = true;
 
-        public string NewCategory { get; set; }
+        public string? NewCategory { get; set; }
     }
 }

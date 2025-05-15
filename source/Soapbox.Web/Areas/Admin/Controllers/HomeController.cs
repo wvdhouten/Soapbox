@@ -1,28 +1,27 @@
-namespace Soapbox.Web.Areas.Admin.Controllers
+namespace Soapbox.Web.Areas.Admin.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Soapbox.Domain.Users;
+using Soapbox.Web.Common.Base;
+using Soapbox.Web.Identity.Attributes;
+
+[Area("Admin")]
+[RoleAuthorize(UserRole.Administrator)]
+public class HomeController : SoapboxControllerBase
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Soapbox.Domain.Users;
-    using Soapbox.Web.Controllers.Base;
-    using Soapbox.Web.Identity.Attributes;
+    private readonly ILogger<HomeController> _logger;
 
-    [Area("Admin")]
-    [RoleAuthorize(UserRole.Administrator)]
-    public class HomeController : SoapboxControllerBase
+    public HomeController(ILogger<HomeController> logger)
     {
-        private readonly ILogger<HomeController> _logger;
+        _logger = logger;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+    [HttpGet]
+    public IActionResult Index()
+    {
+        _logger.LogTrace("Redirecting to post administration.");
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            _logger.LogTrace("Redirecting to post administration.");
-
-            return RedirectToAction("Index", "Posts");
-        }
+        return RedirectToAction("Index", "Posts");
     }
 }

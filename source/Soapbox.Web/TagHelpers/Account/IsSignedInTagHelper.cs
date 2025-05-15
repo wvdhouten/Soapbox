@@ -17,7 +17,7 @@ public class IsSignedInTagHelper : TagHelper
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public IsSignedInTagHelper(SignInManager<SoapboxUser> signInManager)
     {

@@ -18,7 +18,6 @@ using Soapbox.Web.Identity;
 using WilderMinds.MetaWeblog;
 using Alkaline64.Injectable.Extensions;
 using Soapbox.DataAccess.FileSystem.Extensions;
-using Soapbox.Web.Email;
 using Soapbox.Web.Health;
 using Soapbox.Domain.Markdown;
 
@@ -26,14 +25,18 @@ public static class ServiceCollectionExtensions
 {
     public static void ConfigureSoapbox(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
+        services.AddLogging(builder =>
+        {
+            builder.ClearProviders();
+            builder.AddConsole();
+        });
+
         services.AddHealthChecks().AddCheck<SoapboxHealthChecks>("soapbox");
 
-        // services.AddSqlite(configuration, env);
         services.AddFileSystemStorage();
 
         services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
         services.AddScoped<IEmailService, SmtpEmailService>();
-        services.AddScoped<IEmailRenderer, RazorEmailRenderer>();
 
         services.Configure<IdentityOptions>(configuration.GetSection("IdentityOptions"));
         services.AddScoped<AccountService>();
@@ -61,7 +64,6 @@ public static class ServiceCollectionExtensions
         .AddDefaultTokenProviders()
         .AddSignInManager()
         .AddFileSystemStore();
-        //.AddSqliteStore();
 
         services.AddSingleton<SiteRepairService>();
 
@@ -85,6 +87,7 @@ public static class ServiceCollectionExtensions
             options.LowercaseUrls = true;
             options.LowercaseQueryStrings = false;
         });
+        services.AddResponseCaching();
         services.AddControllersWithViews();
 
         services.Configure<CookiePolicyOptions>(options =>

@@ -21,7 +21,7 @@ public class SiteSettings
     /// <value>
     /// The site subtitle.
     /// </value>
-    public string Subtitle { get; set; }
+    public string? Subtitle { get; set; }
 
     /// <summary>
     /// Gets or sets the site description.
@@ -29,7 +29,7 @@ public class SiteSettings
     /// <value>
     /// The site description.
     /// </value>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// Gets or sets the site keywords.
@@ -37,7 +37,7 @@ public class SiteSettings
     /// <value>
     /// The site keywords.
     /// </value>
-    public string Keywords { get; set; }
+    public string? Keywords { get; set; }
 
     /// <summary>
     /// Gets or sets the site theme.
@@ -54,7 +54,7 @@ public class SiteSettings
     /// The owner.
     /// </value>
     [Display(Name = "Owner")]
-    public string Owner { get; set; }
+    public string? Owner { get; set; }
 
     /// <summary>
     /// Gets or sets the owner email address.
@@ -63,7 +63,7 @@ public class SiteSettings
     /// The owner email address.
     /// </value>
     [Display(Name = "Owner email")]
-    public string OwnerEmail { get; set; }
+    public string? OwnerEmail { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether [cookie consent is enabled].
@@ -107,5 +107,5 @@ public class SiteSettings
     /// <value>
     /// The posts per page.
     /// </value>
-    public string SyndicationFeedImage { get; set; }
+    public string? SyndicationFeedImage { get; set; }
 }

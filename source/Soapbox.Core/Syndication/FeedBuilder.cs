@@ -13,7 +13,7 @@ public class FeedBuilder
 
     private readonly SyndicationFeed _feed;
 
-    public FeedBuilder(Uri sourceUri, string title, string description)
+    public FeedBuilder(Uri sourceUri, string title, string? description)
     {
         _feed = new SyndicationFeed(title, description, sourceUri)
         {
@@ -21,7 +21,7 @@ public class FeedBuilder
             LastUpdatedTime = DateTimeOffset.MinValue,
             TimeToLive = TimeSpan.FromHours(24)
         }
-        .WithGenerator(GeneratorName, Assembly.GetExecutingAssembly().GetName().Version.ToString(), new Uri(GeneratorUrl));
+        .WithGenerator(GeneratorName, Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty, new Uri(GeneratorUrl));
     }
 
     public void SetSelfLink(Uri feedUri)
@@ -29,19 +29,19 @@ public class FeedBuilder
         _feed.Links.Add(new SyndicationLink(feedUri, "self", null, null, 0));
     }
 
-    public void SetOwner(string owner, string ownerEmail)
+    public void SetOwner(string? owner, string? ownerEmail)
     {
         _feed.WithCopyright(owner)
             .WithManagingEditor(ownerEmail)
             .WithWebMaster(ownerEmail);
     }
 
-    public void SetImage(Uri imageUri)
+    public void SetImage(Uri? imageUri)
     {
         _feed.ImageUrl = imageUri;
     }
 
-    public void SetCategories(IEnumerable<string> categories)
+    public void SetCategories(IEnumerable<string?> categories)
     {
         foreach (var category in categories)
             _feed.WithCategory(category);
@@ -53,7 +53,7 @@ public class FeedBuilder
         if (syndicationItems.Any())
         {
             syndicationItems = syndicationItems.OrderByDescending(i => i.PublishDate);
-            _feed.LastUpdatedTime = syndicationItems.FirstOrDefault().LastUpdatedTime;
+            _feed.LastUpdatedTime = syndicationItems.First().LastUpdatedTime;
         }
 
         _feed.Items = syndicationItems;

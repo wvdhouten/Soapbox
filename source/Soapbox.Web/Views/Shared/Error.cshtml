@@ -1,4 +1,6 @@
-@model ErrorViewModel
+@using Soapbox.Web.Error
+@using Soapbox.Web.Error.GetErrorDetails
+@model GenericErrorDetails
 @{
   var message = Model.Message ?? "An error occurred while processing your request.";
 }

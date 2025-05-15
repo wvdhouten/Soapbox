@@ -3,6 +3,7 @@ namespace Soapbox.Web.Email;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Soapbox.Application.Email.Abstractions;
 
+[Injectable<IEmailRenderer>]
 public class RazorEmailRenderer : IEmailRenderer
 {
     private readonly IRazorViewEngine _viewEngine;
@@ -46,6 +48,7 @@ public class RazorEmailRenderer : IEmailRenderer
     {
         var actionContext = GetActionContext();
 
+        // TODO: Maybe also search the Content folder
         // Note: You can also support multiple languages by separating each locale into a folder
         var viewPath = $"/Views/EmailTemplate/{templateName}.cshtml";
         var result = _viewEngine.GetView(null, viewPath, true);

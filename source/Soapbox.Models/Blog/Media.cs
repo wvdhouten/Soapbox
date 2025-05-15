@@ -4,7 +4,7 @@ using System;
 
 public class Media
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public long Size { get; set; }
 

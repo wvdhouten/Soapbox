@@ -21,15 +21,15 @@ public class ShareTagHelper : TagHelper
     public const string EmailUrl = "mailto:?subject={1}&body={0}";
     private readonly LinkGenerator _linkGenerator;
 
-    public Post Post { get; set; }
+    public Post Post { get; set; } = default!;
 
     public ShareTarget To { get; set; }
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public ShareTagHelper(LinkGenerator linkGenerator)
     {
@@ -40,7 +40,7 @@ public class ShareTagHelper : TagHelper
     {
         base.Process(context, output);
 
-        var url = _linkGenerator.GetUriByAction("Post", "Blog", new { Area = "", Post.Slug }, ViewContext.HttpContext.Request.Scheme, ViewContext.HttpContext.Request.Host);
+        var url = _linkGenerator.GetUriByAction("Post", "Blog", new { Area = "", Post.Slug }, ViewContext.HttpContext.Request.Scheme, ViewContext.HttpContext.Request.Host) ?? string.Empty;
         var text = System.Net.WebUtility.UrlEncode(Post.Title);
 
         var href = To switch

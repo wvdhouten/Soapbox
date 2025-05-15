@@ -6,8 +6,6 @@ using Soapbox.Web.Models;
 
 public static class ViewDataExtensions
 {
-    public static SeoValues GetSeoValues(this ViewDataDictionary dictionary, SiteSettings settings)
-    {
-        return new SeoValues(dictionary, settings);
-    }
+    public static SeoValues GetSeoValues(this ViewDataDictionary dictionary, SiteSettings settings) 
+        => new(dictionary, settings);
 }

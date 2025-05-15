@@ -1,18 +1,17 @@
-namespace Soapbox.DataAccess.FileSystem.Abstractions
+namespace Soapbox.DataAccess.FileSystem.Abstractions;
+
+using System.Collections.Generic;
+using Soapbox.Domain.Blog;
+
+public interface IBlogStore
 {
-    using System.Collections.Generic;
-    using Soapbox.Domain.Blog;
+    public IList<Post> Posts { get; }
 
-    public interface IBlogStore
-    {
-        public IList<Post> Posts { get; }
+    public IList<PostCategory> Categories { get; }
 
-        public IList<PostCategory> Categories { get; }
+    public StorageResult UpdatePost(Post post);
 
-        public StorageResult UpdatePost(Post post);
+    public StorageResult DeletePost(string postId);
 
-        public StorageResult DeletePost(string postId);
-
-        public void Restore();
-    }
+    public void Restore();
 }

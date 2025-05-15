@@ -28,7 +28,7 @@ public class IsActiveRouteTagHelperTests
     [InlineData(true, ActiveRoutePrecision.Action, "Area", "Controller", "Action")]
     [Theory]
     [Trait("Category", "TagHelper")]
-    public async Task RecognizesActiveRoute(bool isActiveExpected, ActiveRoutePrecision precision, string area, string controller, string action)
+    public async Task RecognizesActiveRoute(bool isActiveExpected, ActiveRoutePrecision precision, string? area, string? controller, string? action)
     {
         // Arrange
         var tagHelper = new IsActiveRouteTagHelper
@@ -44,7 +44,7 @@ public class IsActiveRouteTagHelperTests
             new TagHelperAttribute("asp-area", "Area")
         };
         var context = new TagHelperContext(attributeList, new Dictionary<object, object>(), "test");
-        var output = new TagHelperOutput("a", new TagHelperAttributeList(), (useCachedResult, htmlEncoder) =>
+        var output = new TagHelperOutput("a", [], (useCachedResult, htmlEncoder) =>
         {
             var tagHelperContent = new DefaultTagHelperContent();
             tagHelperContent.SetContent(string.Empty);
@@ -59,7 +59,7 @@ public class IsActiveRouteTagHelperTests
 
         var classAttribute = output.Attributes.FirstOrDefault(a => a.Name == "class");
         var isActive = classAttribute is not null
-            && classAttribute.Value.ToString().Contains("active");
+            && classAttribute.Value.ToString()!.Contains("active");
 
         Assert.Equal(isActiveExpected, isActive);
     }

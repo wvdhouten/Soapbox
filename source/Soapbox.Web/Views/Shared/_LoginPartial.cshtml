@@ -1,5 +1,5 @@
 <li is-signed-in><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin panel</a></li>
-<li is-signed-in><account-link page="Index">Profile</account-link> <span>(@User.Identity.Name)</span></li>
+<li is-signed-in><account-link page="Index">Profile</account-link> <span>(@User.Identity?.Name)</span></li>
 <li is-signed-in>
   <form id="logout" asp-area="" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { Area = "" })" method="post" style="display: none;"></form>
   <account-link page="Logout" submit-form="logout">Sign out</account-link>

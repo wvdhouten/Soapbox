@@ -6,6 +6,6 @@ namespace Soapbox.Web.Areas.Admin.Models.Categories
     {
         public bool GenerateSlugFromName { get; set; }
 
-        public PostCategory Category { get; set; }
+        public PostCategory Category { get; set; } = default!;
     }
 }

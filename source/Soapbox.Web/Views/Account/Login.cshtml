@@ -55,13 +55,13 @@
       <button type="submit" form="login" class="large">Log in</button>
     </div>
 
-    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+    @if (Model.ExternalLogins.Count > 0)
     {
       <div class="separator">or</div>
       <form id="external-account" class="form-horizontal" asp-controller="Account" asp-action="LoginExternal" asp-route-returnUrl="@Model.ReturnUrl" method="post">
         @foreach (var provider in Model.ExternalLogins)
         {
-          <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="icon-@provider.DisplayName.ToLower()"></i></button>
+          <button type="submit" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="icon-@provider.DisplayName?.ToLower()"></i></button>
         }
       </form>
     }

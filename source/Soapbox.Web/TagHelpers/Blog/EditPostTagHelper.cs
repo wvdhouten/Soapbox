@@ -12,11 +12,11 @@ public class EditPostTagHelper : TagHelper
 {
     private readonly IHtmlGenerator _generator;
 
-    public Post Post { get; set; }
+    public Post Post { get; set; } = default!;
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public EditPostTagHelper(IHtmlGenerator generator)
     {
@@ -28,7 +28,7 @@ public class EditPostTagHelper : TagHelper
         output.TagName = "a";
         output.TagMode = TagMode.StartTagAndEndTag;
 
-        var routeValues = new Dictionary<string, object> { { "id", Post.Id } };
+        var routeValues = new Dictionary<string, object?> { { "id", Post.Id } };
 
         var builder = GetTagBuilder("Edit", routeValues);
 
@@ -37,7 +37,7 @@ public class EditPostTagHelper : TagHelper
         return Task.Run(() => Process(context, output));
     }
 
-    private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
+    private TagBuilder GetTagBuilder(string action, Dictionary<string, object?> routeValues)
     {
         routeValues.Add("Area", "Admin");
 

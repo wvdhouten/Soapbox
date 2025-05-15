@@ -41,7 +41,7 @@ public static class SyndicationItemExtensions
         var url = uri.ToString();
         var knownMimeType = MimeTypes.TryGetMimeType(url, out var mimeType);
 
-        var element = new XElement("enclosure", new XAttribute("url", url), new XAttribute("length", 0), new XAttribute("type", knownMimeType ? mimeType : string.Empty));
+        var element = new XElement("enclosure", new XAttribute("url", url), new XAttribute("length", 0), new XAttribute("type", knownMimeType ? mimeType! : string.Empty));
 
         item.ElementExtensions.Add(element);
 

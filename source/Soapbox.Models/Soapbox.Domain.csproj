@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
     <Version>0.1.0.0</Version>
@@ -11,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Alkaline64.Injectable" Version="1.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>

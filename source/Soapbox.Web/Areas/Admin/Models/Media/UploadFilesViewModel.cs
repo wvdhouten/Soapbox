@@ -1,10 +1,9 @@
-namespace Soapbox.Web.Areas.Admin.Models.Media
-{
-    using System.Collections.Generic;
-    using Microsoft.AspNetCore.Http;
+namespace Soapbox.Web.Areas.Admin.Models.Media;
 
-    public class UploadFilesViewModel
-    {
-        public IEnumerable<IFormFile> Files { get; set; }
-    }
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+
+public class UploadFilesViewModel
+{
+    public IEnumerable<IFormFile> Files { get; set; } = [];
 }

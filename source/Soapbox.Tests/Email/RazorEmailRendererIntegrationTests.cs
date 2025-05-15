@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Soapbox.Application.Email.Abstractions;
-using Soapbox.Web.Models.Email;
+using Soapbox.Web.Account.Shared;
 using Xunit;
 
 public class RazorEmailRendererIntegrationTests
@@ -15,7 +15,7 @@ public class RazorEmailRendererIntegrationTests
     {
         // Arrange
         var server = new WebApplicationFactory<Program>();
-        var emailRenderer = server.Services.CreateScope().ServiceProvider.GetService<IEmailRenderer>();
+        var emailRenderer = server.Services.CreateScope().ServiceProvider.GetService<IEmailRenderer>()!;
 
         // Act
         var result = await emailRenderer.Render(nameof(ResetPassword), new ResetPassword { CallbackUrl= "--Reset-Password--" });

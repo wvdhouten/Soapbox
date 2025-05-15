@@ -5,25 +5,25 @@ using System.ServiceModel.Syndication;
 
 public static class SyndicationFeedExtensions
 {
-    public static SyndicationFeed WithCopyright(this SyndicationFeed feed, string owner)
+    public static SyndicationFeed WithCopyright(this SyndicationFeed feed, string? owner)
     {
         feed.Copyright = new TextSyndicationContent($"Copyright {DateTime.UtcNow.Year}, {owner}");
         return feed;
     }
 
-    public static SyndicationFeed WithCategory(this SyndicationFeed feed, string name)
+    public static SyndicationFeed WithCategory(this SyndicationFeed feed, string? name)
     {
         feed.Categories.Add(new SyndicationCategory(name));
         return feed;
     }
 
-    public static SyndicationFeed WithManagingEditor(this SyndicationFeed feed, string managingEditor)
+    public static SyndicationFeed WithManagingEditor(this SyndicationFeed feed, string? managingEditor)
     {
         feed.ElementExtensions.Add("managingEditor", string.Empty, managingEditor);
         return feed;
     }
 
-    public static SyndicationFeed WithWebMaster(this SyndicationFeed feed, string webMaster)
+    public static SyndicationFeed WithWebMaster(this SyndicationFeed feed, string? webMaster)
     {
         feed.ElementExtensions.Add("webMaster", string.Empty, webMaster);
         return feed;

@@ -1,8 +1,7 @@
-namespace Soapbox.DataAccess.FileSystem.Abstractions
+namespace Soapbox.DataAccess.FileSystem.Abstractions;
+
+public enum StorageResult
 {
-    public enum StorageResult
-    {
-        Success,
-        Fail,
-    }
+    Success,
+    Fail
 }

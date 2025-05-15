@@ -7,9 +7,9 @@ using Soapbox.Domain.Blog;
 public class SoapboxUser : IdentityUser
 {
     [PersonalData]
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
 
-    public string ShownName => !string.IsNullOrWhiteSpace(DisplayName) ? DisplayName : UserName;
+    public string ShownName => !string.IsNullOrWhiteSpace(DisplayName) ? DisplayName : UserName ?? string.Empty;
 
     public UserRole Role { get; set; }
 

@@ -12,8 +12,8 @@ internal static class AuthenticationBuilderExtensions
             ? auth
             : auth.AddGoogle(options =>
         {
-            options.ClientId = section["ClientId"];
-            options.ClientSecret = section["ClientSecret"];
+            options.ClientId = section["ClientId"] ?? string.Empty;
+            options.ClientSecret = section["ClientSecret"] ?? string.Empty;
         });
     }
 
@@ -23,8 +23,8 @@ internal static class AuthenticationBuilderExtensions
             ? auth
             : auth.AddMicrosoftAccount(options =>
             {
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
+                options.ClientId = section["ClientId"] ?? string.Empty;
+                options.ClientSecret = section["ClientSecret"] ?? string.Empty;
             });
     }
 
@@ -34,8 +34,8 @@ internal static class AuthenticationBuilderExtensions
             ? auth
             : auth.AddFacebook(options =>
             {
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
+                options.ClientId = section["ClientId"] ?? string.Empty;
+                options.ClientSecret = section["ClientSecret"] ?? string.Empty;
             });
     }
 
@@ -56,8 +56,8 @@ internal static class AuthenticationBuilderExtensions
             ? auth
             : auth.AddGitHub(options =>
             {
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
+                options.ClientId = section["ClientId"] ?? string.Empty;
+                options.ClientSecret = section["ClientSecret"] ?? string.Empty;
             });
     }
 
@@ -67,8 +67,8 @@ internal static class AuthenticationBuilderExtensions
             ? auth
             : auth.AddYahoo(options =>
             {
-                options.ClientId = section["ClientId"];
-                options.ClientSecret = section["ClientSecret"];
+                options.ClientId = section["ClientId"] ?? string.Empty;
+                options.ClientSecret = section["ClientSecret"] ?? string.Empty;
             });
     }
 }

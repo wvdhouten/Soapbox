@@ -32,7 +32,6 @@ public static class WebApplicationExtensions
         }
 
         app.UseHttpsRedirection();
-        app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
 
         if (!isOk)
         {
@@ -43,7 +42,9 @@ public static class WebApplicationExtensions
         app.UseCookiePolicy();
 
         app.UseMetaWeblog("/livewriter");
+        app.UseResponseCaching();
         app.UseRouting();
+        app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
 
         app.UseAuthentication();
         app.UseAuthorization();

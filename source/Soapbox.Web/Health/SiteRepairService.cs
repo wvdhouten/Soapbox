@@ -1,7 +1,5 @@
 namespace Soapbox.Web.Health;
 
-using Microsoft.IdentityModel.Tokens;
-
 public class SiteRepairService
 {
     public (bool isOk, IEnumerable<string> errorMessages) RepairSite()
@@ -10,7 +8,7 @@ public class SiteRepairService
 
         TryCreateContentDirectories(ref errorMessages);
 
-        return (errorMessages.IsNullOrEmpty(), errorMessages);
+        return (errorMessages.Count == 0, errorMessages);
     }
 
     public bool TryCreateContentDirectories(ref List<string> errorMessages)

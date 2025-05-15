@@ -1,4 +1,5 @@
 @using Soapbox.Application
+@using Soapbox.Web.Account
 @model Models.Account.LoginExternalModel
 @{
   ViewData[Constants.PageTitle] = "Associate account";
@@ -19,7 +20,7 @@
         Please enter a username and an email address for this site below and click the Register button to finish logging in.
       </p>
 
-      <form id="register" asp-controller="Account" asp-action="@nameof(Controllers.AccountController.LoginExternalConfirmation)" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+      <form id="register" asp-controller="Account" asp-action="@nameof(AccountController.LoginExternalConfirmation)" asp-route-returnUrl="@Model.ReturnUrl" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
           <label asp-for="Username"></label>

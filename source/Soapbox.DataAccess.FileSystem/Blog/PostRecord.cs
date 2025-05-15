@@ -12,7 +12,7 @@ public record PostRecord
     /// <summary>
     /// Gets or sets the post identifier.
     /// </summary>
-    public string? Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the post title.
@@ -79,7 +79,7 @@ public record PostRecord
     {
         return new PostRecord
         {
-            Id = post.Id,
+            Id = post.Id!,
             Title = post.Title,
             Slug = post.Slug,
             AuthorId = post.Author.Id,

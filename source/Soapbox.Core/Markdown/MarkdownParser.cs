@@ -15,12 +15,12 @@ public class MarkdownParser : IMarkdownParser
         _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
     }
 
-    public string ToHtml(string content, out IEnumerable<string> images)
+    public string ToHtml(string content, out IEnumerable<string?> images)
     {
         var parsed = Markdown.Parse(content, _pipeline);
 
         images = parsed.Descendants<ParagraphBlock>()
-            .SelectMany(x => x.Inline.Descendants<LinkInline>())
+            .SelectMany(x => x.Inline?.Descendants<LinkInline>() ?? [])
             .Where(l => l.IsImage).Select(l => l.Url);
 
         return parsed.ToHtml();

@@ -1,8 +1,6 @@
 namespace Soapbox.Web.Identity;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +20,7 @@ public class AccountService
         _logger = logger;
     }
 
-    public async Task<SoapboxUser> FindUserByIdAsync(string id)
+    public async Task<SoapboxUser?> FindUserByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
 
@@ -31,7 +29,8 @@ public class AccountService
 
     public async Task<IdentityResult> UpdateUserAsync(SoapboxUser user)
     {
-        var existing = await _userManager.FindByIdAsync(user.Id);
+        var existing = await _userManager.FindByIdAsync(user.Id)
+            ?? throw new InvalidOperationException($"User with ID '{user.Id}' not found.");
 
         existing.UserName = user.UserName;
         existing.Email = user.Email;
@@ -48,22 +47,5 @@ public class AccountService
     {
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-    }
-
-    public async Task<Dictionary<string, string>> GetPersonalDataAsync(SoapboxUser user)
-    {
-        _logger.LogInformation($"User with ID '{user.Id}' requested their personal data.");
-
-        var personalData = new Dictionary<string, string>();
-
-        var personalDataProps = typeof(SoapboxUser).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
-        foreach (var property in personalDataProps)
-            personalData.Add(property.Name, property.GetValue(user)?.ToString() ?? "null");
-
-        var logins = await _userManager.GetLoginsAsync(user);
-        foreach (var login in logins)
-            personalData.Add($"{login.LoginProvider} external login provider key", login.ProviderKey);
-
-        return personalData;
     }
 }

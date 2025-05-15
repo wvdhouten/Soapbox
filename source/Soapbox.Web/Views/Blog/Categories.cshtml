@@ -1,5 +1,5 @@
 @using Soapbox.Application
-@model IAsyncEnumerable<PostCategory>
+@model IEnumerable<PostCategory>
 @{
   ViewData[Constants.PageTitle] = "Categories";
 }
@@ -10,13 +10,13 @@
   </header>
 
   <section class="tag-cloud">
-    @await foreach (var category in Model)
+    @foreach (var category in Model)
     {
       <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
     }
   </section>
 
-  @await foreach (var category in Model)
+  @foreach (var category in Model)
   {
     <section>
       <h2 id="@category.Slug"><blog-link category="category" /> (@category.Posts.Count)</h2>

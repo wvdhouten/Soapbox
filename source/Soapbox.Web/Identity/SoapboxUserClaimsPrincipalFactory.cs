@@ -33,7 +33,7 @@ namespace Soapbox.Web.Identity
         public async override Task<ClaimsPrincipal> CreateAsync(SoapboxUser user)
         {
             var principal = await base.CreateAsync(user);
-            var identity = (ClaimsIdentity)principal.Identity;
+            var identity = (ClaimsIdentity)principal.Identity!;
             var claim = new Claim(JwtClaimTypes.Role, user.Role.ToString());
             identity.AddClaim(claim);
 

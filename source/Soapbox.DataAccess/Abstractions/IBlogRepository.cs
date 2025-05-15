@@ -18,9 +18,9 @@ public interface IBlogRepository
 
     public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId);
 
-    public Task<Post> GetPostByIdAsync(string postId);
+    public Task<Post?> GetPostByIdAsync(string postId);
 
-    public Task<Post> GetPostBySlugAsync(string slug);
+    public Task<Post?> GetPostBySlugAsync(string slug);
 
     public Task CreatePostAsync(Post post);
 
@@ -32,9 +32,9 @@ public interface IBlogRepository
 
     public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
 
-    public Task<PostCategory> GetCategoryByIdAsync(long categoryId, bool includePosts = false);
+    public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false);
 
-    public Task<PostCategory> GetCategoryBySlugAsync(string slug, bool includePosts = false);
+    public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false);
 
     public Task CreateCategoryAsync(PostCategory category);
 
@@ -42,5 +42,5 @@ public interface IBlogRepository
 
     public Task DeleteCategoryByIdAsync(long categoryId);
 
-    public Task<SoapboxUser> GetAuthorByIdAsync(string authorId);
+    public Task<SoapboxUser?> GetAuthorByIdAsync(string authorId);
 }

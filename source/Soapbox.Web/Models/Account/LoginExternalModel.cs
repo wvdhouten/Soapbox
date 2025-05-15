@@ -4,16 +4,17 @@ using System.ComponentModel.DataAnnotations;
 
 public class LoginExternalModel
 {
-    public string ProviderDisplayName { get; set; }
+    public string ProviderDisplayName { get; set; } = string.Empty;
 
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
+    // TODO: Verify
     [Required]
     [MinLength(8)]
     [Display(Name = "Username", Prompt = "Username")]
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 }

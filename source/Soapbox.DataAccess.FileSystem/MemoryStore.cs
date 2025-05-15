@@ -8,7 +8,10 @@ using Soapbox.Domain.Users;
 public class MemoryStore
 {
     internal Dictionary<string, SoapboxUser> Users { get; } = [];
+
     internal Dictionary<string, List<UserLoginInfo>> LoginInfos { get; } = [];
+
     internal Dictionary<string, string> Authenticators { get; } = [];
+
     internal Dictionary<string, List<string>> RecoveryCodes { get; } = [];
 }

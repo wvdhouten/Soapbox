@@ -2,7 +2,6 @@ namespace Soapbox.DataAccess.FileSystem.Extensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Soapbox.DataAccess.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using Alkaline64.Injectable.Extensions;
 using Soapbox.Domain.Users;

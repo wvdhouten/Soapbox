@@ -5,6 +5,7 @@ using Soapbox.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("Config/site.json", false, true);
+
 builder.Services.ConfigureSoapbox(builder.Configuration, builder.Environment);
 
 var app = builder.Build();

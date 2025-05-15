@@ -4,9 +4,9 @@ using System;
 
 public class FeedConfiguration<T>
 {
-    public string Title { get; set; }
+    public required string Title { get; set; }
 
-    public string Description { get; set; }
+    public required string Description { get; set; }
 
-    public Uri Link { get; set; }
+    public required Uri Link { get; set; }
 }

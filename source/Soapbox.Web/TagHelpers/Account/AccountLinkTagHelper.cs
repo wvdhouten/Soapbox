@@ -11,11 +11,11 @@ public class AccountLinkTagHelper : TagHelper
 {
     private readonly IHtmlGenerator _generator;
 
-    public string Page { get; set; }
+    public string Page { get; set; } = string.Empty!;
 
     [HtmlAttributeNotBound]
     [ViewContext]
-    public ViewContext ViewContext { get; set; }
+    public ViewContext ViewContext { get; set; } = default!;
 
     public AccountLinkTagHelper(IHtmlGenerator generator)
     {
@@ -34,7 +34,7 @@ public class AccountLinkTagHelper : TagHelper
         return Task.CompletedTask;
     }
 
-    private TagBuilder GetTagBuilder(string action, IDictionary<string, object> routeValues)
+    private TagBuilder GetTagBuilder(string action, IDictionary<string, object>? routeValues)
     {
         routeValues ??= new Dictionary<string, object>();
         routeValues.TryAdd("Area", "");

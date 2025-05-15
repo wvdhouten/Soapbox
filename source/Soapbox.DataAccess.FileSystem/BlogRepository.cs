@@ -1,145 +1,144 @@
-namespace Soapbox.DataAccess.FileSystem
+namespace Soapbox.DataAccess.FileSystem;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Alkaline64.Injectable;
+using Microsoft.AspNetCore.Identity;
+using Soapbox.Application.Utils;
+using Soapbox.DataAccess.Abstractions;
+using Soapbox.DataAccess.FileSystem.Abstractions;
+using Soapbox.Domain.Blog;
+using Soapbox.Domain.Common;
+using Soapbox.Domain.Users;
+
+[Injectable<IBlogRepository>]
+public class BlogRepository : IBlogRepository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Alkaline64.Injectable;
-    using Microsoft.AspNetCore.Identity;
-    using Soapbox.Application.Utils;
-    using Soapbox.DataAccess.Abstractions;
-    using Soapbox.DataAccess.FileSystem.Abstractions;
-    using Soapbox.Domain.Blog;
-    using Soapbox.Domain.Common;
-    using Soapbox.Domain.Users;
+    private readonly IBlogStore _blogStore;
+    private readonly IUserStore<SoapboxUser> _userStore;
 
-    [Injectable<IBlogRepository>]
-    public class BlogRepository : IBlogRepository
+    private IQueryable<Post> Posts => _blogStore.Posts.AsQueryable();
+
+    private IQueryable<PostCategory> Categories => _blogStore.Categories.AsQueryable();
+
+    public BlogRepository(IBlogStore blogStore, IUserStore<SoapboxUser> userStore)
     {
-        private readonly IBlogStore _blogStore;
-        private readonly IUserStore<SoapboxUser> _userStore;
+        _blogStore = blogStore;
+        _userStore = userStore;
+    }
 
-        private IQueryable<Post> Posts => _blogStore.Posts.AsQueryable();
+    public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true)
+    {
+        var posts = Posts;
 
-        private IQueryable<PostCategory> Categories => _blogStore.Categories.AsQueryable();
-
-        public BlogRepository(IBlogStore blogStore, IUserStore<SoapboxUser> userStore)
+        if (isPublished)
         {
-            _blogStore = blogStore;
-            _userStore = userStore;
+            var now = DateTime.UtcNow;
+            posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);
         }
 
-        public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true)
-        {
-            var posts = Posts;
+        posts = posts.OrderByDescending(post => post.PublishedOn);
 
-            if (isPublished)
-            {
-                var now = DateTime.UtcNow;
-                posts = posts.Where(p => p.Status == PostStatus.Published && p.PublishedOn < now);
-            }
+        return Task.FromResult(posts.GetPaged(page, pageSize));
+    }
 
-            posts = posts.OrderByDescending(post => post.PublishedOn);
+    public Task<IEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
+    {
+        return Task.FromResult(Posts.Where(predicate).AsEnumerable());
+    }
 
-            return Task.FromResult(posts.GetPaged(page, pageSize));
-        }
+    public Task<IEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
+    {
+        return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).AsEnumerable());
+    }
 
-        public Task<IEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
-        {
-            return Task.FromResult(Posts.Where(predicate).AsEnumerable());
-        }
+    public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
+    {
+        return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).AsEnumerable());
+    }
 
-        public Task<IEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
-        {
-            return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).AsEnumerable());
-        }
+    public Task<Post?> GetPostByIdAsync(string postId)
+    {
+        return Task.FromResult(Posts.FirstOrDefault(p => p.Id == postId));
+    }
 
-        public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
-        {
-            return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).AsEnumerable());
-        }
+    public Task<Post?> GetPostBySlugAsync(string slug)
+    {
+        return Task.FromResult(Posts.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
+    }
 
-        public Task<Post?> GetPostByIdAsync(string postId)
-        {
-            return Task.FromResult(Posts.FirstOrDefault(p => p.Id == postId));
-        }
+    public Task CreatePostAsync(Post post)
+    {
+        _blogStore.UpdatePost(post);
 
-        public Task<Post?> GetPostBySlugAsync(string slug)
-        {
-            return Task.FromResult(Posts.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task CreatePostAsync(Post post)
-        {
-            _blogStore.UpdatePost(post);
+    public Task UpdatePostAsync(Post post)
+    {
+        _blogStore.UpdatePost(post);
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task UpdatePostAsync(Post post)
-        {
-            _blogStore.UpdatePost(post);
+    public Task DeletePostByIdAsync(string postId)
+    {
+        _blogStore.DeletePost(postId);
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task DeletePostByIdAsync(string postId)
-        {
-            _blogStore.DeletePost(postId);
+    public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
+    {
+        return Task.FromResult(Categories.GetPaged(page, pageSize));
+    }
 
-            return Task.CompletedTask;
-        }
+    public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
+    {
+        return Task.FromResult(Categories.AsEnumerable());
+    }
 
-        public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
-        {
-            return Task.FromResult(Categories.GetPaged(page, pageSize));
-        }
+    public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
+    {
+        return Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
+    }
 
-        public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
-        {
-            return Task.FromResult(Categories.AsEnumerable());
-        }
+    public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false)
+    {
+        return Task.FromResult(Categories.FirstOrDefault(category => category.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
+    }
 
-        public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
-        {
-            return Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
-        }
+    public Task CreateCategoryAsync(PostCategory category)
+    {
+        _blogStore.Categories.Add(category);
 
-        public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false)
-        {
-            return Task.FromResult(Categories.FirstOrDefault(category => category.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task CreateCategoryAsync(PostCategory category)
-        {
-            _blogStore.Categories.Add(category);
+    public Task UpdateCategoryAsync(PostCategory category)
+    {
+        var existingCategory = _blogStore.Categories.FirstOrDefault(c => c.Id == category.Id);
 
-            return Task.CompletedTask;
-        }
+        var list = new List<PostCategory>();
+        _blogStore.Categories.Add(category);
 
-        public Task UpdateCategoryAsync(PostCategory category)
-        {
-            var existingCategory = _blogStore.Categories.FirstOrDefault(c => c.Id == category.Id);
+        return Task.CompletedTask;
+    }
 
-            var list = new List<PostCategory>();
-            _blogStore.Categories.Add(category);
+    public Task DeleteCategoryByIdAsync(long categoryId)
+    {
+        throw new NotImplementedException();
+    }
 
-            return Task.CompletedTask;
-        }
+    public async Task<SoapboxUser?> GetAuthorByIdAsync(string authorId)
+    {
+        var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(10));
 
-        public Task DeleteCategoryByIdAsync(long categoryId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<SoapboxUser?> GetAuthorByIdAsync(string authorId)
-        {
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(TimeSpan.FromSeconds(10));
-
-            return await _userStore.FindByIdAsync(authorId, cts.Token);
-        }
+        return await _userStore.FindByIdAsync(authorId, cts.Token);
     }
 }
