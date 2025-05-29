@@ -10,23 +10,32 @@
     <h1>Categories</h1>
   </header>
 
-  <section class="tag-cloud">
+  @if (Model.Any())
+  {
+    <section class="tag-cloud">
+      @foreach (var category in Model)
+      {
+        <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
+      }
+    </section>
+
     @foreach (var category in Model)
     {
-      <span class="tag"><a href="#@category.Slug">@category.Name</a> (@category.Posts.Count)</span>
+      <section>
+        <h2 id="@category.Slug"><blog-link category="category" /> (@category.Posts.Count)</h2>
+          <div class="item-list">
+            @foreach (var post in category.Posts)
+            {
+              <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <edit-post-link post="post" /></div>
+            }
+          </div>
+        </section>
+      }
     }
-  </section>
-
-  @foreach (var category in Model)
-  {
-    <section>
-      <h2 id="@category.Slug"><blog-link category="category" /> (@category.Posts.Count)</h2>
-      <div class="item-list">
-        @foreach (var post in category.Posts)
-        {
-          <div><time value="post.PublishedOn" format="yyyy-MM-dd" /> <edit-post-link post="post" /></div>
-        }
-      </div>
-    </section>
-  }
+    else
+    {
+      <section class="container content centered">
+        <p>No categories found!</p>
+      </section>
+    }
 </div>

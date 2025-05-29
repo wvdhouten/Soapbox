@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using Soapbox.Application.Constants;
 using Soapbox.DataAccess.FileSystem.Extensions;
 using Soapbox.Web.Health;
 using Soapbox.Web.Helpers;
@@ -64,11 +65,11 @@ public static class WebApplicationExtensions
     {
         app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = CacheControlPrepareResponse });
 
-        var mediaFileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Content", "Files")).FullName);
+        var mediaFileProvider = new PhysicalFileProvider(new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, FolderNames.Content, FolderNames.Media)).FullName);
         var mediaFileOptions = new StaticFileOptions { FileProvider = mediaFileProvider, RequestPath = "/Media", OnPrepareResponse = CacheControlPrepareResponse };
         app.UseStaticFiles(mediaFileOptions);
 
-        var themeFileProvider = new PhysicalFileProvider(Path.Combine(Environment.CurrentDirectory, "Themes"));
+        var themeFileProvider = new PhysicalFileProvider(Path.Combine(Environment.CurrentDirectory, FolderNames.Themes));
         var themeFileOptions = new StaticFileOptions { FileProvider = themeFileProvider, RequestPath = "/Themes", OnPrepareResponse = CacheControlPrepareResponse };
         app.UseStaticFiles(themeFileOptions);
 

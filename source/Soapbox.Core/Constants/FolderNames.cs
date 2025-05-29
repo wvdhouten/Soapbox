@@ -9,4 +9,5 @@ public static class FolderNames
     public const string Logs = nameof(Logs);
 
     public const string Config = nameof(Config);
+    public const string Themes = nameof(Themes);
 }
