@@ -3,9 +3,11 @@ namespace Soapbox.Application.Email;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Alkaline64.Injectable;
 using Microsoft.Extensions.Options;
 using Soapbox.Domain.Email;
 
+[Injectable<IEmailService>]
 public class SmtpEmailService : IEmailService
 {
     private readonly SmtpSettings _settings;

@@ -1,5 +1,4 @@
 namespace Soapbox.Web.Behavior.Email;
-
 using System;
 using System.IO;
 using System.Threading.Tasks;

@@ -2,7 +2,6 @@ namespace Soapbox.Web.Controllers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soapbox.Application;
 using Soapbox.Web.Controllers.Base;
 using Soapbox.Domain.Results;
 using Soapbox.Identity.Authentication.ForgotPassword;
@@ -14,6 +13,7 @@ using Soapbox.Identity.Authentication.RecoveryCodeLogin;
 using Soapbox.Identity.Authentication.ExternalLoginRegistration;
 using Soapbox.Identity.Authentication.InitiateExternalLogin;
 using Soapbox.Identity.Authentication.ProcessExternalLogin;
+using Soapbox.Application.Constants;
 
 public partial class AccountController
 {
@@ -97,7 +97,7 @@ public partial class AccountController
             { IsFailure: true, Error.Code: ErrorCode.InvalidOperation }
                 => WithErrorMessage(result.Error.Message).RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl }),
             { IsFailure: true, Error.Code: "RequiresRegistration" } when result.Error is ValueError<ExternalLoginRegistrationRequest> error
-                => WithViewData(Constants.PageTitle, $"Sign in: {error.Value.ProviderDisplayName}").View(error.Value),
+                => WithViewData(ViewConstants.PageTitle, $"Sign in: {error.Value.ProviderDisplayName}").View(error.Value),
             _ => BadRequest(),
         };
     }

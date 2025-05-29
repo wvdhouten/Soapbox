@@ -1,9 +1,10 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Domain.Common
 @model IPagedList<Post>
 @inject IOptionsSnapshot<SiteSettings> settings
 @{
-  ViewData[Constants.PageTitle] = "Blog";
+  ViewData[ViewConstants.PageTitle] = "Blog";
 }
 
 @if (Model.Items.Count > 0)

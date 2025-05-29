@@ -3,17 +3,20 @@ namespace Soapbox.Application.FileManagement;
 using System;
 using System.IO;
 using System.Linq;
+using Alkaline64.Injectable;
+using Soapbox.Application.Constants;
 using Soapbox.Application.Utils;
 using Soapbox.Domain.Blog;
 using Soapbox.Domain.Common;
 
+[Injectable]
 public class MediaFileService
 {
     private readonly string _mediaPath;
 
     public MediaFileService()
     {
-        _mediaPath = Path.Combine(Environment.CurrentDirectory, "Content", "Files");
+        _mediaPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Content, FolderNames.Media);
     }
 
     public IPagedList<Media> GetPage(int page = 1, int pageSize = 25)

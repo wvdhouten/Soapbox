@@ -1,5 +1,9 @@
 namespace Soapbox.Web.Health;
 
+using Alkaline64.Injectable;
+using Soapbox.Application.Constants;
+
+[Injectable(Lifetime.Singleton)]
 public class SiteRepairService
 {
     public (bool isOk, IEnumerable<string> errorMessages) RepairSite()
@@ -11,11 +15,11 @@ public class SiteRepairService
         return (errorMessages.Count == 0, errorMessages);
     }
 
-    private bool TryCreateContentDirectories(ref List<string> errorMessages)
+    private static bool TryCreateContentDirectories(ref List<string> errorMessages)
     {
-        var contentPath = Path.Combine(Environment.CurrentDirectory, "Content");
-        var contentFolders = new string[] { "Indentity", "Posts", "Pages", "Media" };
-        var logsPath = Path.Combine(Environment.CurrentDirectory, "Logs");
+        var contentPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Content);
+        var contentFolders = new string[] { FolderNames.Identity, FolderNames.Posts, FolderNames.Pages, FolderNames.Media };
+        var logsPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Logs);
 
         try
         {

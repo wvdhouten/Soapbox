@@ -1,11 +1,13 @@
 namespace Soapbox.Application.Markdown;
 
 using System.Linq;
+using Alkaline64.Injectable;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Soapbox.Domain.Markdown;
 
+[Injectable<IMarkdownParser>(Lifetime.Singleton)]
 public class MarkdownParser : IMarkdownParser
 {
     private readonly MarkdownPipeline _pipeline;

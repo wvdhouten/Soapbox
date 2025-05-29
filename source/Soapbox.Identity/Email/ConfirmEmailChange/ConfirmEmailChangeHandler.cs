@@ -1,4 +1,4 @@
-namespace Soapbox.Identity.Email.ConfirmEmail;
+namespace Soapbox.Identity.Email.ConfirmEmailChange;
 using System.Text;
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;

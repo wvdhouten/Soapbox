@@ -1,4 +1,4 @@
-namespace Soapbox.Identity.Logins.RemoveLogin;
+namespace Soapbox.Identity.Logins.AddLogin;
 using System.Threading.Tasks;
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Authentication;
@@ -38,7 +38,10 @@ public class AddLoginHandler : GetExternalLoginsHandler
 
         var redirectUrl = _urlHelper.Action("Account", "AddLoginConfirmation");
 
-        return _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(_httpContextAccessor.HttpContext.User));
+        return _signInManager.ConfigureExternalAuthenticationProperties(
+            provider,
+            redirectUrl,
+            _userManager.GetUserId(_httpContextAccessor.HttpContext.User));
     }
 
     public async Task<Result> AddLogin()

@@ -1,12 +1,13 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @model PostCategory
 @{
-  ViewData[Constants.PageTitle] = $"Category: {Model.Name}";
+  ViewData[ViewConstants.PageTitle] = $"Category: {Model.Name}";
 }
 
 <div class="container content">
   <header>
-    <h1>@ViewData[Constants.PageTitle] (@Model.Posts.Count)</h1>
+    <h1>@ViewData[ViewConstants.PageTitle] (@Model.Posts.Count)</h1>
   </header>
 
   <section>

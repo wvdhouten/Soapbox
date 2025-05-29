@@ -1,5 +1,4 @@
 namespace Soapbox.Web.Behavior.Errors;
-
 using System;
 using System.Diagnostics;
 using Alkaline64.Injectable;

@@ -1,8 +1,9 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Domain.Common
 @model IPagedList<Media>
 @{
-  ViewData[Constants.PageTitle] = "Media";
+  ViewData[ViewConstants.PageTitle] = "Media";
 }
 
 <section class="container content">

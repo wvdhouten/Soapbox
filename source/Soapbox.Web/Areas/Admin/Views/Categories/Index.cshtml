@@ -1,8 +1,9 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Domain.Common
 @model IPagedList<PostCategory>
 @{
-  ViewData[Constants.PageTitle] = "Categories";
+  ViewData[ViewConstants.PageTitle] = "Categories";
 }
 
 <section class="container content">

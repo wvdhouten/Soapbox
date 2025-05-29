@@ -1,8 +1,9 @@
 @using System.IO
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @model SiteSettings
 @{
-  ViewData[Constants.PageTitle] = "Settings";
+  ViewData[ViewConstants.PageTitle] = "Settings";
   var dir = Directory.GetDirectories(System.IO.Path.Combine(Environment.CurrentDirectory, "Themes"));
   var themes = dir.Select(f => new DirectoryInfo(f).Name);
 }

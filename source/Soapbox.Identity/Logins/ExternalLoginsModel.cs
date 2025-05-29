@@ -1,5 +1,4 @@
-namespace Soapbox.Web.Models.Account;
-
+namespace Soapbox.Identity.Logins;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;

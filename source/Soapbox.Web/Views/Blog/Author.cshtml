@@ -1,12 +1,13 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @model SoapboxUser
 @{
-  ViewData[Constants.PageTitle] = $"Author: {Model.ShownName}";
+  ViewData[ViewConstants.PageTitle] = $"Author: {Model.ShownName}";
 }
 
 <div class="container content">
   <header>
-    <h1>@ViewData[Constants.PageTitle] (@Model.Posts.Count)</h1>
+    <h1>@ViewData[ViewConstants.PageTitle] (@Model.Posts.Count)</h1>
   </header>
 
   <section>

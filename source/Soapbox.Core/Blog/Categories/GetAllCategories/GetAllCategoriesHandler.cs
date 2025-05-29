@@ -1,4 +1,4 @@
-namespace Soapbox.Application.Blog.Categories;
+namespace Soapbox.Application.Blog.Categories.GetAllCategories;
 using System.Threading.Tasks;
 using Alkaline64.Injectable;
 using Soapbox.DataAccess.Abstractions;

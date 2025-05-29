@@ -2,10 +2,12 @@ namespace Soapbox.Identity;
 
 using System;
 using System.Threading.Tasks;
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Soapbox.Domain.Users;
 using Soapbox.Identity.Managers;
 
+[Injectable]
 public class AccountService
 {
     private readonly TransactionalUserManager<SoapboxUser> _userManager;

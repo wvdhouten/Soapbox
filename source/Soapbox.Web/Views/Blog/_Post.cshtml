@@ -1,21 +1,22 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Domain.Markdown
 @model Post
 @inject Soapbox.Domain.Markdown.IMarkdownParser Parser
 
 @{
   // SEO Data
-  ViewData[Constants.PageTitle] = Model.Title;
+  ViewData[ViewConstants.PageTitle] = Model.Title;
   var content = Parser.ToHtml(Model.Content, out var images);
   var description = !string.IsNullOrWhiteSpace(Model.Excerpt)
       ? Model.Excerpt
       : content;
 
-  ViewData[Constants.Description] = description.StripHtml().Clip(87);
-  ViewData[Constants.Keywords] = string.Join(", ", Model.Categories.Select(c => c.Name));
-  ViewData[Constants.Author] = Model.Author?.ShownName;
-  ViewData[Constants.Image] = images.FirstOrDefault();
-  ViewData[Constants.Video] = null;
+  ViewData[ViewConstants.Description] = description.StripHtml().Clip(87);
+  ViewData[ViewConstants.Keywords] = string.Join(", ", Model.Categories.Select(c => c.Name));
+  ViewData[ViewConstants.Author] = Model.Author?.ShownName;
+  ViewData[ViewConstants.Image] = images.FirstOrDefault();
+  ViewData[ViewConstants.Video] = null;
 }
 
 <article class="post">

@@ -3,6 +3,7 @@ namespace Soapbox.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Domain.Results;
 using Soapbox.Identity.Email.ConfirmEmail;
+using Soapbox.Identity.Email.ConfirmEmailChange;
 using Soapbox.Identity.Email.SendEmailVerification;
 
 public partial class AccountController

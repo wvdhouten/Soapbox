@@ -148,7 +148,7 @@ public class UsersController : SoapboxControllerBase
         var userId = User.GetUserId();
         if (user.Id == userId)
         {
-            throw new InvalidOperationException("You cannot delete yourself.");
+            return WithErrorMessage("You cannot delete yourself.").RedirectToAction(nameof(Index));
         }
 
         await _userManager.DeleteAsync(user);

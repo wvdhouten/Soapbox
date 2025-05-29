@@ -1,5 +1,4 @@
 namespace Soapbox.Web.Behavior.Pages;
-
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc;
 using Alkaline64.Injectable;

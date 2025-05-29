@@ -1,4 +1,4 @@
-namespace Soapbox.Application.Blog.Archive;
+namespace Soapbox.Application.Blog.Archive.GetPostArchive;
 
 using Alkaline64.Injectable;
 using Soapbox.DataAccess.Abstractions;

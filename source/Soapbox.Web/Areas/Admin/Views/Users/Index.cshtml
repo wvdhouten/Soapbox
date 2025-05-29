@@ -1,8 +1,9 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Domain.Common
 @model IPagedList<SoapboxUser>
 @{
-  ViewData[Constants.PageTitle] = "Users";
+  ViewData[ViewConstants.PageTitle] = "Users";
 }
 
 <div class="container content">

@@ -1,6 +1,6 @@
-namespace Soapbox.Application;
+namespace Soapbox.Application.Constants;
 
-public class Constants
+public class ViewConstants
 {
     public static readonly string PageTitle = "PageTitle";
     public static readonly string Description = "Description";

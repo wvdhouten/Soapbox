@@ -2,9 +2,10 @@ namespace Soapbox.Web.Controllers;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Soapbox.Application.Blog.Archive;
+using Soapbox.Application.Blog.Archive.GetPostArchive;
 using Soapbox.Application.Blog.Authors;
-using Soapbox.Application.Blog.Categories;
+using Soapbox.Application.Blog.Categories.GetAllCategories;
+using Soapbox.Application.Blog.Categories.GetCategory;
 using Soapbox.Application.Blog.Posts;
 using Soapbox.Domain.Results;
 

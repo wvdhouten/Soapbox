@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using Soapbox.Domain.Users;
 
-public static class UserExtensions
+public static class UserClaimExtensions
 {
     public static string GetUserId(this ClaimsPrincipal principal)
         => principal.GetUserId<string>();

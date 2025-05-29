@@ -2,10 +2,12 @@ namespace Soapbox.Web.Helpers;
 
 using System.Collections.Generic;
 using System.Linq;
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Soapbox.Application.Settings;
 
+[Injectable(Lifetime.Singleton)]
 public class ViewLocationExpander : IViewLocationExpander
 {
     private const string ThemedViewLocation = "/Themes/{0}/{1}.cshtml";

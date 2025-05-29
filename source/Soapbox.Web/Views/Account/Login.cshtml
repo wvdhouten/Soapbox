@@ -1,10 +1,11 @@
 @using Soapbox.Application
+@using Soapbox.Application.Constants
 @using Soapbox.Identity.Authentication
 @using Soapbox.Identity.Authentication.Login
 @model LoginRequest
 @inject IOptionsSnapshot<SiteSettings> settings
 @{
-  ViewData[Constants.PageTitle] = "Sign in";
+  ViewData[ViewConstants.PageTitle] = "Sign in";
 }
 
 <style>

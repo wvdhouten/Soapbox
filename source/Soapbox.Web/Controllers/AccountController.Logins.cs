@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Domain.Results;
+using Soapbox.Identity.Logins.AddLogin;
 using Soapbox.Identity.Logins.RemoveLogin;
 
 public partial class AccountController

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-internal static class AuthenticationBuilderExtensions
+internal static class LoginProviderExtensions
 {
     internal static AuthenticationBuilder TryAddGoogle(this AuthenticationBuilder auth, IConfigurationSection section)
     {
