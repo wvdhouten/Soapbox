@@ -3,8 +3,8 @@ namespace Soapbox.Web.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Common.Base;
-using Soapbox.Web.Identity.Attributes;
+using Soapbox.Web.Attributes;
+using Soapbox.Web.Controllers.Base;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator)]

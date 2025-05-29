@@ -1,9 +1,12 @@
 @using Soapbox.Application
-@model Models.Blog.ArchiveModel
+@using Soapbox.Domain.Blog.Archive
+@model PostArchive
 @{
-  var archiveTitle = Model.Month == null
-      ? Model.Year.ToString()
-      : new DateTime(Model.Year, Model.Month.Value, 1).ToString("MMMM yyyy");
+  var archiveTitle = Model.Month is null
+    ? Model.Year.ToString()
+    : new DateTime(Model.Year, Model.Month.Value, 1).ToString("MMMM yyyy");
+
+  var archiveViewName = Model.Month is null ? "_ArchiveYear" : "_ArchiveMonth";
 
   ViewData[Constants.PageTitle] = $"Archive: {archiveTitle}";
 }
@@ -15,12 +18,5 @@
       <blog-link archive-year="@year">@year</blog-link>
     }
   </div>
-  @if (Model.Month != null)
-  {
-    <partial name="_ArchiveMonth" model="Model" />
-  }
-  else
-  {
-    <partial name="_ArchiveYear" model="Model" />
-  }
+    <partial name="@archiveViewName" model="Model" />
 </div>

@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using Soapbox.Application.Email.Abstractions;
+using Soapbox.Domain.Email;
 
 public class SmtpEmailService : IEmailService
 {

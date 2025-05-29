@@ -1,5 +1,6 @@
 @using Soapbox.Application
-@model Models.Account.Login2faModel
+@using Soapbox.Identity.Authentication.MfaLogin
+@model MfaLoginRequest
 @{
   ViewData[Constants.PageTitle] = "Two-factor authentication";
 }
@@ -38,7 +39,7 @@
     </div>
 
     <div class="centered subtle">
-      Don't have access to your authenticator device? <a asp-controller="Account" asp-action="LoginRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">Log in with a recovery code</a>.
+      Don't have access to your authenticator device? <a asp-controller="Account" asp-action="RecoveryCodeLogin" asp-route-returnUrl="@Model.ReturnUrl">Log in with a recovery code</a>.
     </div>
   </div>
 </div>

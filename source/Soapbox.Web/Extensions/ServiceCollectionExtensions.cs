@@ -1,25 +1,29 @@
 namespace Soapbox.Web.Extensions;
 
+using Alkaline64.Injectable.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Soapbox.Application;
 using Soapbox.Application.Email;
-using Soapbox.Application.Email.Abstractions;
 using Soapbox.Application.FileManagement;
 using Soapbox.Application.Markdown;
 using Soapbox.Application.Settings;
-using Soapbox.Domain.Users;
-using Soapbox.Web.Helpers;
-using Soapbox.Web.Identity;
-using WilderMinds.MetaWeblog;
-using Alkaline64.Injectable.Extensions;
 using Soapbox.DataAccess.FileSystem.Extensions;
-using Soapbox.Web.Health;
+using Soapbox.Domain.Email;
 using Soapbox.Domain.Markdown;
+using Soapbox.Domain.Users;
+using Soapbox.Identity;
+using Soapbox.Web.Health;
+using Soapbox.Web.Helpers;
+using WilderMinds.MetaWeblog;
 
 public static class ServiceCollectionExtensions
 {
@@ -43,6 +47,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserClaimsPrincipalFactory<SoapboxUser>, SoapboxUserClaimsPrincipalFactory>();
 
         services.RegisterInjectables<Program>();
+        services.RegisterInjectables<AccountService>();
+        services.RegisterInjectables<IApplicationMarker>();
 
         var auth = services.AddAuthentication(o =>
         {
@@ -79,9 +85,16 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IMarkdownParser, MarkdownParser>();
 
-        services.AddMetaWeblog<MetaWeblog.MetaWeblogService>();
+        services.AddMetaWeblog<Api.MetaWeblogService>();
 
         services.AddHttpContextAccessor();
+        services.AddScoped(serviceProvider =>
+        {
+            var actionContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+            var factory = serviceProvider.GetRequiredService<IUrlHelperFactory>();
+            var httpContext = actionContextAccessor.HttpContext!;
+            return factory.GetUrlHelper(new ActionContext(httpContext, httpContext.GetRouteData(), new ActionDescriptor()));
+        });
         services.Configure<RouteOptions>(options =>
         {
             options.LowercaseUrls = true;

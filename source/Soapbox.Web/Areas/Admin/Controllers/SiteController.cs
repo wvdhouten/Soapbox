@@ -10,9 +10,9 @@ using Microsoft.Extensions.Options;
 using Soapbox.Application.FileManagement;
 using Soapbox.Application.Settings;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Common.Base;
+using Soapbox.Web.Attributes;
+using Soapbox.Web.Controllers.Base;
 using Soapbox.Web.Extensions;
-using Soapbox.Web.Identity.Attributes;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator)]

@@ -1,7 +1,6 @@
 namespace Soapbox.DataAccess.FileSystem;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -9,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
-using Soapbox.DataAccess.FileSystem.Abstractions;
+using Soapbox.DataAccess.Abstractions;
 using Soapbox.DataAccess.FileSystem.Identity;
 using Soapbox.Domain.Users;
 

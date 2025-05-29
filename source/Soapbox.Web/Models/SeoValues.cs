@@ -29,5 +29,8 @@ public class SeoValues
         _settings = settings;
     }
 
+    public static SeoValues Create(ViewDataDictionary viewData, SiteSettings settings)
+        => new(viewData, settings);
+
     private string? GetViewDataValue(string key) => _viewData?[key]?.ToString();
 }

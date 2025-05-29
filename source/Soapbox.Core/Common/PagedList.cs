@@ -1,4 +1,4 @@
-namespace Soapbox.Domain;
+namespace Soapbox.Application.Common;
 
 using System;
 using System.Collections.Generic;

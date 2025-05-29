@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soapbox.Tests", "Soapbox.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.DataAccess.FileSystem", "Soapbox.DataAccess.FileSystem\Soapbox.DataAccess.FileSystem.csproj", "{22040BE3-0AE0-F737-204A-99BE27A7976D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soapbox.Identity", "Soapbox.Identity\Soapbox.Identity.csproj", "{9C8E44BD-980E-4C32-AA2A-A0AC08A16C3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{22040BE3-0AE0-F737-204A-99BE27A7976D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22040BE3-0AE0-F737-204A-99BE27A7976D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22040BE3-0AE0-F737-204A-99BE27A7976D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C8E44BD-980E-4C32-AA2A-A0AC08A16C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C8E44BD-980E-4C32-AA2A-A0AC08A16C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C8E44BD-980E-4C32-AA2A-A0AC08A16C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C8E44BD-980E-4C32-AA2A-A0AC08A16C3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Alkaline64.Injectable.Extensions;
 using Soapbox.Domain.Users;
-using Soapbox.DataAccess.FileSystem.Abstractions;
+using Soapbox.DataAccess.Abstractions;
 
 public static class DependencyInjection
 {
@@ -24,7 +24,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    public static IApplicationBuilder UseFileSystemStorageAsync(this IApplicationBuilder app)
+    public static IApplicationBuilder UseFileSystemStorage(this IApplicationBuilder app)
     {
         new Task(async () => await app.ApplicationServices
             .CreateScope().ServiceProvider

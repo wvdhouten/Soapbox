@@ -3,8 +3,8 @@ namespace Soapbox.Tests.Email;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Soapbox.Application.Email.Abstractions;
-using Soapbox.Web.Account.Shared;
+using Soapbox.Domain.Email;
+using Soapbox.Identity.Shared;
 using Xunit;
 
 public class RazorEmailRendererIntegrationTests

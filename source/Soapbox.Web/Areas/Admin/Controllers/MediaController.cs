@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using Soapbox.Application.FileManagement;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Areas.Admin.Models.Media;
-using Soapbox.Web.Common.Base;
-using Soapbox.Web.Identity.Attributes;
+using Soapbox.Web.Attributes;
+using Soapbox.Web.Controllers.Base;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]

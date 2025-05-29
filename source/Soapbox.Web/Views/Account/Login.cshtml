@@ -1,5 +1,7 @@
 @using Soapbox.Application
-@model Models.Account.LoginModel
+@using Soapbox.Identity.Authentication
+@using Soapbox.Identity.Authentication.Login
+@model LoginRequest
 @inject IOptionsSnapshot<SiteSettings> settings
 @{
   ViewData[Constants.PageTitle] = "Sign in";

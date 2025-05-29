@@ -11,9 +11,9 @@ using Soapbox.Domain.Blog;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Areas.Admin.Models.Posts;
 using Soapbox.Web.Areas.Admin.Models.Shared;
-using Soapbox.Web.Common.Base;
-using Soapbox.Web.Identity.Attributes;
-using Soapbox.Web.Identity.Extensions;
+using Soapbox.Web.Attributes;
+using Soapbox.Web.Controllers.Base;
+using Soapbox.Web.Helpers;
 
 public class PagingOptions
 {

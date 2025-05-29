@@ -13,7 +13,10 @@
   <ItemGroup>
     <PackageReference Include="Alkaline64.Injectable" Version="1.0.1" />
     <PackageReference Include="Markdig" Version="0.41.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.5" />
     <PackageReference Include="MimeTypes" Version="2.5.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,12 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Soapbox.DataAccess\Soapbox.DataAccess.csproj" />
     <ProjectReference Include="..\Soapbox.Models\Soapbox.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Accounts\" />
-    <Folder Include="Markdown\Abstractions\" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,8 @@
 @using Soapbox.Web.Extensions
 @inject IOptionsSnapshot<SiteSettings> settings
 @{
-  var seo = ViewData.GetSeoValues(settings.Value);
+    var seo = SeoValues.Create(ViewData, settings.Value);
 }
-
 <meta property="og:type" content="article" />
 <meta property="og:url" content="@Context.Request.FullUrl()" />
 <meta property="og:title" content="@seo.Title" />

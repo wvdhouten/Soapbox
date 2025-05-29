@@ -24,10 +24,9 @@
 
   <ItemGroup>
     <PackageReference Include="Alkaline64.Injectable" Version="1.0.1" />
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="9.3.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Yahoo" Version="9.3.0" />
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.88.0" />
-    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="9.4.0" />
+    <PackageReference Include="AspNet.Security.OAuth.Yahoo" Version="9.4.0" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.89.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.5" />
@@ -36,7 +35,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.5" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.9.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
@@ -46,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Soapbox.Core\Soapbox.Application.csproj" />
     <ProjectReference Include="..\Soapbox.DataAccess.FileSystem\Soapbox.DataAccess.FileSystem.csproj" />
+    <ProjectReference Include="..\Soapbox.Identity\Soapbox.Identity.csproj" />
     <ProjectReference Include="..\Soapbox.Models\Soapbox.Domain.csproj" />
   </ItemGroup>
 
@@ -65,23 +65,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Account\2fa\Get2faStatus\" />
-    <Folder Include="Account\2fa\Disable2fa\" />
-    <Folder Include="Account\2fa\ForgetBrowser\" />
-    <Folder Include="Account\2fa\GetRecoveryCodes\" />
-    <Folder Include="Account\2fa\GenerateRecoveryCodes\" />
-    <Folder Include="Account\Authenticators\AddAuthenticator\" />
-    <Folder Include="Account\Authenticators\GetAuthenticatorStatus\" />
-    <Folder Include="Account\Authenticators\RemoveAuthenticator\" />
-    <Folder Include="Account\Deletion\DeleteAccount\" />
-    <Folder Include="Account\Email\ConfirmEmailChange\" />
-    <Folder Include="Account\Email\SendEmailVerification\" />
-    <Folder Include="Account\Logins\AddLogin\" />
-    <Folder Include="Account\Logins\AddLoginCallback\" />
-    <Folder Include="Account\Logins\RemoveLogin\" />
-    <Folder Include="Account\Registration\ConfirmRegistration\" />
-    <Folder Include="Account\Registration\RegisterAccount\" />
-    <Folder Include="Blog\Archive\GetArchive\" />
     <Folder Include="Config\" />
     <Folder Include="Content\Media\" />
     <Folder Include="Content\Identity\" />

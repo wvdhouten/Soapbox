@@ -19,8 +19,6 @@ public static class WebApplicationExtensions
     {
         var (isOk, errorMessages) = app.RepairSite();
 
-        app.UseFileSystemStorageAsync();
-
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -34,9 +32,9 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
 
         if (!isOk)
-        {
             app.Run(async context => await context.Response.WriteAsync(string.Join(Environment.NewLine, errorMessages)));
-        }
+
+        app.UseFileSystemStorage();
 
         app.UseStaticFiles(env);
         app.UseCookiePolicy();
@@ -78,7 +76,5 @@ public static class WebApplicationExtensions
     }
 
     private static void CacheControlPrepareResponse(StaticFileResponseContext context)
-    {
-        context.Context.Response.Headers[HeaderNames.CacheControl] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
-    }
+        => context.Context.Response.Headers[HeaderNames.CacheControl] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
 }

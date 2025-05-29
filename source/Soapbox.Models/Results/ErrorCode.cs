@@ -8,5 +8,7 @@ public class ErrorCode
 
     public const string NotFound = "Error.NotFound";
 
+    public const string InvalidOperation = "Error.InvalidOperation";
+
     public const string Validation = "Error.Validation";
 }

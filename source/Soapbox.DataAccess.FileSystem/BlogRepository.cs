@@ -93,24 +93,16 @@ public class BlogRepository : IBlogRepository
     }
 
     public Task<IPagedList<PostCategory>> GetCategoriesPageAsync(int page, int pageSize, bool includePosts = false)
-    {
-        return Task.FromResult(Categories.GetPaged(page, pageSize));
-    }
+        => Task.FromResult(Categories.GetPaged(page, pageSize));
 
     public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
-    {
-        return Task.FromResult(Categories.AsEnumerable());
-    }
+        => Task.FromResult(Categories.AsEnumerable());
 
     public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
-    {
-        return Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
-    }
+        => Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
 
     public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false)
-    {
-        return Task.FromResult(Categories.FirstOrDefault(category => category.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
-    }
+        => Task.FromResult(Categories.FirstOrDefault(category => category.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
 
     public Task CreateCategoryAsync(PostCategory category)
     {

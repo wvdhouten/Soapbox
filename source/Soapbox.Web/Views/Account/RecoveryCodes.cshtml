@@ -1,12 +1,12 @@
 @using Soapbox.Application
-@model Models.Account.RecoveryCodesModel
+@model string[]
 @{
   ViewData[Constants.PageTitle] = "Recovery codes";
 }
 
 <div class="container content">
   <div class="box">
-  @if (Model.RecoveryCodes is null || Model.RecoveryCodes.Length == 0)
+  @if (Model is null || Model.Length == 0)
   {
     <header>
       <h1>Generate recovery codes</h1>
@@ -41,9 +41,9 @@
         <p><strong>Put these codes in a safe place.</strong></p>
       </div>
       <div>
-        @for (var row = 0; row < Model.RecoveryCodes.Length; row += 2)
+        @for (var row = 0; row < Model.Length; row += 2)
         {
-          <code class="recovery-code">@Model.RecoveryCodes[row]</code><text>&nbsp;</text><code class="recovery-code">@Model.RecoveryCodes[row + 1]</code>
+          <code class="recovery-code">@Model[row]</code><text>&nbsp;</text><code class="recovery-code">@Model[row + 1]</code>
           <br />
         }
       </div>

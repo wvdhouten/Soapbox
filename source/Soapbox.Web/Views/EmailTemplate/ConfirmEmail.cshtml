@@ -1,9 +1,7 @@
 @using System.Text.Encodings.Web
-@using Soapbox.Web.Account.Shared
+@using Soapbox.Identity.Shared
 
 @model ConfirmEmail
-@{
-  Layout = "_Layout.cshtml";
-}
+@(Layout = "_Layout.cshtml")
 
 <span>Please confirm your account by <a href="@HtmlEncoder.Default.Encode(Model.CallbackUrl)">clicking here</a>.</span>

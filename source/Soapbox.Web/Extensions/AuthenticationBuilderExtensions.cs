@@ -11,10 +11,10 @@ internal static class AuthenticationBuilderExtensions
         return !section.Exists()
             ? auth
             : auth.AddGoogle(options =>
-        {
-            options.ClientId = section["ClientId"] ?? string.Empty;
-            options.ClientSecret = section["ClientSecret"] ?? string.Empty;
-        });
+            {
+                options.ClientId = section["ClientId"] ?? string.Empty;
+                options.ClientSecret = section["ClientSecret"] ?? string.Empty;
+            });
     }
 
     internal static AuthenticationBuilder TryAddMicrosoft(this AuthenticationBuilder auth, IConfigurationSection section)

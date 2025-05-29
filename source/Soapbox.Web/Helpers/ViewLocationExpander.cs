@@ -1,38 +1,37 @@
-namespace Soapbox.Web.Helpers
+namespace Soapbox.Web.Helpers;
+
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
+using Soapbox.Application.Settings;
+
+public class ViewLocationExpander : IViewLocationExpander
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc.Razor;
-    using Microsoft.Extensions.Options;
-    using Soapbox.Application.Settings;
+    private const string ThemedViewLocation = "/Themes/{0}/{1}.cshtml";
 
-    public class ViewLocationExpander : IViewLocationExpander
+    private readonly IOptionsMonitor<SiteSettings> _settings;
+
+    public ViewLocationExpander(IOptionsMonitor<SiteSettings> settings)
     {
-        private const string ThemedViewLocation = "/Themes/{0}/{1}.cshtml";
+        _settings = settings;
+    }
 
-        private readonly IOptionsMonitor<SiteSettings> _settings;
+    public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
+    {
+        var theme = _settings.CurrentValue.Theme;
+        theme = !string.IsNullOrEmpty(theme) ? theme : "Default";
 
-        public ViewLocationExpander(IOptionsMonitor<SiteSettings> settings)
+        var themedViewLocations = new List<string>
         {
-            _settings = settings;
-        }
+            string.Format(ThemedViewLocation, theme, "{1}/{0}"),
+            string.Format(ThemedViewLocation, theme, "{0}"),
+        };
 
-        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
-        {
-            var theme = _settings.CurrentValue.Theme;
-            theme = !string.IsNullOrEmpty(theme) ? theme : "Default";
+        return themedViewLocations.Concat(viewLocations);
+    }
 
-            var themedViewLocations = new List<string>
-            {
-                string.Format(ThemedViewLocation, theme, "{1}/{0}"),
-                string.Format(ThemedViewLocation, theme, "{0}"),
-            };
-
-            return themedViewLocations.Concat(viewLocations);
-        }
-
-        public void PopulateValues(ViewLocationExpanderContext context)
-        {
-        }
+    public void PopulateValues(ViewLocationExpanderContext context)
+    {
     }
 }

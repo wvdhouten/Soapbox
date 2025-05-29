@@ -23,19 +23,13 @@ public class ExtendedCompositeFileProvider : IFileProvider
     }
 
     public IDirectoryContents GetDirectoryContents(string subpath)
-    {
-        return GetFileProvider(subpath, out var outpath).GetDirectoryContents(outpath);
-    }
+        => GetFileProvider(subpath, out var outpath).GetDirectoryContents(outpath);
 
     public IFileInfo GetFileInfo(string subpath)
-    {
-        return GetFileProvider(subpath, out var outpath).GetFileInfo(outpath);
-    }
+        => GetFileProvider(subpath, out var outpath).GetFileInfo(outpath);
 
     public IChangeToken Watch(string filter)
-    {
-        return GetFileProvider(filter, out var outpath).Watch(outpath);
-    }
+        => GetFileProvider(filter, out var outpath).Watch(outpath);
 
     internal IFileProvider GetFileProvider(string path, out string outpath)
     {

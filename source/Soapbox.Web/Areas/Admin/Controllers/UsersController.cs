@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Soapbox.Application.Email.Abstractions;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Areas.Admin.Models.Users;
-using Soapbox.Web.Identity.Attributes;
-using Soapbox.Web.Identity.Extensions;
-using Soapbox.Web.Account.Shared;
-using Soapbox.Web.Identity.Managers;
-using Soapbox.Web.Identity;
 using Soapbox.Application.Utils;
-using Soapbox.Web.Common.Base;
+using Soapbox.Web.Controllers.Base;
+using Soapbox.Identity;
+using Soapbox.Identity.Managers;
+using Soapbox.Web.Attributes;
+using Soapbox.Identity.Shared;
+using Soapbox.Domain.Email;
+using Soapbox.Web.Helpers;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator)]

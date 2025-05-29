@@ -1,4 +1,5 @@
-@model Models.Blog.ArchiveModel
+@using Soapbox.Domain.Blog.Archive
+@model PostArchive
 @{
     var currentMonth = new DateTime(Model.Year, Model.Month ?? 1, 1);
     var prevMonth = currentMonth.AddMonths(-1);

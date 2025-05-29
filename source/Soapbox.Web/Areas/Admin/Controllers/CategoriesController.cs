@@ -8,8 +8,8 @@ using Soapbox.Application.Extensions;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Areas.Admin.Models.Categories;
-using Soapbox.Web.Common.Base;
-using Soapbox.Web.Identity.Attributes;
+using Soapbox.Web.Attributes;
+using Soapbox.Web.Controllers.Base;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
