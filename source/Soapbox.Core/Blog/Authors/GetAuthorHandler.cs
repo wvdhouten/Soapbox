@@ -6,16 +6,16 @@ using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
 
 [Injectable]
-public class GetAuthorByIdHandler
+public class GetAuthorHandler
 {
     private readonly IBlogRepository _blogService;
 
-    public GetAuthorByIdHandler(IBlogRepository blogService)
+    public GetAuthorHandler(IBlogRepository blogService)
     {
         _blogService = blogService;
     }
 
-    public async Task<Result<SoapboxUser>> GetAuthorAsync(string id)
+    public async Task<Result<SoapboxUser>> GetAuthorByIdAsync(string id)
     {
         var author = await _blogService.GetAuthorByIdAsync(id);
         if (author is null)

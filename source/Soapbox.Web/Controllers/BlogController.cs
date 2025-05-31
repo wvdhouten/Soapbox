@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Application.Blog.Archive.GetPostArchive;
 using Soapbox.Application.Blog.Authors;
-using Soapbox.Application.Blog.Categories.GetAllCategories;
 using Soapbox.Application.Blog.Categories.GetCategory;
+using Soapbox.Application.Blog.Categories.ListCategories;
 using Soapbox.Application.Blog.Posts;
 using Soapbox.Domain.Results;
 
@@ -69,7 +69,7 @@ public class BlogController : Controller
     }
 
     [HttpGet("categories")]
-    public async Task<IActionResult> Categories([FromServices] GetAllCategoriesHandler handler)
+    public async Task<IActionResult> Categories([FromServices] ListCategoriesHandler handler)
     {
         var result = await handler.GetAllCategoriesAsync();
         return result.IsSuccess switch
@@ -80,9 +80,9 @@ public class BlogController : Controller
     }
 
     [HttpGet("category/{slug}")]
-    public async Task<IActionResult> Category([FromServices] GetCategoryBySlugHandler handler, [FromRoute] string slug)
+    public async Task<IActionResult> Category([FromServices] GetCategoryHandler handler, [FromRoute] string slug)
     {
-        var result = await handler.GetCategoryAsync(slug);
+        var result = await handler.GetCategoryBySlugAsync(slug);
         return result.IsSuccess switch
         {
             false when result.Error?.Code == ErrorCode.NotFound => NotFound(result.Error.Message),
@@ -92,9 +92,9 @@ public class BlogController : Controller
     }
 
     [HttpGet("author/{id}")]
-    public async Task<IActionResult> Author([FromServices] GetAuthorByIdHandler handler, [FromRoute] string id)
+    public async Task<IActionResult> Author([FromServices] GetAuthorHandler handler, [FromRoute] string id)
     {
-        var result = await handler.GetAuthorAsync(id);
+        var result = await handler.GetAuthorByIdAsync(id);
         return result.IsSuccess switch
         {
             false when result.Error?.Code == ErrorCode.NotFound => NotFound(result.Error.Message),

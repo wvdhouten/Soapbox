@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Soapbox.Application.Extensions;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Blog;
@@ -15,26 +14,15 @@ using Soapbox.Web.Attributes;
 using Soapbox.Web.Controllers.Base;
 using Soapbox.Web.Helpers;
 
-public class PagingOptions
-{
-    public int Page { get; set; }
-
-    public int PageSize { get; set; }
-
-    public string? OrderBy { get; set; }
-}
-
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author, UserRole.Contributor)]
 public class PostsController : SoapboxControllerBase
 {
     private readonly IBlogRepository _blogService;
-    private readonly ILogger<PostsController> _logger;
 
-    public PostsController(IBlogRepository blogService, ILogger<PostsController> logger)
+    public PostsController(IBlogRepository blogService)
     {
         _blogService = blogService;
-        _logger = logger;
     }
 
     [HttpGet]

@@ -1,4 +1,4 @@
-namespace Soapbox.Web.Extensions;
+namespace Soapbox.Application.Utils;
 
 using System;
 using System.Reflection;

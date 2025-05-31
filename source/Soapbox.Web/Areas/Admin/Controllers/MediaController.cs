@@ -1,10 +1,10 @@
 namespace Soapbox.Web.Areas.Admin.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Soapbox.Application.FileManagement;
+using Soapbox.Application.Media.DeleteFile;
+using Soapbox.Application.Media.ListFiles;
+using Soapbox.Application.Media.UploadFiles;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Areas.Admin.Models.Media;
 using Soapbox.Web.Attributes;
 using Soapbox.Web.Controllers.Base;
 
@@ -12,56 +12,39 @@ using Soapbox.Web.Controllers.Base;
 [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
 public class MediaController : SoapboxControllerBase
 {
-    private readonly MediaFileService _fileService;
-    private readonly ILogger<MediaController> _logger;
-
-    public MediaController(MediaFileService fileService, ILogger<MediaController> logger)
+    [HttpGet]
+    public IActionResult Index([FromServices] ListFilesHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
-        _fileService = fileService;
-        _logger = logger;
+        var result = handler.GetPage(page, pageSize);
+        return result switch
+        {
+            { IsSuccess: true } => View(result.Value),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 
     [HttpGet]
-    public IActionResult Index([FromQuery] int page = 1, [FromQuery] int pageSize = 25)
-    {
-        var model = _fileService.GetPage(page, pageSize);
+    public IActionResult Upload() => View();
 
-        return View(model);
-    }
-
-    [HttpGet]
-    public IActionResult Upload()
+    [HttpPost]
+    public IActionResult Upload([FromServices] UploadFilesHandler handler, UploadFilesRequest request)
     {
-        return View();
+        var result = handler.UploadFiles(request);
+        return result switch
+        {
+            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 
     [HttpPost]
-    public IActionResult Upload(UploadFilesViewModel model)
+    public IActionResult Delete([FromServices] DeleteFileHandler handler, string name)
     {
-        foreach (var file in model.Files)
+        var result = handler.DeleteFile(name);
+        return result switch
         {
-            if (file.Length > 0)
-            {
-                using var fileStream = file.OpenReadStream();
-                _fileService.CreateOrUpdate(file.FileName, fileStream);
-            }
-        }
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpPost]
-    public IActionResult Delete(string name)
-    {
-        try
-        {
-            _fileService.Delete(name);
-        }
-        catch
-        {
-            // TODO
-        }
-
-        return RedirectToAction(nameof(Index));
+            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 }

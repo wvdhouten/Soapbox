@@ -1,25 +1,24 @@
-namespace Soapbox.Web.Areas.Admin.Models.Posts
+namespace Soapbox.Web.Areas.Admin.Models.Posts;
+
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Soapbox.Domain.Blog;
+using Soapbox.Web.Areas.Admin.Models.Shared;
+
+public class PostViewModel
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using Soapbox.Domain.Blog;
-    using Soapbox.Web.Areas.Admin.Models.Shared;
+    public Post Post { get; set; } = default!;
 
-    public class PostViewModel
-    {
-        public Post Post { get; set; } = default!;
+    public IList<SelectableItemViewModel<PostCategory>> AllCategories { get; set; } = [];
 
-        public IList<SelectableItemViewModel<PostCategory>> AllCategories { get; set; } = [];
+    [Display(Name = "Update from title")]
+    public bool UpdateSlugFromTitle { get; set; } = true;
 
-        [Display(Name = "Update from title")]
-        public bool UpdateSlugFromTitle { get; set; } = true;
+    [Display(Name = "Update")]
+    public bool UpdateModifiedOn { get; set; } = true;
 
-        [Display(Name = "Update")]
-        public bool UpdateModifiedOn { get; set; } = true;
+    [Display(Name = "Update")]
+    public bool UpdatePublishedOn { get; set; } = true;
 
-        [Display(Name = "Update")]
-        public bool UpdatePublishedOn { get; set; } = true;
-
-        public string? NewCategory { get; set; }
-    }
+    public string? NewCategory { get; set; }
 }

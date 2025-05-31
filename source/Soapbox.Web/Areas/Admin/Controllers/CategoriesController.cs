@@ -1,100 +1,78 @@
 namespace Soapbox.Web.Areas.Admin.Controllers;
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Soapbox.Application.Extensions;
-using Soapbox.DataAccess.Abstractions;
+using Soapbox.Application.Blog.Categories.CreateCategory;
+using Soapbox.Application.Blog.Categories.DeleteCategory;
+using Soapbox.Application.Blog.Categories.GetCategory;
+using Soapbox.Application.Blog.Categories.ListCategories;
+using Soapbox.Application.Blog.Categories.UpdateCategory;
+using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Areas.Admin.Models.Categories;
 using Soapbox.Web.Attributes;
 using Soapbox.Web.Controllers.Base;
+using System.Threading.Tasks;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator, UserRole.Editor)]
 public class CategoriesController : SoapboxControllerBase
 {
-    private readonly IBlogRepository _blogService;
-    private readonly ILogger<CategoriesController> _logger;
-
-    public CategoriesController(IBlogRepository blogService, ILogger<CategoriesController> logger)
-    {
-        _blogService = blogService;
-        _logger = logger;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int page = 1, [FromQuery] int pageSize = 25)
+    public async Task<IActionResult> Index([FromServices] ListCategoriesHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
-        var model = await _blogService.GetCategoriesPageAsync(page, pageSize, true);
-
-        return View(model);
-    }
-
-    [HttpGet]
-    public IActionResult Create()
-    {
-        var model = new PostCategoryViewModel { GenerateSlugFromName = true };
-
-        return View(model);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromForm] PostCategoryViewModel model)
-    {
-        model.Category.Slug = model.GenerateSlugFromName || string.IsNullOrWhiteSpace(model.Category.Slug) ? CreateSlug(model.Category.Name) : model.Category.Slug;
-
-        await _blogService.CreateCategoryAsync(model.Category);
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Edit(long id)
-    {
-        var category = await _blogService.GetCategoryByIdAsync(id) ?? throw new Exception("Not Found");
-
-        var model = new PostCategoryViewModel
+        var result = await handler.GetCategoryPageAsync(page, pageSize);
+        return result switch
         {
-            Category = category,
-            GenerateSlugFromName = category.Slug == CreateSlug(category.Name)
+            { IsSuccess: true } => View(result.Value),
+            _ => BadRequest("Something went wrong.")
         };
+    }
 
-        return View(model);
+    [HttpGet]
+    public IActionResult Create() => View(new CreateCategoryRequest());
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromServices] CreateCategoryHandler handler, [FromForm] CreateCategoryRequest request)
+    {
+        var result = await handler.CreateCategoryAsync(request);
+        return result switch
+        {
+            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            _ => BadRequest("Something went wrong.")
+        };
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit([FromServices] GetCategoryHandler handler, long id)
+    {
+        var result = await handler.GetCategoryByIdAsync(id);
+        return result switch
+        {
+            { IsSuccess: true, Value: var category } => View(UpdateCategoryRequest.FromCategory(category)),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound(result.Error.Message),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromForm] PostCategoryViewModel model)
+    public async Task<IActionResult> Edit([FromServices] UpdateCategoryHandler handler, [FromForm] UpdateCategoryRequest request)
     {
-        model.Category.Slug = model.GenerateSlugFromName || string.IsNullOrWhiteSpace(model.Category.Slug) ? CreateSlug(model.Category.Name) : model.Category.Slug;
-
-        await _blogService.UpdateCategoryAsync(model.Category);
-
-        return RedirectToAction(nameof(Edit), new { id = model.Category.Id });
+        var result = await handler.UpdateCategoryAsync(request);
+        return result switch
+        {
+            { IsSuccess: true } => RedirectToAction(nameof(Edit), new { id = request.Category.Id }),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete([FromServices] DeleteCategoryHandler handler, long id)
     {
-        try
+        var result = await handler.DeleteCategoryByIdAsync(id);
+        return result switch
         {
-            await _blogService.DeleteCategoryByIdAsync(id);
-        }
-        catch
-        {
-            // TODO: Add status message.
-        }
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    private static string CreateSlug(string title)
-    {
-        title = title?.Trim().ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
-        title = title.RemoveDiacritics();
-        title = title.RemoveReservedUrlCharacters();
-
-        return title.ToLowerInvariant();
+            { IsSuccess: true } => WithStatusMessage("Category deleted.").RedirectToAction(nameof(Index)),
+            { IsFailure: true, Error.Code: ErrorCode.Unknown } => WithErrorMessage(result.Error.Message).RedirectToAction(nameof(Index)),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 }

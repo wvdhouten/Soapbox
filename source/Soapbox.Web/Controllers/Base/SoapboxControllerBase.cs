@@ -35,4 +35,6 @@ public abstract class SoapboxControllerBase : Controller
         ViewData[key] = value;
         return this;
     }
+
+    public BadRequestObjectResult SomethingWentWrong() => BadRequest("Something went wrong.");
 }

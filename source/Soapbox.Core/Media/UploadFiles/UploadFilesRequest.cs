@@ -1,9 +1,9 @@
-namespace Soapbox.Web.Areas.Admin.Models.Media;
+namespace Soapbox.Application.Media.UploadFiles;
 
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-public class UploadFilesViewModel
+public class UploadFilesRequest
 {
     public IEnumerable<IFormFile> Files { get; set; } = [];
 }

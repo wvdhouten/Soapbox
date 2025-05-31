@@ -1,158 +1,94 @@
 namespace Soapbox.Web.Areas.Admin.Controllers;
-
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
+using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Areas.Admin.Models.Users;
-using Soapbox.Application.Utils;
-using Soapbox.Web.Controllers.Base;
-using Soapbox.Identity;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Users.CreateUser;
+using Soapbox.Identity.Users.DeleteUser;
+using Soapbox.Identity.Users.EditUser;
+using Soapbox.Identity.Users.GetUser;
+using Soapbox.Identity.Users.ListUsers;
 using Soapbox.Web.Attributes;
-using Soapbox.Identity.Shared;
-using Soapbox.Domain.Email;
-using Soapbox.Web.Helpers;
+using Soapbox.Web.Controllers.Base;
+using System.Threading.Tasks;
 
 [Area("Admin")]
 [RoleAuthorize(UserRole.Administrator)]
 public class UsersController : SoapboxControllerBase
 {
-    private readonly AccountService _accountService;
-    private readonly TransactionalUserManager<SoapboxUser> _userManager;
-    private readonly IEmailService _emailClient;
-    private readonly ILogger<UsersController> _logger;
-
-    public UsersController(AccountService accountService, TransactionalUserManager<SoapboxUser> userManager, IEmailService emailClient, ILogger<UsersController> logger)
+    [HttpGet]
+    public IActionResult Index([FromServices] ListUsersHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
-        _accountService = accountService;
-        _userManager = userManager;
-        _emailClient = emailClient;
-        _logger = logger;
+        var result = handler.GetUsersPage(page, pageSize);
+        return result switch
+        {
+            { IsSuccess: true } => View(result.Value),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 
     [HttpGet]
-    public IActionResult Index(int page = 1, int pageSize = 25)
-    {
-        var model = _userManager.Users.OrderBy(u => u.UserName).GetPaged(page, pageSize);
-
-        return View(model);
-    }
-
-    [HttpGet]
-    public IActionResult Create() 
-        => View();
+    public IActionResult Create() => View(new CreateUserRequest());
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] CreateUserViewModel model)
+    public async Task<IActionResult> Create([FromServices] CreateUserHandler handler, [FromForm] CreateUserRequest request)
     {
         if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
+            return View(request);
 
-        var user = new SoapboxUser
+        var result = await handler.CreateUserAsync(request);
+        return result switch
         {
-            UserName = model.Username,
-            DisplayName = model.DisplayName,
-            Email = model.Email,
-            Role = model.Role
+            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            { IsFailure: true } when result.Error is ValidationError error => ValidationError(nameof(Create), request, error.Errors),
+            _ => BadRequest("Something went wrong.")
         };
-
-        var result = await _userManager.CreateAsync(user);
-        if (result.Succeeded)
-        {
-            _logger.LogInformation("New user created without password.");
-
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { area = "", code })!;
-            await _emailClient.SendEmailAsync(user.Email, "Reset Password", new ResetPassword { CallbackUrl = callbackUrl });
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error.Description);
-        }
-
-        return View(model);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Edit(string id)
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> Edit([FromServices] GetUserHandler handler, string id)
     {
-        var user = await _accountService.FindUserByIdAsync(id);
-        if (user is null)
+        var result = await handler.GetUserById(id);
+        return result switch
         {
-            return NotFound();
-        }
-
-        var model = new EditUserViewModel
-        {
-            Id = user.Id,
-            Username = user.UserName!,
-            Email = user.Email!,
-            DisplayName = user.DisplayName,
-            Role = user.Role
+            { IsSuccess: true, Value: SoapboxUser user } => View(new EditUserRequest
+            {
+                Id = user.Id,
+                UserName = user.UserName!,
+                Email = user.Email!,
+                DisplayName = user.DisplayName,
+                Role = user.Role
+            }),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound("User not found."),
+            _ => BadRequest("Something went wrong.")
         };
-
-        return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromForm] EditUserViewModel model)
+    public async Task<IActionResult> Edit([FromServices] EditUserHandler handler, [FromForm] EditUserRequest request)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return View(request);
 
-        var user = new SoapboxUser
+        var result = await handler.EditUserAsync(request);
+        return result switch
         {
-            Id = model.Id!,
-            UserName = model.Username,
-            Email = model.Email,
-            DisplayName = model.DisplayName,
-            Role = model.Role
+            { IsSuccess: true } => WithStatusMessage("User updated.").RedirectToAction(nameof(Index)),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound("User not found."),
+            { IsFailure: true } when result.Error is ValidationError error => ValidationError(nameof(Edit), request, error.Errors),
+            _ => BadRequest("Something went wrong.")
         };
-
-        var result = await _accountService.UpdateUserAsync(user);
-        if (result.Succeeded)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error.Description);
-        }
-
-        return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete([FromServices] DeleteUserHandler handler, [FromBody]string id)
     {
-        // TODO: More checks
-
-        var user = await _accountService.FindUserByIdAsync(id);
-        if (user is null)
+        var result = await handler.DeleteUserAsync(id);
+        return result switch
         {
-            return NotFound();
-        }
-
-        var userId = User.GetUserId();
-        if (user.Id == userId)
-        {
-            return WithErrorMessage("You cannot delete yourself.").RedirectToAction(nameof(Index));
-        }
-
-        await _userManager.DeleteAsync(user);
-
-        return RedirectToAction(nameof(Index));
+            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound(result.Error.Message),
+            { IsFailure: true, Error.Code: ErrorCode.InvalidOperation } => BadRequest(result.Error.Message),
+            _ => BadRequest("Something went wrong.")
+        };
     }
 }

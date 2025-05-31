@@ -1,6 +1,7 @@
 @using Soapbox.Application
 @using Soapbox.Application.Constants
-@model Soapbox.Web.Areas.Admin.Models.Users.EditUserViewModel
+@using Soapbox.Identity.Users.EditUser
+@model EditUserRequest
 @{
   ViewData[ViewConstants.PageTitle] = "Edit user";
 }
@@ -14,9 +15,9 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input asp-for="@Model.Id" type="hidden" />
     <div class="form-field">
-      <label asp-for="@Model.Username"></label>
-      <input asp-for="@Model.Username" />
-      <span asp-validation-for="@Model.Username" class="text-danger"></span>
+      <label asp-for="@Model.UserName"></label>
+      <input asp-for="@Model.UserName" />
+      <span asp-validation-for="@Model.UserName" class="text-danger"></span>
     </div>
     <div class="form-field">
       <label asp-for="@Model.Email"></label>

@@ -50,7 +50,7 @@ public static class WebApplicationExtensions
 
         app.MapHealthChecks("/Health");
 
-        app.MapAreaControllerRoute("admin", "Admin", "Admin/{controller=Home}/{action=Index}/{id?}");
+        app.MapAreaControllerRoute("admin", "Admin", "Admin/{controller=Posts}/{action=Index}/{id?}");
         app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
         return app;
