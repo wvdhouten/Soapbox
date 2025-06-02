@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 public abstract class SoapboxControllerBase : Controller
 {
-    [TempData]
+    [TempData, ViewData]
     public string? StatusMessage { get; set; }
 
-    [TempData]
+    [TempData, ViewData]
     public string? ErrorMessage { get; set; }
 
     public ViewResult ValidationError<TModel>(string view, TModel model, Dictionary<string, string> errors)

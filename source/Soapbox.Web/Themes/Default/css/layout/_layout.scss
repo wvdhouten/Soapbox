@@ -56,6 +56,7 @@ label[for=toggle-nav] {
   flex-direction: column;
   align-items: center;
   margin-left: auto;
+  gap: 6px;
 
   @if map-get($breakpoints, "md") {
     @media (min-width: map-get($breakpoints, "md")) {

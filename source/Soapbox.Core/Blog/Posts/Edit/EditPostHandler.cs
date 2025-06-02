@@ -1,7 +1,7 @@
 ﻿namespace Soapbox.Application.Blog.Posts.Edit;
 
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
-using Soapbox.Application.Blog.Posts.Create;
 using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Blog;
@@ -9,12 +9,10 @@ using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
+[Injectable]
 public class EditPostHandler
 {
     private readonly IBlogRepository _blogRepository;

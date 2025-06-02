@@ -4,7 +4,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Soapbox.Application.Settings;
-using Soapbox.Application.Site.Backup;
+using Soapbox.Application.Site.DataBackup;
 using Soapbox.Application.Site.EditSettings;
 using Soapbox.Application.Site.Restart;
 using Soapbox.Domain.Users;
@@ -21,9 +21,7 @@ public class SiteController : SoapboxControllerBase
     [HttpPost]
     public IActionResult Settings(
         [FromServices] EditSettingsHandler handler,
-        [FromServices] RestartSiteHandler restartSiteHandler,
-        [FromForm] SiteSettings settings,
-        string action)
+        [FromForm] SiteSettings settings)
     {
         if (!ModelState.IsValid)
             return View(settings);
@@ -31,13 +29,22 @@ public class SiteController : SoapboxControllerBase
         var result = handler.EditSettings(settings);
         return result switch
         {
-            { IsSuccess: true } => WithStatusMessage("Settings saved successfully.").View(settings),
+            { IsSuccess: true } => WithStatusMessage("Settings saved successfully.").RedirectToAction(nameof(settings)),
             _ => SomethingWentWrong(),
         };
     }
 
     [HttpPost]
-    public void Restart([FromServices] RestartSiteHandler handler) => handler.RestartSite();
+    public IActionResult Restart([FromServices] RestartSiteHandler handler)
+    {
+        var result = handler.RestartSite();
+        return result switch
+        {
+            { IsSuccess: true } => WithStatusMessage("Site will restart.").RedirectToAction(nameof(Settings)),
+            _ => SomethingWentWrong()
+        };
+        
+    }
 
     [HttpGet]
     public IActionResult Backup([FromServices] BackupHandler handler)

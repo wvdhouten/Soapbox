@@ -75,23 +75,20 @@ public class PostsController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit([FromServices] GetPostByIdHandler handler, [FromServices] ListCategoriesHandler categoriesHandler, string id)
+    public async Task<IActionResult> Edit([FromServices] GetPostHandler handler, [FromServices] ListCategoriesHandler categoriesHandler, string id)
     {
-        var result = await handler.GetPostAsync(id);
+        var result = await handler.GetPostByIdAsync(id);
         switch (result)
         {
             case { IsFailure: true, Error.Code: ErrorCode.NotFound }:
                 return NotFound(result.Error.Message);
             case { IsSuccess: true, Value: var post }:
                 var categoriesResult = await categoriesHandler.GetAllCategoriesAsync(false);
-                if (categoriesResult.IsSuccess)
-                    ViewData.Add("Categories", result.Value);
+                if (categoriesResult.IsFailure)
+                    return SomethingWentWrong();
 
-                return categoriesResult switch
-                {
-                    { IsSuccess: true } => View(new EditPostRequest { Post = post }),
-                    _ => SomethingWentWrong()
-                };
+                ViewData.Add("Categories", categoriesResult.Value);
+                return View(new EditPostRequest { Post = post });
             default:
                 return SomethingWentWrong();
         }
@@ -121,9 +118,9 @@ public class PostsController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Delete([FromServices] GetPostByIdHandler handler, [FromQuery] string id)
+    public async Task<IActionResult> Delete([FromServices] GetPostHandler handler, [FromQuery] string id)
     {
-        var result = await handler.GetPostAsync(id);
+        var result = await handler.GetPostByIdAsync(id);
         return result switch
         {
             { IsSuccess: true } => View(result.Value),

@@ -19,7 +19,7 @@ public class GetAuthorHandler
     {
         var author = await _blogService.GetAuthorByIdAsync(id);
         if (author is null)
-            return Error.NotFound($"Post with ID '{id}' does not exist.");
+            return Error.NotFound($"Author not found.");
 
         return author;
     }

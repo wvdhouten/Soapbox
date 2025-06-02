@@ -2,7 +2,7 @@ namespace Soapbox.Web.Controllers;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Soapbox.Application.Blog.Archive.GetPostArchive;
+using Soapbox.Application.Blog.Archive.GetArchive;
 using Soapbox.Application.Blog.Authors;
 using Soapbox.Application.Blog.Categories.GetCategory;
 using Soapbox.Application.Blog.Categories.ListCategories;
@@ -28,9 +28,9 @@ public class BlogController : SoapboxControllerBase
     }
 
     [HttpGet("{slug}")]
-    public async Task<IActionResult> PostBySlug([FromServices] GetPostBySlugHandler handler, [FromRoute] string slug)
+    public async Task<IActionResult> PostBySlug([FromServices] GetPostHandler handler, [FromRoute] string slug)
     {
-        var result = await handler.GetPostAsync(slug);
+        var result = await handler.GetPostBySlugAsync(slug);
         return result.IsSuccess switch
         {
             false when result.Error?.Code == ErrorCode.NotFound => NotFound(result.Error.Message),
@@ -41,9 +41,9 @@ public class BlogController : SoapboxControllerBase
 
     [HttpGet("post/{id}")]
     [ActionName("PostView")]
-    public async Task<IActionResult> PostById([FromServices] GetPostByIdHandler handler, [FromRoute] string id)
+    public async Task<IActionResult> PostById([FromServices] GetPostHandler handler, [FromRoute] string id)
     {
-        var result = await handler.GetPostAsync(id);
+        var result = await handler.GetPostByIdAsync(id);
         return result.IsSuccess switch
         {
             false when result.Error?.Code == ErrorCode.NotFound => NotFound(result.Error.Message),
@@ -56,7 +56,7 @@ public class BlogController : SoapboxControllerBase
     [HttpGet("archive/{year:int?}")]
     [HttpGet("archive/{year:int?}/{month:int?}")]
     public async Task<IActionResult> Archive(
-        [FromServices] GetPostArchiveHandler handler,
+        [FromServices] GetArchiveHandler handler,
         [FromRoute] int? year = null,
         [FromRoute] int? month = null)
     {

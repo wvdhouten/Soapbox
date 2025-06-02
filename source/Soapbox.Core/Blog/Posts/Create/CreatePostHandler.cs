@@ -1,5 +1,6 @@
 ﻿namespace Soapbox.Application.Blog.Posts.Create;
 
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
@@ -11,6 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
+[Injectable]
 public class CreatePostHandler
 {
     private readonly IBlogRepository _blogRepository;

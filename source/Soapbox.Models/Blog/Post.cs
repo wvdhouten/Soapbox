@@ -23,12 +23,12 @@ public class Post
     /// <summary>
     /// Gets or sets the author identifier.
     /// </summary>
-    public SoapboxUser Author { get; set; } = default!;
+    public SoapboxUser? Author { get; set; } = default;
 
     /// <summary>
     /// Gets or sets the post slug.
     /// </summary>
-    public string Slug { get; set; } = string.Empty;
+    public string? Slug { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the post excerpt.

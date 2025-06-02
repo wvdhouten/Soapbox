@@ -1,6 +1,6 @@
 @{
-  var statusMessage = (string?)TempData["StatusMessage"];
-  var errorMessage = (string?)TempData["ErrorMessage"];
+  string? statusMessage = (string?)TempData["StatusMessage"];
+  string? errorMessage = (string?)TempData["ErrorMessage"];
 }
 
 <section class="container centered" condition="!string.IsNullOrEmpty(errorMessage)">

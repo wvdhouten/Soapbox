@@ -1,8 +1,11 @@
 ﻿namespace Soapbox.Application.Site.Restart;
 
+using Alkaline64.Injectable;
 using Microsoft.Extensions.Hosting;
+using Soapbox.Domain.Results;
 using System;
 
+[Injectable]
 public class RestartSiteHandler
 {
     private readonly IHostApplicationLifetime _appLifetime;
@@ -12,10 +15,10 @@ public class RestartSiteHandler
         _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
     }
 
-    public void RestartSite()
+    public Result RestartSite()
     {
         _appLifetime.StopApplication();
 
-        throw new ApplicationException("Application restart requested.");
+        return Result.Success();
     }
 }

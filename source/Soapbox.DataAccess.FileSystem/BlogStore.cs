@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Alkaline64.Injectable;
+using Soapbox.Application.Constants;
 using Soapbox.DataAccess.FileSystem.Abstractions;
 using Soapbox.DataAccess.FileSystem.Blog;
 using Soapbox.Domain.Blog;
@@ -17,7 +18,9 @@ public partial class BlogStore : IBlogStore
 {
     private static readonly ISerializer _yamlSerializer = new SerializerBuilder().Build();
     private static readonly IDeserializer _yamlDeserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
-    private readonly string _contentPath = Path.Combine(Environment.CurrentDirectory, "Content");
+
+    private readonly string _contentPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Content, FolderNames.Posts);
+
     private IList<Post> _posts = [];
     private IList<PostCategory> _categories = [];
 

@@ -349,6 +349,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+!**/Site/Backup
+
 **/wwwroot/dist
 **/Soapbox.Web/Content
 **/Soapbox.Web/wwwroot/lib

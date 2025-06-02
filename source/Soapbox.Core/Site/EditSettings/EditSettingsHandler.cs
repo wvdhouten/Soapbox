@@ -1,5 +1,6 @@
 ﻿namespace Soapbox.Application.Site.EditSettings;
 
+using Alkaline64.Injectable;
 using Microsoft.Extensions.Options;
 using Soapbox.Application.Constants;
 using Soapbox.Application.Settings;
@@ -7,6 +8,7 @@ using Soapbox.Application.Utils;
 using Soapbox.Domain.Results;
 using System.Text.Json;
 
+[Injectable]
 public class EditSettingsHandler
 {
     private readonly string _configPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Config);
@@ -15,7 +17,9 @@ public class EditSettingsHandler
     private readonly SiteSettings _config;
     private readonly IViewEngineManager _viewEngineManager;
 
-    public EditSettingsHandler(IOptionsSnapshot<SiteSettings> config, IViewEngineManager viewEngineManager)
+    public EditSettingsHandler(
+        IOptionsSnapshot<SiteSettings> config,
+        IViewEngineManager viewEngineManager)
     {
         _config = config.Value;
         _viewEngineManager = viewEngineManager;
@@ -25,8 +29,7 @@ public class EditSettingsHandler
     {
         SaveToFile(settings, "site.json");
 
-        if (_config.Theme != settings.Theme)
-            _viewEngineManager.ClearCache();
+        _viewEngineManager.ClearCache();
 
         return Result.Success();
     }
@@ -44,5 +47,8 @@ public class EditSettingsHandler
 
         writer.WriteEndObject();
         writer.Flush();
+
+        // A sleep will (likely) wait until the file is truly written.
+        Thread.Sleep(500);
     }
 }

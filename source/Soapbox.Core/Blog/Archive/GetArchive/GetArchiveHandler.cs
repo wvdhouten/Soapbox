@@ -1,4 +1,4 @@
-namespace Soapbox.Application.Blog.Archive.GetPostArchive;
+namespace Soapbox.Application.Blog.Archive.GetArchive;
 
 using Alkaline64.Injectable;
 using Soapbox.DataAccess.Abstractions;
@@ -7,11 +7,11 @@ using Soapbox.Domain.Blog.Archive;
 using Soapbox.Domain.Results;
 
 [Injectable]
-public class GetPostArchiveHandler
+public class GetArchiveHandler
 {
     private readonly IBlogRepository _blogService;
 
-    public GetPostArchiveHandler(IBlogRepository blogService)
+    public GetArchiveHandler(IBlogRepository blogService)
     {
         _blogService = blogService;
     }
