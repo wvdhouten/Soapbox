@@ -1,4 +1,4 @@
-namespace Soapbox.Identity.Authentication.ForgotPassword;
+namespace Soapbox.Identity.Password.ForgotPassword;
 
 using System.ComponentModel.DataAnnotations;
 

@@ -1,11 +1,12 @@
 namespace Soapbox.Identity.Email.ConfirmEmailChange;
-using System.Text;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using System.Text;
 
 [Injectable]
 public class ConfirmEmailChangeHandler

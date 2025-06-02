@@ -1,5 +1,5 @@
 namespace Soapbox.Identity.Registration.RegisterAccount;
-using System.Text;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +8,10 @@ using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Email;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
-using Soapbox.Identity.Shared;
+using Soapbox.Identity.Custom;
+using Soapbox.Identity.EmailContent;
+using Soapbox.Identity.Helpers;
+using System.Text;
 
 [Injectable]
 public class RegisterAccountHandler

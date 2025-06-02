@@ -1,10 +1,12 @@
 ﻿namespace Soapbox.Identity.Users.DeleteUser;
 
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 
+[Injectable]
 public class DeleteUserHandler
 {
     private readonly TransactionalUserManager<SoapboxUser> _userManager;

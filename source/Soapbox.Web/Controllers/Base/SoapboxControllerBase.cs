@@ -18,23 +18,23 @@ public abstract class SoapboxControllerBase : Controller
         return View(view, model);
     }
 
-    public SoapboxControllerBase WithStatusMessage(string message)
+    protected SoapboxControllerBase WithStatusMessage(string message)
     {
         StatusMessage = message;
         return this;
     }
 
-    public SoapboxControllerBase WithErrorMessage(string message)
+    protected SoapboxControllerBase WithErrorMessage(string message)
     {
         ErrorMessage = message;
         return this;
     }
 
-    public SoapboxControllerBase WithViewData(string key, string value)
+    protected SoapboxControllerBase WithViewData(string key, string value)
     {
         ViewData[key] = value;
         return this;
     }
 
-    public BadRequestObjectResult SomethingWentWrong() => BadRequest("Something went wrong.");
+    protected BadRequestObjectResult SomethingWentWrong() => BadRequest("Something went wrong.");
 }

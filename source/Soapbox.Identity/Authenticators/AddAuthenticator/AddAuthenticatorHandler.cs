@@ -1,14 +1,15 @@
 namespace Soapbox.Identity.Authenticators.AddAuthenticator;
+
+using Alkaline64.Injectable;
+using Microsoft.AspNetCore.Http;
+using Soapbox.Domain.Results;
+using Soapbox.Domain.Users;
+using Soapbox.Identity.Custom;
 using System;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Alkaline64.Injectable;
-using Microsoft.AspNetCore.Http;
-using Soapbox.Domain.Results;
-using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
 
 [Injectable]
 public class AddAuthenticatorHandler

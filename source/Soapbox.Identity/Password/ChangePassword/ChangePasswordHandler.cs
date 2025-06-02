@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 
 [Injectable]
 public class ChangePasswordHandler

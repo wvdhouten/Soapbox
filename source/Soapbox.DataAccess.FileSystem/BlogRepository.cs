@@ -31,7 +31,7 @@ public class BlogRepository : IBlogRepository
         _userStore = userStore;
     }
 
-    public Task<IPagedList<Post>> GetPostsPageAsync(int page = 0, int pageSize = 25, bool isPublished = true)
+    public Task<IPagedList<Post>> GetPostsPageAsync(int page = 1, int pageSize = 25, bool isPublished = true)
     {
         var posts = Posts;
 
@@ -46,30 +46,20 @@ public class BlogRepository : IBlogRepository
         return Task.FromResult(posts.GetPaged(page, pageSize));
     }
 
-    public Task<IEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate)
-    {
-        return Task.FromResult(Posts.Where(predicate).AsEnumerable());
-    }
+    public Task<IEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate) 
+        => Task.FromResult(Posts.Where(predicate).AsEnumerable());
 
-    public Task<IEnumerable<Post>> GetPostsByCategoryAsync(long categoryId)
-    {
-        return Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).AsEnumerable());
-    }
+    public Task<IEnumerable<Post>> GetPostsByCategoryAsync(string categoryId) 
+        => Task.FromResult(Posts.Where(p => p.Categories.Any(c => c.Id == categoryId)).AsEnumerable());
 
-    public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId)
-    {
-        return Task.FromResult(Posts.Where(p => p.Author.Id == authorId).AsEnumerable());
-    }
+    public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId) 
+        => Task.FromResult(Posts.Where(p => p.Author.Id == authorId).AsEnumerable());
 
-    public Task<Post?> GetPostByIdAsync(string postId)
-    {
-        return Task.FromResult(Posts.FirstOrDefault(p => p.Id == postId));
-    }
+    public Task<Post?> GetPostByIdAsync(string postId) 
+        => Task.FromResult(Posts.FirstOrDefault(p => p.Id == postId));
 
-    public Task<Post?> GetPostBySlugAsync(string slug)
-    {
-        return Task.FromResult(Posts.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
-    }
+    public Task<Post?> GetPostBySlugAsync(string slug) 
+        => Task.FromResult(Posts.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)));
 
     public Task CreatePostAsync(Post post)
     {
@@ -98,7 +88,7 @@ public class BlogRepository : IBlogRepository
     public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false)
         => Task.FromResult(Categories.AsEnumerable());
 
-    public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false)
+    public Task<PostCategory?> GetCategoryByIdAsync(string categoryId, bool includePosts = false)
         => Task.FromResult(Categories.FirstOrDefault(category => category.Id == categoryId));
 
     public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false)
@@ -121,7 +111,7 @@ public class BlogRepository : IBlogRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteCategoryByIdAsync(long categoryId)
+    public Task DeleteCategoryByIdAsync(string categoryId)
     {
         throw new NotImplementedException();
     }

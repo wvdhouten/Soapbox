@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Soapbox.Domain.Email;
-using Soapbox.Identity.Shared;
+using Soapbox.Identity.EmailContent;
 using Xunit;
 
 public class RazorEmailRendererIntegrationTests

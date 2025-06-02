@@ -15,8 +15,8 @@ using YamlDotNet.Serialization;
 [Injectable<IBlogStore>(Lifetime.Singleton)]
 public partial class BlogStore : IBlogStore
 {
-    private static readonly ISerializer YamlSerializer = new SerializerBuilder().Build();
-    private static readonly IDeserializer YamlDeserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
+    private static readonly ISerializer _yamlSerializer = new SerializerBuilder().Build();
+    private static readonly IDeserializer _yamlDeserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
     private readonly string _contentPath = Path.Combine(Environment.CurrentDirectory, "Content");
     private IList<Post> _posts = [];
     private IList<PostCategory> _categories = [];
@@ -58,7 +58,7 @@ public partial class BlogStore : IBlogStore
 
             var contentBuilder = new StringBuilder();
             contentBuilder.AppendLine("---");
-            contentBuilder.Append(YamlSerializer.Serialize(frontmatter));
+            contentBuilder.Append(_yamlSerializer.Serialize(frontmatter));
             contentBuilder.AppendLine("---");
             contentBuilder.Append(post.Content);
 
@@ -74,7 +74,6 @@ public partial class BlogStore : IBlogStore
         {
             category.Posts.Add(post);
         }
-        post.Author.Posts.Add(post);
 
         return StorageResult.Fail;
     }
@@ -101,7 +100,6 @@ public partial class BlogStore : IBlogStore
         {
             category.Posts.Remove(post);
         }
-        post.Author.Posts.Remove(post);
 
         Posts.Remove(post);
 
@@ -115,7 +113,7 @@ public partial class BlogStore : IBlogStore
         var frontMatterRegex = FrontMatterRegex();
         var match = frontMatterRegex.Match(fileContent);
 
-        var frontMatter = YamlDeserializer.Deserialize<PostRecord>(match.Groups["frontMatter"].Value);
+        var frontMatter = _yamlDeserializer.Deserialize<PostRecord>(match.Groups["frontMatter"].Value);
         Post post = frontMatter;
         post.Content = fileContent[match.Length..];
 

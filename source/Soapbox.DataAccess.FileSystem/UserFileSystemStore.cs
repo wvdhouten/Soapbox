@@ -1,16 +1,17 @@
 namespace Soapbox.DataAccess.FileSystem;
 
+using Alkaline64.Injectable;
+using Microsoft.AspNetCore.Identity;
+using Soapbox.DataAccess.Abstractions;
+using Soapbox.DataAccess.FileSystem.Encryption;
+using Soapbox.DataAccess.FileSystem.Identity;
+using Soapbox.Domain.Users;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Alkaline64.Injectable;
-using Microsoft.AspNetCore.Identity;
-using Soapbox.DataAccess.Abstractions;
-using Soapbox.DataAccess.FileSystem.Identity;
-using Soapbox.Domain.Users;
 
 [Injectable<ITransactionalUserStore<SoapboxUser>>]
 public partial class UserFileSystemStore :
@@ -21,10 +22,14 @@ public partial class UserFileSystemStore :
     private readonly string _filePath = Path.Combine(Environment.CurrentDirectory, "Content", "Identity");
 
     private readonly MemoryStore _memoryStore;
+    private readonly EncryptedFileHandler _fileHandler;
 
-    public UserFileSystemStore(MemoryStore memoryStore)
+    public UserFileSystemStore(
+        MemoryStore memoryStore,
+        EncryptedFileHandler fileHandler)
     {
         _memoryStore = memoryStore;
+        _fileHandler = fileHandler;
     }
 
     public IQueryable<SoapboxUser> Users => _memoryStore.Users.Values.AsQueryable();
@@ -39,7 +44,7 @@ public partial class UserFileSystemStore :
         var files = Directory.GetFiles(_filePath, "*.sbu");
         foreach (var file in files)
         {
-            var json = await File.ReadAllTextAsync(file);
+            var json = await _fileHandler.ReadAllTextAsync(file);
             var user = JsonSerializer.Deserialize<UserRecord>(json);
 
             if (user is null)
@@ -140,12 +145,12 @@ public partial class UserFileSystemStore :
             RecoveryCodes = _memoryStore.RecoveryCodes.TryGetValue(user.Id, out var codes) ? codes : null
         });
 
-        await File.WriteAllTextAsync(Path.Combine(_filePath, $"{user.Id}.user"), json);
+        await _fileHandler.WriteAllTextAsync(Path.Combine(_filePath, $"{user.Id}.sbu"), json);
     }
 
     private Task DestroyUserAsync(SoapboxUser user)
     {
-        File.Delete(Path.Combine(_filePath, $"{user.Id}.user"));
+        File.Delete(Path.Combine(_filePath, $"{user.Id}.sbu"));
 
         return Task.CompletedTask;
     }

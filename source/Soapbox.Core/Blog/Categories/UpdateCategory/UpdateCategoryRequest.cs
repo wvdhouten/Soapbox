@@ -12,6 +12,6 @@ public class UpdateCategoryRequest
     public static UpdateCategoryRequest FromCategory(PostCategory category) =>
         new() {
             Category = category,
-            GenerateSlugFromName = category.Slug == Slugifier.Sluggify(category.Name)
+            GenerateSlugFromName = category.Slug == Slugifier.Slugify(category.Name)
         };
 }

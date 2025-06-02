@@ -42,7 +42,7 @@ public class CategoriesController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit([FromServices] GetCategoryHandler handler, long id)
+    public async Task<IActionResult> Edit([FromServices] GetCategoryHandler handler, string id)
     {
         var result = await handler.GetCategoryByIdAsync(id);
         return result switch
@@ -65,7 +65,7 @@ public class CategoriesController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete([FromServices] DeleteCategoryHandler handler, long id)
+    public async Task<IActionResult> Delete([FromServices] DeleteCategoryHandler handler, string id)
     {
         var result = await handler.DeleteCategoryByIdAsync(id);
         return result switch

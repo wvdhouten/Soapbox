@@ -1,9 +1,10 @@
 namespace Soapbox.Web.Controllers;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Soapbox.Web.Controllers.Base;
 
 [Route(".well-known")]
-public class ActivityPubController : Controller
+public class ActivityPubController : SoapboxControllerBase
 {
     [Produces("application/jrd+json")]
     [HttpGet("webfinger")]

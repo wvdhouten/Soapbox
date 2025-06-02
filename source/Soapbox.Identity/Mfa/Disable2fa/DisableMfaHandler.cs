@@ -1,10 +1,11 @@
 namespace Soapbox.Identity.Mfa.Disable2fa;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 
 [Injectable]
 public class DisableMfaHandler

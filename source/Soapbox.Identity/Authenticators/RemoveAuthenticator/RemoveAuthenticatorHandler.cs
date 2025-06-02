@@ -1,11 +1,12 @@
 namespace Soapbox.Identity.Authenticators.RemoveAuthenticator;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using System.Threading.Tasks;
 
 [Injectable]
 public class RemoveAuthenticatorHandler

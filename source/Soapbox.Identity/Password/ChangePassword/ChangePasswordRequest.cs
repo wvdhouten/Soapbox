@@ -1,7 +1,7 @@
 namespace Soapbox.Identity.Password.ChangePassword;
 
-using System.ComponentModel.DataAnnotations;
 using Soapbox.Identity.Password.GetPasswordStatus;
+using System.ComponentModel.DataAnnotations;
 
 public record ChangePasswordRequest : PasswordStatus
 {

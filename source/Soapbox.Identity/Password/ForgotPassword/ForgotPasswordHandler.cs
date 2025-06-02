@@ -1,14 +1,16 @@
-namespace Soapbox.Identity.Authentication.ForgotPassword;
-using System.Text;
-using System.Threading.Tasks;
+namespace Soapbox.Identity.Password.ForgotPassword;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Soapbox.Domain.Email;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
-using Soapbox.Identity.Shared;
+using Soapbox.Identity.Custom;
+using Soapbox.Identity.EmailContent;
+using Soapbox.Identity.Helpers;
+using System.Text;
+using System.Threading.Tasks;
 
 [Injectable]
 public class ForgotPasswordHandler

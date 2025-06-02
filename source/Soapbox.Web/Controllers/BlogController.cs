@@ -6,18 +6,20 @@ using Soapbox.Application.Blog.Archive.GetPostArchive;
 using Soapbox.Application.Blog.Authors;
 using Soapbox.Application.Blog.Categories.GetCategory;
 using Soapbox.Application.Blog.Categories.ListCategories;
-using Soapbox.Application.Blog.Posts;
+using Soapbox.Application.Blog.Posts.Get;
+using Soapbox.Application.Blog.Posts.List;
 using Soapbox.Domain.Results;
+using Soapbox.Web.Controllers.Base;
 
 [Route("[controller]")]
-public class BlogController : Controller
+public class BlogController : SoapboxControllerBase
 {
     private const string PostViewName = "_Post";
 
     [HttpGet("{page:int=1}")]
-    public async Task<IActionResult> Index([FromServices] GetPostsPageHandler handler, [FromRoute] int page = 1, [FromQuery] int pageSize = 5)
+    public async Task<IActionResult> Index([FromServices] ListPostsHandler handler, [FromRoute] int page = 1, [FromQuery] int pageSize = 5)
     {
-        var result = await handler.GetPostsAsync(page, pageSize);
+        var result = await handler.GetPostsPage(page, pageSize);
         return result.IsSuccess switch
         {
             false => BadRequest("Unable to process request."),
@@ -71,7 +73,7 @@ public class BlogController : Controller
     [HttpGet("categories")]
     public async Task<IActionResult> Categories([FromServices] ListCategoriesHandler handler)
     {
-        var result = await handler.GetAllCategoriesAsync();
+        var result = await handler.GetAllCategoriesAsync(true);
         return result.IsSuccess switch
         {
             false => BadRequest("Unable to process request."),

@@ -16,9 +16,9 @@ public class ListCategoriesHandler
         _blogRepository = blogRepository;
     }
 
-    public async Task<Result<IEnumerable<PostCategory>>> GetAllCategoriesAsync()
+    public async Task<Result<IEnumerable<PostCategory>>> GetAllCategoriesAsync(bool includePosts = false)
     {
-        var categories = await _blogRepository.GetAllCategoriesAsync(true);
+        var categories = await _blogRepository.GetAllCategoriesAsync(includePosts);
 
         return Result.Success(categories);
     }

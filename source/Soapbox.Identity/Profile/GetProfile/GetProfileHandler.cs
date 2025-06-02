@@ -1,12 +1,13 @@
 namespace Soapbox.Identity.Profile.GetProfile;
-using System.Security.Claims;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 using Soapbox.Identity.Profile;
+using System.Security.Claims;
 
 [Injectable]
 public class GetProfileHandler

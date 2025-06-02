@@ -15,7 +15,7 @@ public class GetCategoryHandler
         _blogService = blogService;
     }
 
-    public async Task<Result<PostCategory>> GetCategoryByIdAsync(long id)
+    public async Task<Result<PostCategory>> GetCategoryByIdAsync(string id)
     {
         var category = await _blogService.GetCategoryByIdAsync(id);
         if (category is null)

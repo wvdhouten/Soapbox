@@ -1,8 +1,9 @@
 @using Soapbox.Application
 @using Soapbox.Application.Constants
-@model Soapbox.Web.Areas.Admin.Models.Posts.PostViewModel
+@model Soapbox.Application.Blog.Posts.Edit.EditPostRequest
 @{
   ViewData[ViewConstants.PageTitle] = "Edit post";
+  var categories = (IEnumerable<PostCategory>?)ViewData["Categories"] ?? [];
 }
 
 <style>
@@ -39,21 +40,17 @@
     <div class="form-group horizontal">
       <label asp-for="Post.Categories"></label>
       <div class="input-container">
-        @if (Model.AllCategories.Any()) {
-        <div class="pillbox">
-          @for (int i = 0; i < Model.AllCategories.Count; i++)
+        <div class="pillbox" condition="categories.Any()">
+          @foreach (var category in categories)
           {
             <div class="pill">
               <span>
-                <input asp-for="AllCategories[i].Item.Id" type="hidden" />
-                <input asp-for="AllCategories[i].Item.Name" type="hidden" />
-                <input asp-for="AllCategories[i].Selected" type="checkbox" />
+                <input asp-for="@Model.SelectedCategories" value="@category.Id" type="checkbox" />
               </span>
-              <span><label asp-for="AllCategories[i].Selected">@Model.AllCategories[i].Item.Name</label></span>
+              <span><label>@category.Name</label></span>
             </div>
           }
         </div>
-        }
         <div class="input-group">
           <input asp-for="NewCategory" />
           <button type="submit" name="action" value="AddCategory"><i class="fa fa-plus"></i></button>

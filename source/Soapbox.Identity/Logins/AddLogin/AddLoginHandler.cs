@@ -1,5 +1,5 @@
 namespace Soapbox.Identity.Logins.AddLogin;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
+using Soapbox.Identity.Custom;
+using Soapbox.Identity.Helpers;
 using Soapbox.Identity.Logins.GetExternalLogins;
-using Soapbox.Identity.Managers;
-using Soapbox.Identity.Shared;
+using System.Threading.Tasks;
 
 [Injectable]
 public class AddLoginHandler : GetExternalLoginsHandler

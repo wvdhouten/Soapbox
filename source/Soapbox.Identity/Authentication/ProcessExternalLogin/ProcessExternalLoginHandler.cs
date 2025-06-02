@@ -1,4 +1,5 @@
 namespace Soapbox.Identity.Authentication.ProcessExternalLogin;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

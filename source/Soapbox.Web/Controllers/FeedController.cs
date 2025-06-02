@@ -2,8 +2,9 @@ namespace Soapbox.Web.Controllers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Application.Syndication;
+using Soapbox.Web.Controllers.Base;
 
-public class FeedController : Controller
+public class FeedController : SoapboxControllerBase
 {
     [Produces("application/rss+xml")]
     public async Task Rss([FromServices] GenerateFeedHandler handler)

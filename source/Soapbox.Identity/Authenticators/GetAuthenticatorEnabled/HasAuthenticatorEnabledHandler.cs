@@ -1,9 +1,10 @@
 namespace Soapbox.Identity.Authenticators.GetAuthenticatorEnabled;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 
 [Injectable]
 public class HasAuthenticatorEnabledHandler

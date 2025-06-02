@@ -1,10 +1,11 @@
-namespace Soapbox.Identity.Authentication.ResetPassword;
-using System.Text;
+namespace Soapbox.Identity.Password.ResetPassword;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.WebUtilities;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using System.Text;
 
 [Injectable]
 public class ResetPasswordHandler

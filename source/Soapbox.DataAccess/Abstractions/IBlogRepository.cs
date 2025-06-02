@@ -14,7 +14,7 @@ public interface IBlogRepository
 
     public Task<IEnumerable<Post>> GetPostsAsync(Expression<Func<Post, bool>> predicate);
 
-    public Task<IEnumerable<Post>> GetPostsByCategoryAsync(long categoryId);
+    public Task<IEnumerable<Post>> GetPostsByCategoryAsync(string categoryId);
 
     public Task<IEnumerable<Post>> GetPostsByAuthorAsync(string authorId);
 
@@ -32,7 +32,7 @@ public interface IBlogRepository
 
     public Task<IEnumerable<PostCategory>> GetAllCategoriesAsync(bool includePosts = false);
 
-    public Task<PostCategory?> GetCategoryByIdAsync(long categoryId, bool includePosts = false);
+    public Task<PostCategory?> GetCategoryByIdAsync(string categoryId, bool includePosts = false);
 
     public Task<PostCategory?> GetCategoryBySlugAsync(string slug, bool includePosts = false);
 
@@ -40,7 +40,7 @@ public interface IBlogRepository
 
     public Task UpdateCategoryAsync(PostCategory category);
 
-    public Task DeleteCategoryByIdAsync(long categoryId);
+    public Task DeleteCategoryByIdAsync(string categoryId);
 
     public Task<SoapboxUser?> GetAuthorByIdAsync(string authorId);
 }

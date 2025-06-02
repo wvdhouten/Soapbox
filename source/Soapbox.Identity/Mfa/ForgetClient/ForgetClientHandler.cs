@@ -1,11 +1,12 @@
 namespace Soapbox.Identity.Mfa.ForgetClient;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
 
 [Injectable]
 public class ForgetClientHandler

@@ -1,4 +1,4 @@
-namespace Soapbox.Identity.Authentication.ResetPassword;
+namespace Soapbox.Identity.Password.ResetPassword;
 
 using System.ComponentModel.DataAnnotations;
 

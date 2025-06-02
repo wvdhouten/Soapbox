@@ -1,8 +1,8 @@
-namespace Soapbox.Identity.Shared;
+namespace Soapbox.Identity.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
-internal static class Extensions
+internal static class HelperExtensions
 {
     internal static string Action(this IUrlHelper urlHelper, string controller, string action, object? values = null)
     {

@@ -1,4 +1,4 @@
-namespace Soapbox.Identity.Shared;
+namespace Soapbox.Identity.EmailContent;
 
 public class ResetPassword
 {

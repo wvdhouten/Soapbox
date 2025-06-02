@@ -1,11 +1,12 @@
 namespace Soapbox.Identity.Profile.GetPersonalData;
-using System.Security.Claims;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using System.Security.Claims;
 
 [Injectable]
 public class GetPersonalDataHandler

@@ -1,14 +1,17 @@
 ﻿namespace Soapbox.Application.Media.DeleteFile;
+
+using Alkaline64.Injectable;
 using Soapbox.Application.Media.Shared;
 using Soapbox.Domain.Results;
 
-public class DeleteFileHandler : MediaHandler
+[Injectable]
+public class DeleteFileHandler
 {
     public Result DeleteFile(string name)
     {
         try
         {
-            var filePath = Path.Combine(MediaPath, name);
+            var filePath = Path.Combine(MediaInfo.FilesPath, name);
             if (File.Exists(filePath))
                 File.Delete(filePath);
 

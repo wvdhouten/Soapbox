@@ -13,7 +13,7 @@ public class DeleteCategoryHandler
         _blogRepository = blogRepository;
     }
 
-    public async Task<Result> DeleteCategoryByIdAsync(long id)
+    public async Task<Result> DeleteCategoryByIdAsync(string id)
     {
         try
         {

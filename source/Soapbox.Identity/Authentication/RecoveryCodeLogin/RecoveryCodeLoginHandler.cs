@@ -1,10 +1,11 @@
 namespace Soapbox.Identity.Authentication.RecoveryCodeLogin;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
 using Soapbox.Identity.Authentication.Login;
+using System.Threading.Tasks;
 
 [Injectable]
 public class RecoveryCodeLoginHandler

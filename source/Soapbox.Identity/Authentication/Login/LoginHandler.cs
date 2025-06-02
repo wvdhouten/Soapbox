@@ -1,11 +1,12 @@
 namespace Soapbox.Identity.Authentication.Login;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
 using Soapbox.Identity.Logins.GetExternalLogins;
+using System.Threading.Tasks;
 
 [Injectable]
 public class LoginHandler : GetExternalLoginsHandler
@@ -27,6 +28,7 @@ public class LoginHandler : GetExternalLoginsHandler
         return result switch
         {
             { Succeeded: true } => Result.Success(),
+            { IsNotAllowed: true } => Error.Other(LoginRequest.Unconfirmed, "User account is not confirmed."),
             { RequiresTwoFactor: true } => Error.Other(LoginRequest.RequiresTwoFactor, "Two-factor authentication is required."),
             { IsLockedOut: true } => Error.Other(LoginRequest.LockedOut, "User account is locked out."),
             _ => Result.Failure(Error.ValidationError("Invalid login attempt.", new() { { string.Empty, "Invalid login attempt." } }))

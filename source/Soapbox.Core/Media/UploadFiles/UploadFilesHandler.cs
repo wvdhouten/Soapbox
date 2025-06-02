@@ -1,9 +1,12 @@
 ﻿namespace Soapbox.Application.Media.UploadFiles;
+
+using Alkaline64.Injectable;
 using Soapbox.Application.Media.Shared;
 using Soapbox.Domain.Results;
 using System.IO;
 
-public class UploadFilesHandler : MediaHandler
+[Injectable]
+public class UploadFilesHandler
 {
     public Result UploadFiles(UploadFilesRequest request)
     {
@@ -25,7 +28,7 @@ public class UploadFilesHandler : MediaHandler
     {
         try
         {
-            var filePath = Path.Combine(MediaPath, name);
+            var filePath = Path.Combine(MediaInfo.FilesPath, name);
             using var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
             stream.CopyTo(fileStream);
             fileStream.Flush();

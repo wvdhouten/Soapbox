@@ -17,7 +17,7 @@ public class CreateCategoryHandler
     public async Task<Result> CreateCategoryAsync(CreateCategoryRequest request)
     {
         if (request.GenerateSlugFromName || string.IsNullOrWhiteSpace(request.Category.Slug))
-            request.Category.Slug = Slugifier.Sluggify(request.Category.Name);
+            request.Category.Slug = Slugifier.Slugify(request.Category.Name);
 
         await _blogRepository.CreateCategoryAsync(request.Category);
 

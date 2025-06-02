@@ -1,6 +1,6 @@
-namespace Soapbox.Web.Areas.Admin.Models.Shared;
+namespace Soapbox.Application.Common.SelectableItems;
 
-public class SelectableItemViewModel<TItem>
+public class SelectableItem<TItem>
 {
     public bool Selected { get; set; }
 

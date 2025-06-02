@@ -3,11 +3,13 @@ namespace Soapbox.Identity.Authentication.Login;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authentication;
+using Soapbox.Domain.Results;
 
 public class LoginRequest
 {
     public const string RequiresTwoFactor = nameof(RequiresTwoFactor);
     public const string LockedOut = nameof(LockedOut);
+    public const string Unconfirmed = nameof(Unconfirmed);
 
     public IList<AuthenticationScheme> ExternalLogins { get; set; } = [];
 

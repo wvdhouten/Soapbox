@@ -1,4 +1,5 @@
 namespace Soapbox.Identity.Deletion.DeleteAccount;
+
 using System.ComponentModel.DataAnnotations;
 
 public class DeleteAccountRequest

@@ -1,15 +1,12 @@
-namespace Soapbox.Web.Areas.Admin.Models.Posts;
+﻿namespace Soapbox.Application.Blog.Posts.Create;
 
+using Soapbox.Domain.Blog;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Soapbox.Domain.Blog;
-using Soapbox.Web.Areas.Admin.Models.Shared;
 
-public class PostViewModel
+public class CreatePostRequest
 {
-    public Post Post { get; set; } = default!;
-
-    public IList<SelectableItemViewModel<PostCategory>> AllCategories { get; set; } = [];
+    public Post Post { get; set; } = new();
 
     [Display(Name = "Update from title")]
     public bool UpdateSlugFromTitle { get; set; } = true;
@@ -19,6 +16,8 @@ public class PostViewModel
 
     [Display(Name = "Update")]
     public bool UpdatePublishedOn { get; set; } = true;
+
+    public IEnumerable<string> SelectedCategories { get; set; } = [];
 
     public string? NewCategory { get; set; }
 }

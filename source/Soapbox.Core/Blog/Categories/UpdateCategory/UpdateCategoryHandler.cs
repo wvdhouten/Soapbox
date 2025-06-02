@@ -15,7 +15,7 @@ public class UpdateCategoryHandler
     public async Task<Result> UpdateCategoryAsync(UpdateCategoryRequest request)
     {
         if (request.GenerateSlugFromName || string.IsNullOrWhiteSpace(request.Category.Slug))
-            request.Category.Slug = Slugifier.Sluggify(request.Category.Name);
+            request.Category.Slug = Slugifier.Slugify(request.Category.Name);
 
         await _blogRepository.UpdateCategoryAsync(request.Category);
 

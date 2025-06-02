@@ -4,12 +4,16 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Soapbox.Application.Extensions;
+using Soapbox.Application.Blog.Categories.ListCategories;
+using Soapbox.Application.Blog.Posts.Create;
+using Soapbox.Application.Blog.Posts.Delete;
+using Soapbox.Application.Blog.Posts.Edit;
+using Soapbox.Application.Blog.Posts.Get;
+using Soapbox.Application.Blog.Posts.List;
+using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
-using Soapbox.Domain.Blog;
+using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Web.Areas.Admin.Models.Posts;
-using Soapbox.Web.Areas.Admin.Models.Shared;
 using Soapbox.Web.Attributes;
 using Soapbox.Web.Controllers.Base;
 using Soapbox.Web.Helpers;
@@ -26,167 +30,117 @@ public class PostsController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 25)
+    public async Task<IActionResult> Index([FromServices] ListPostsHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
-        var model = await _blogService.GetPostsPageAsync(page, pageSize, false);
-
-        return View(model);
+        var result = await handler.GetPostsPage(page, pageSize, false);
+        return result switch
+        {
+            { IsSuccess: true } => View(result.Value),
+            _ => SomethingWentWrong()
+        };
     }
 
     [HttpGet]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create([FromServices] ListCategoriesHandler handler)
     {
-        var categories = await _blogService.GetAllCategoriesAsync();
-        var model = new PostViewModel
-        {
-            Post = new Post(),
-            AllCategories = [.. categories.Select(c => new SelectableItemViewModel<PostCategory> { Item = c })],
-            UpdateSlugFromTitle = true
-        };
+        var result = await handler.GetAllCategoriesAsync(false);
+        if (result.IsFailure)
+            return SomethingWentWrong();
 
-        return View(model);
+        ViewData.Add("Categories", result.Value);
+        return View(new CreatePostRequest());
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] PostViewModel model, string action)
+    public async Task<IActionResult> Create([FromServices] CreatePostHandler handler, [FromServices] ListCategoriesHandler categoriesHandler, [FromForm] CreatePostRequest request, string action)
     {
-        if (action == nameof(AddCategory))
-        {
-            return AddCategory(model);
-        }
+        var categoriesResult = await categoriesHandler.GetAllCategoriesAsync(false);
+        if (categoriesResult.IsFailure)
+            return SomethingWentWrong();
+
+        //if (action == "AddCategory")
+        //    return AddCategory(model);
+
+        ViewData.Add("Categories", categoriesResult.Value);
 
         if (!ModelState.IsValid)
+            return View(request);
+
+        var result = await handler.CreatePost(request);
+        return result switch
         {
-            return View(model);
-        }
-
-        model.Post.Author = new SoapboxUser { Id = User.GetUserId() };
-        var now = DateTime.UtcNow;
-        model.Post.ModifiedOn = model.UpdateModifiedOn ? now : model.Post.ModifiedOn;
-        model.Post.PublishedOn = model.UpdatePublishedOn ? now : model.Post.PublishedOn;
-        model.Post.Slug = model.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(model.Post.Slug) ? CreateSlug(model.Post.Title) : model.Post.Slug;
-        SetSelectedCategories(model);
-
-        await _blogService.CreatePostAsync(model.Post);
-
-        StatusMessage = "Post created successfully.";
-
-        return RedirectToAction(nameof(Index));
+            { IsSuccess: true } => WithStatusMessage("Post created successfully.").RedirectToAction(nameof(Index)),
+            _ => SomethingWentWrong()
+        };
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit(string id)
+    public async Task<IActionResult> Edit([FromServices] GetPostByIdHandler handler, [FromServices] ListCategoriesHandler categoriesHandler, string id)
     {
-        var post = await _blogService.GetPostByIdAsync(id) ?? throw new Exception("Not Found");
-
-        var model = new PostViewModel
+        var result = await handler.GetPostAsync(id);
+        switch (result)
         {
-            Post = post,
-            UpdateSlugFromTitle = post.Slug == CreateSlug(post.Title),
-            UpdatePublishedOn = post.Status == PostStatus.Draft && post.ModifiedOn == post.PublishedOn,
-            UpdateModifiedOn = post.Status == PostStatus.Draft && post.ModifiedOn == post.PublishedOn,
-            AllCategories = [.. (await _blogService.GetAllCategoriesAsync()).Select(category =>
+            case { IsFailure: true, Error.Code: ErrorCode.NotFound }:
+                return NotFound(result.Error.Message);
+            case { IsSuccess: true, Value: var post }:
+                var categoriesResult = await categoriesHandler.GetAllCategoriesAsync(false);
+                if (categoriesResult.IsSuccess)
+                    ViewData.Add("Categories", result.Value);
+
+                return categoriesResult switch
                 {
-                    return new SelectableItemViewModel<PostCategory> { Item = category, Selected = post.Categories.Any(c => category.Id == c.Id) };
-                })]
-        };
-
-        return View(model);
+                    { IsSuccess: true } => View(new EditPostRequest { Post = post }),
+                    _ => SomethingWentWrong()
+                };
+            default:
+                return SomethingWentWrong();
+        }
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromForm] PostViewModel model, string action)
+    public async Task<IActionResult> Edit([FromServices] EditPostHandler handler, [FromServices] ListCategoriesHandler categoriesHandler, [FromForm] EditPostRequest request, string action)
     {
-        if (action == nameof(AddCategory))
-        {
-            return AddCategory(model);
-        }
+        var categoriesResult = await categoriesHandler.GetAllCategoriesAsync(false);
+        if (categoriesResult.IsFailure)
+            return SomethingWentWrong();
+
+        //if (action == "AddCategory")
+        //    return AddCategory(model);
+
+        ViewData.Add("Categories", categoriesResult.Value);
 
         if (!ModelState.IsValid)
+            return View(request);
+
+        var result = await handler.UpdatePost(request);
+        return result switch
         {
-            return View(model);
-        }
-
-        var now = DateTime.UtcNow;
-        model.Post.ModifiedOn = model.UpdateModifiedOn ? now : model.Post.ModifiedOn;
-        model.Post.PublishedOn = model.UpdatePublishedOn ? now : model.Post.PublishedOn;
-        model.Post.Slug = model.UpdateSlugFromTitle || string.IsNullOrWhiteSpace(model.Post.Slug) ? CreateSlug(model.Post.Title) : model.Post.Slug;
-        SetSelectedCategories(model);
-
-        await _blogService.UpdatePostAsync(model.Post);
-
-        StatusMessage = "Post updated successfully.";
-
-        return RedirectToAction(nameof(Edit), new { id = model.Post.Id });
+            { IsSuccess: true } => WithStatusMessage("Post updated successfully.").RedirectToAction(nameof(Edit), new { id = request.Post.Id }),
+            _ => SomethingWentWrong()
+        };
     }
 
-    [HttpGet, ActionName(nameof(Delete))]
-    public async Task<IActionResult> ConfirmDelete(string id)
+    [HttpGet]
+    public async Task<IActionResult> Delete([FromServices] GetPostByIdHandler handler, [FromQuery] string id)
     {
-        var model = await _blogService.GetPostByIdAsync(id);
-
-        return View(nameof(Delete), model);
+        var result = await handler.GetPostAsync(id);
+        return result switch
+        {
+            { IsSuccess: true } => View(result.Value),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound(result.Error.Message),
+            _ => SomethingWentWrong()
+        };
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete([FromServices] DeletePostHandler handler, string id)
     {
-        try
+        var result = await handler.DeletePostAsync(id);
+        return result switch
         {
-            await _blogService.DeletePostByIdAsync(id);
-
-            StatusMessage = "Post deleted successfully.";
-        }
-        catch
-        {
-            ErrorMessage = " Failed to delete post.";
-        }
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    private ViewResult AddCategory(PostViewModel model)
-    {
-        ModelState.ClearValidationState(string.Empty);
-        if (string.IsNullOrWhiteSpace(model.NewCategory))
-        {
-            ModelState.AddModelError(nameof(model.NewCategory), "To add a category you must enter some text in the box next to the 'Add' button before clicking 'Add'");
-            return View(model);
-        }
-
-        var newCategory = new SelectableItemViewModel<PostCategory> { Item = new PostCategory { Name = model.NewCategory.Trim() }, Selected = true };
-        if (model.AllCategories.Any(c => c.Item.Name == newCategory.Item.Name))
-        {
-            ModelState.AddModelError(nameof(model.NewCategory), $"The category '{model.NewCategory}' already exists");
-        }
-        else
-        {
-            model.AllCategories.Add(newCategory);
-            model.NewCategory = string.Empty;
-            ModelState.Remove(nameof(model.NewCategory));
-        }
-
-        return View(model);
-    }
-
-    private static void SetSelectedCategories(PostViewModel model)
-    {
-        foreach (var category in model.AllCategories.Where(c => c.Selected))
-        {
-            if (category.Item.Id == default)
-            {
-                category.Item.Slug = CreateSlug(category.Item.Name);
-            }
-            model.Post.Categories.Add(category.Item);
-        }
-    }
-
-    private static string CreateSlug(string title)
-    {
-        title = title?.Trim().ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
-        title = title.RemoveDiacritics();
-        title = title.RemoveReservedUrlCharacters();
-
-        return title.ToLowerInvariant();
+            { IsSuccess: true } => WithStatusMessage("Post deleted successfully.").RedirectToAction(nameof(Index)),
+            { IsFailure: true, Error.Code: ErrorCode.Unknown } => WithErrorMessage("Failed to delete post.").RedirectToAction(nameof(Index)),
+            _ => SomethingWentWrong()
+        };
     }
 }

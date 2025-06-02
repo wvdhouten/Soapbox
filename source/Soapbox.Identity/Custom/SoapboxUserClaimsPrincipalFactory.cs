@@ -1,4 +1,4 @@
-namespace Soapbox.Identity;
+namespace Soapbox.Identity.Custom;
 
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -6,7 +6,6 @@ using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
 
 /// <summary>
 /// Provides functionality to create a claims principal for a given soapbox user.

@@ -1,8 +1,9 @@
 namespace Soapbox.Identity.Authentication.Logout;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Soapbox.Domain.Users;
+using System.Threading.Tasks;
 
 [Injectable]
 public class LogoutHandler

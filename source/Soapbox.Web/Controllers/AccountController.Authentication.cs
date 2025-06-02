@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soapbox.Web.Controllers.Base;
 using Soapbox.Domain.Results;
-using Soapbox.Identity.Authentication.ForgotPassword;
 using Soapbox.Identity.Authentication.Login;
 using Soapbox.Identity.Authentication.Logout;
-using Soapbox.Identity.Authentication.ResetPassword;
 using Soapbox.Identity.Authentication.MfaLogin;
 using Soapbox.Identity.Authentication.RecoveryCodeLogin;
 using Soapbox.Identity.Authentication.ExternalLoginRegistration;
 using Soapbox.Identity.Authentication.InitiateExternalLogin;
 using Soapbox.Identity.Authentication.ProcessExternalLogin;
 using Soapbox.Application.Constants;
+using Soapbox.Identity.Password.ForgotPassword;
+using Soapbox.Identity.Password.ResetPassword;
 
 public partial class AccountController
 {

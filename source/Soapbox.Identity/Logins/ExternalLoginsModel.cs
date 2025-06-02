@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
+// TODO: Review
 public class ExternalLoginsModel
 {
     public IList<UserLoginInfo> CurrentLogins { get; set; } = [];

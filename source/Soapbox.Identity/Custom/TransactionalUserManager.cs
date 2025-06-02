@@ -1,13 +1,14 @@
-namespace Soapbox.Identity.Managers;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+namespace Soapbox.Identity.Custom;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Results;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 [Injectable]
 public class TransactionalUserManager<TUser> : UserManager<TUser> where TUser : class

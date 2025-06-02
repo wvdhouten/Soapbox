@@ -1,17 +1,17 @@
 ﻿namespace Soapbox.Identity.Users.CreateUser;
 
+using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Soapbox.Domain.Common;
 using Soapbox.Domain.Email;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
-using Soapbox.Identity.Shared;
-using System;
-using System.Reflection;
+using Soapbox.Identity.Custom;
+using Soapbox.Identity.EmailContent;
+using Soapbox.Identity.Helpers;
 using System.Text;
 
+[Injectable]
 public class CreateUserHandler
 {
     private readonly TransactionalUserManager<SoapboxUser> _userManager;

@@ -5,7 +5,7 @@ using System;
 
 public class Slugifier
 {
-    public static string Sluggify(string input)
+    public static string Slugify(string input)
     {
         input = input?.Trim().ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase) ?? string.Empty;
         input = input.RemoveDiacritics();

@@ -1,9 +1,10 @@
 namespace Soapbox.Identity.Registration.ConfirmRegistration;
-using System.Threading.Tasks;
+
 using Alkaline64.Injectable;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using System.Threading.Tasks;
 
 [Injectable]
 public class UserExistsHandler

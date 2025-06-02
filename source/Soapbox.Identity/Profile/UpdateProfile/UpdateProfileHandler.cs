@@ -1,5 +1,5 @@
 namespace Soapbox.Identity.Profile.UpdateProfile;
-using System.Text;
+
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -9,9 +9,11 @@ using Microsoft.Extensions.Logging;
 using Soapbox.Domain.Email;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
-using Soapbox.Identity.Managers;
+using Soapbox.Identity.Custom;
+using Soapbox.Identity.EmailContent;
+using Soapbox.Identity.Helpers;
 using Soapbox.Identity.Profile;
-using Soapbox.Identity.Shared;
+using System.Text;
 
 [Injectable]
 public class UpdateProfileHandler

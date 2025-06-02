@@ -1,11 +1,13 @@
 namespace Soapbox.Web.Controllers;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Soapbox.Application.Rsd;
+using Soapbox.Web.Controllers.Base;
+using System.Threading.Tasks;
 
 [Route("[controller]")]
-public class RobotsController : Controller
+public class RobotsController : SoapboxControllerBase
 {
     [Route("/robots.txt")]
     public IActionResult Index()
