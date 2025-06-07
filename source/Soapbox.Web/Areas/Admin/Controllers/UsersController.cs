@@ -79,6 +79,20 @@ public class UsersController : SoapboxControllerBase
         };
     }
 
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> Delete([FromServices] GetUserHandler handler, string id)
+    {
+        // TODO! Implement a confirmation view for deletion.
+
+        var result = await handler.GetUserById(id);
+        return result switch
+        {
+            { IsSuccess: true, Value: SoapboxUser user } => View(),
+            { IsFailure: true, Error.Code: ErrorCode.NotFound } => NotFound("User not found."),
+            _ => BadRequest("Something went wrong.")
+        };
+    }
+
     [HttpPost]
     public async Task<IActionResult> Delete([FromServices] DeleteUserHandler handler, [FromBody]string id)
     {

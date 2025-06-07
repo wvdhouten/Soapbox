@@ -6,34 +6,29 @@
   ViewData[ViewConstants.PageTitle] = "Create user";
 }
 
-<div class="container">
+<div class="container content">
   <header>
     <h1>Create user</h1>
   </header>
-
-  <form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-field">
+  <form method="post" autocomplete="off">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group horizontal">
       <label asp-for="@Model.Username"></label>
       <input asp-for="@Model.Username" />
-      <span asp-validation-for="@Model.Username" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Email"></label>
       <input asp-for="@Model.Email" />
-      <span asp-validation-for="@Model.Email" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.DisplayName"></label>
       <input asp-for="@Model.DisplayName" />
-      <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Role"></label>
       <select asp-for="@Model.Role" asp-items="Html.GetEnumSelectList<UserRole>()">
         <option value="" selected>Please select</option>
       </select>
-      <span asp-validation-for="@Model.Role" class="text-danger"></span>
     </div>
     <div class="button-group">
       <button type="submit">Create</button>

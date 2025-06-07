@@ -1,5 +1,5 @@
 @using Soapbox.Domain.Common
-@model IPagedList<Post>
+@model IPagingData
 @{
   var pageOlder = Model.Page + 1;
   var pageNewer = Model.Page - 1;

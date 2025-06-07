@@ -59,15 +59,17 @@ public class GetErrorDetailsHandler
     private GenericErrorDetails GetGenericErrorDetails()
     {
         var httpContext = _httpContextAccessor.HttpContext!;
-        var feature = httpContext.Features.Get<IExceptionHandlerPathFeature>()!;
+        var feature = httpContext.Features.Get<IExceptionHandlerPathFeature>();
 
         var model = new GenericErrorDetails(Activity.Current?.Id ?? httpContext.TraceIdentifier);
-        if (feature.Error is InvalidOperationException)
+        if (feature != null && feature.Error is InvalidOperationException)
+        {
             model.Message = feature.Error.Message;
 
-        // TODO: Add custom message for other Exceptions?
+            // TODO: Add custom message for other Exceptions?
 
-        _logger.LogError("Uncaught error occurred: {Error}.", feature.Error.Message);
+            _logger.LogError("Uncaught error occurred: {Error}.", feature.Error.Message);
+        }
 
         return model;
     }

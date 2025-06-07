@@ -1,10 +1,12 @@
 ﻿namespace Soapbox.Application.Blog.Categories.CreateCategory;
 
+using Alkaline64.Injectable;
 using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Results;
 using System.Threading.Tasks;
 
+[Injectable]
 public class CreateCategoryHandler
 {
     private readonly IBlogRepository _blogRepository;

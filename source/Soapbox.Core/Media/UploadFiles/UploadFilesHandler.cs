@@ -1,7 +1,7 @@
 ﻿namespace Soapbox.Application.Media.UploadFiles;
 
 using Alkaline64.Injectable;
-using Soapbox.Application.Media.Shared;
+using Soapbox.Application.Media;
 using Soapbox.Domain.Results;
 using System.IO;
 

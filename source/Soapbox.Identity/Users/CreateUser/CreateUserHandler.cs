@@ -42,8 +42,6 @@ public class CreateUserHandler
         if (!result.Succeeded)
             return Error.ValidationError("User creation failed", result.Errors.ToDictionary(e => e.Code, e => e.Description));
 
-        //_logger.LogInformation("New user created without password.");
-
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         var callbackUrl = _urlHelper.Action("Account", "ResetPassword", new { area = string.Empty, code })!;

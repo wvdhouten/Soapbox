@@ -1,4 +1,4 @@
-namespace Soapbox.Application.Media.Shared;
+namespace Soapbox.Application.Media;
 using System;
 using Soapbox.Application.Constants;
 

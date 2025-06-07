@@ -1,7 +1,7 @@
 ﻿namespace Soapbox.Application.Media.ListFiles;
 
 using Alkaline64.Injectable;
-using Soapbox.Application.Media.Shared;
+using Soapbox.Application.Media;
 using Soapbox.Application.Utils;
 using Soapbox.Domain.Blog;
 using Soapbox.Domain.Common;

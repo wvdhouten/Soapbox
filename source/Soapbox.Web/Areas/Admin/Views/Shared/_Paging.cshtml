@@ -21,6 +21,11 @@
     border-radius: 4px;
   }
 
+    .pages > a[disabled] {
+      color: var(--grey-medium);
+      border-color: var(--grey-medium);
+    }
+
   .pages > [active] {
     background: var(--accent1-medium);
     color: var(--accent1-contrast);
@@ -38,6 +43,6 @@
     }
     <span condition="highPage < Model.PageCount - 1">...</span>
     <a asp-route-page="@Model.PageCount" condition="highPage < Model.PageCount">@Model.PageCount</a>
-    <a asp-route-page="@nextPage" disabled="@(Model.Page == Model.PageCount)"><i class="fa fa-angle-right"></i></a>
+    <a asp-route-page="@nextPage" disabled="@(Model.Page >= Model.PageCount)"><i class="fa fa-angle-right"></i></a>
   </div>
 </div>

@@ -13,7 +13,6 @@
       <a asp-area="Admin" asp-controller="Users" asp-action="Create" role="button" class="small"><i class="fa fa-plus" aria-hidden="true"></i></a>
     </div>
   </header>
-
   <figure>
     <table>
       <thead>
@@ -33,11 +32,7 @@
             <td>@user.DisplayName</td>
             <td>@user.Email</td>
             <td>@user.Role</td>
-            <td>
-              <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post">
-                <button type="submit" class="small"><i class="fa fa-trash"></i></button>
-              </form>
-            </td>
+            <td><a asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" role="button" class="small"><i class="fa fa-trash"></i></a></td>
           </tr>
         }
       </tbody>

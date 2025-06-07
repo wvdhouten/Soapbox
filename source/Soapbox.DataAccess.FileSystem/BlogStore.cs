@@ -21,39 +21,29 @@ public partial class BlogStore : IBlogStore
 
     private readonly string _contentPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Content, FolderNames.Posts);
 
-    private IList<Post> _posts = [];
-    private IList<PostCategory> _categories = [];
+    private readonly Dictionary<string, Post> _posts = [];
+    private readonly Dictionary<string, PostCategory> _categories = [];
 
-    public IList<Post> Posts
+    public void Refresh()
     {
-        get
-        {
-            if (_posts.Count < 1)
-                Restore();
+        _posts.Clear();
+        _categories.Clear();
 
-            return _posts;
-        }
+        var files = Directory.GetFiles(_contentPath, "*.md");
+        foreach (var file in files)
+            RestorePost(file);
     }
 
-    public IList<PostCategory> Categories
-    {
-        get
-        {
-            if (_categories.Count < 1)
-                Restore();
+    public IQueryable<Post> Posts => _posts.Values.AsQueryable();
 
-            return _categories;
-        }
-    }
+    public IQueryable<PostCategory> Categories => _categories.Values.AsQueryable();
 
     public StorageResult UpdatePost(Post post)
     {
         try
         {
             if (string.IsNullOrEmpty(post.Id))
-            {
                 post.Id = Guid.NewGuid().ToString();
-            }
 
             var filePath = Path.Combine(_contentPath, $"{post.Id}.md");
 
@@ -72,11 +62,9 @@ public partial class BlogStore : IBlogStore
             return StorageResult.Fail;
         }
 
-        Posts.Add(post);
+        _posts.Add(post.Id, post);
         foreach (var category in post.Categories)
-        {
             category.Posts.Add(post);
-        }
 
         return StorageResult.Fail;
     }
@@ -85,13 +73,11 @@ public partial class BlogStore : IBlogStore
     {
         var post = Posts.FirstOrDefault(post => post.Id == postId);
         if (post == null)
-        {
             return StorageResult.Fail;
-        }
 
         try
         {
-            var filePath = Path.Combine(_contentPath, $"{post.Id}.md");
+            var filePath = Path.Combine(_contentPath, $"{postId}.md");
             DeleteFile(filePath);
         }
         catch
@@ -104,24 +90,12 @@ public partial class BlogStore : IBlogStore
             category.Posts.Remove(post);
         }
 
-        Posts.Remove(post);
+        _posts.Remove(postId);
 
         return StorageResult.Success;
     }
 
-    private Post RestorePost(string filePath)
-    {
-         var fileContent = File.ReadAllText(filePath);
 
-        var frontMatterRegex = FrontMatterRegex();
-        var match = frontMatterRegex.Match(fileContent);
-
-        var frontMatter = _yamlDeserializer.Deserialize<PostRecord>(match.Groups["frontMatter"].Value);
-        Post post = frontMatter;
-        post.Content = fileContent[match.Length..];
-
-        return post;
-    }
 
     private void SaveFile(string filePath, string fileContent)
     {
@@ -133,18 +107,18 @@ public partial class BlogStore : IBlogStore
         File.Delete(filePath);
     }
 
-    public void Restore()
+    private void RestorePost(string filePath)
     {
-        _posts = [];
-        _categories = [];
+        var fileContent = File.ReadAllText(filePath);
 
-        var files = Directory.GetFiles(_contentPath, "*.md");
-        foreach (var file in files)
-        {
-            var post = RestorePost(file);
+        var frontMatterRegex = FrontMatterRegex();
+        var match = frontMatterRegex.Match(fileContent);
 
-            _posts.Add(post);
-        }
+        var frontMatter = _yamlDeserializer.Deserialize<PostRecord>(match.Groups["frontMatter"].Value);
+        Post post = frontMatter;
+        post.Content = fileContent[match.Length..];
+
+        _posts.Add(post.Id, post);
     }
 
     [GeneratedRegex("^---\\s*\\n(?<frontMatter>(.|\\n)*?)\\n---\\s*\\n", RegexOptions.Multiline)]

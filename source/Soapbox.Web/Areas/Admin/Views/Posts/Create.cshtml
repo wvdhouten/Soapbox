@@ -3,7 +3,7 @@
 @model Soapbox.Application.Blog.Posts.Create.CreatePostRequest
 @{
     ViewData[ViewConstants.PageTitle] = "Create post";
-    var categories = (IEnumerable<PostCategory>?)ViewData["Categories"] ?? [];
+    var categories = (IList<PostCategory>?)ViewData["Categories"] ?? [];
 }
 
 <style>
@@ -17,10 +17,10 @@
 </style>
 
 <div class="container content">
+  <header>
+    <h1>Create post</h1>
+  </header>
   <form method="post" autocomplete="off">
-    <header>
-      <h1>Create post</h1>
-    </header>
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group horizontal">
       <label asp-for="Post.Title"></label>

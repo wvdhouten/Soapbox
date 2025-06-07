@@ -47,7 +47,7 @@ public class PostsController : SoapboxControllerBase
         if (result.IsFailure)
             return SomethingWentWrong();
 
-        ViewData.Add("Categories", result.Value);
+        ViewData.Add("Categories", result.Value.ToList());
         return View(new CreatePostRequest());
     }
 

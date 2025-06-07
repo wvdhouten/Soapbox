@@ -1,8 +1,11 @@
 ﻿namespace Soapbox.Application.Blog.Categories.UpdateCategory;
+
+using Alkaline64.Injectable;
 using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Results;
 
+[Injectable]
 public class UpdateCategoryHandler
 {
     private readonly IBlogRepository _blogRepository;

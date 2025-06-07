@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Alkaline64.Injectable;
 using Microsoft.Extensions.Options;
 using Soapbox.Domain.Email;
+using Soapbox.Domain.Results;
 
 [Injectable<IEmailService>]
 public class SmtpEmailService : IEmailService
@@ -19,25 +20,27 @@ public class SmtpEmailService : IEmailService
         _renderer = renderer;
     }
 
-    public async Task SendEmailAsync<TModel>(string recipient, string subject, TModel model)
+    public async Task<Result> SendEmailAsync<TModel>(string recipient, string subject, TModel model)
     {
         var htmlBody = await _renderer.Render(typeof(TModel).Name, model);
 
-        using var client = GetClient();
-        var mailMessage = new MailMessage(_settings.Sender, recipient, subject, htmlBody)
+        try
         {
-            IsBodyHtml = true
-        };
+            using var client = GetClient();
+            var mailMessage = new MailMessage(_settings.Sender, recipient, subject, htmlBody) { IsBodyHtml = true };
 
-        await client.SendMailAsync(mailMessage);
+            await client.SendMailAsync(mailMessage);
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            return Error.Unknown(e.Message);
+        }
     }
 
-    private SmtpClient GetClient()
+    private SmtpClient GetClient() => new(_settings.Host, _settings.Port)
     {
-        return new SmtpClient(_settings.Host, _settings.Port)
-        {
-            Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
-            EnableSsl = _settings.EnableSsl,
-        };
-    }
+        Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
+        EnableSsl = _settings.EnableSsl,
+    };
 }

@@ -6,30 +6,29 @@
   ViewData[ViewConstants.PageTitle] = "Edit user";
 }
 
-<div class="container">
+<div class="container content">
   <header>
     <h1>Edit user</h1>
   </header>
-
-  <form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  <form method="post" autocomplete="off">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <input asp-for="@Model.Id" type="hidden" />
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.UserName"></label>
       <input asp-for="@Model.UserName" />
       <span asp-validation-for="@Model.UserName" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Email"></label>
       <input asp-for="@Model.Email" />
       <span asp-validation-for="@Model.Email" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.DisplayName"></label>
       <input asp-for="@Model.DisplayName" />
       <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
     </div>
-    <div class="form-field">
+    <div class="form-group horizontal">
       <label asp-for="@Model.Role"></label>
       <select asp-for="@Model.Role" asp-items="Html.GetEnumSelectList<UserRole>()">
         <option value="" selected>Please select</option>
@@ -37,7 +36,7 @@
       <span asp-validation-for="@Model.Role" class="text-danger"></span>
     </div>
     <div class="button-group">
-      <button type="submit">Create</button>
+      <button type="submit">Edit</button>
     </div>
   </form>
 </div>
