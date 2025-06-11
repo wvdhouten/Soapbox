@@ -1,6 +1,5 @@
 namespace Soapbox.Web.Areas.Admin.Controllers;
 
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +9,14 @@ using Soapbox.Application.Blog.Posts.Delete;
 using Soapbox.Application.Blog.Posts.Edit;
 using Soapbox.Application.Blog.Posts.Get;
 using Soapbox.Application.Blog.Posts.List;
-using Soapbox.Application.Utils;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
 using Soapbox.Web.Attributes;
 using Soapbox.Web.Controllers.Base;
-using Soapbox.Web.Helpers;
 
 [Area("Admin")]
-[RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author, UserRole.Contributor)]
+[RoleAuthorize(UserRole.Administrator, UserRole.Editor, UserRole.Author)]
 public class PostsController : SoapboxControllerBase
 {
     private readonly IBlogRepository _blogService;

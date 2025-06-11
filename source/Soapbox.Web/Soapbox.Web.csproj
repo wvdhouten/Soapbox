@@ -65,9 +65,7 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Content\Media\" />
-    <Folder Include="Content\Identity\" />
-    <Folder Include="Content\Posts\" />
+    <Folder Include="Content\" />
     <Folder Include="Logs\" />
   </ItemGroup>
 
@@ -80,5 +78,4 @@
   <ItemGroup>
     <Content Remove="Themes\Modern\_Layout.cshtml" />
   </ItemGroup>
-
 </Project>

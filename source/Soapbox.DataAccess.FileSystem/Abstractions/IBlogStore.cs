@@ -13,4 +13,6 @@ public interface IBlogStore
     public StorageResult DeletePost(string postId);
 
     public void Refresh();
+    StorageResult UpdateCategory(PostCategory category);
+    StorageResult DeleteCategory(string postId);
 }

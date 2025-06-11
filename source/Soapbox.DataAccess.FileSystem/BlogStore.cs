@@ -62,7 +62,7 @@ public partial class BlogStore : IBlogStore
             return StorageResult.Fail;
         }
 
-        _posts.Add(post.Id, post);
+        _posts[post.Id] = post;
         foreach (var category in post.Categories)
             category.Posts.Add(post);
 
@@ -95,17 +95,59 @@ public partial class BlogStore : IBlogStore
         return StorageResult.Success;
     }
 
-
-
-    private void SaveFile(string filePath, string fileContent)
+    public StorageResult UpdateCategory(PostCategory category)
     {
-        File.WriteAllText(filePath, fileContent);
+        try
+        {
+            if (string.IsNullOrEmpty(category.Id))
+                category.Id = Guid.NewGuid().ToString();
+
+            var filePath = Path.Combine(_contentPath, $"categories.sbmeta");
+
+            var contentBuilder = new StringBuilder();
+            contentBuilder.Append(_yamlSerializer.Serialize(_categories.Values));
+
+            SaveFile(filePath, contentBuilder.ToString());
+        }
+        catch
+        {
+            return StorageResult.Fail;
+        }
+
+        _categories[category.Id] = category;
+
+        return StorageResult.Fail;
     }
 
-    private void DeleteFile(string filePath)
+    public StorageResult DeleteCategory(string postId)
     {
-        File.Delete(filePath);
+        var post = Posts.FirstOrDefault(post => post.Id == postId);
+        if (post == null)
+            return StorageResult.Fail;
+
+        try
+        {
+            var filePath = Path.Combine(_contentPath, $"{postId}.md");
+            DeleteFile(filePath);
+        }
+        catch
+        {
+            return StorageResult.Fail;
+        }
+
+        foreach (var category in post.Categories)
+        {
+            category.Posts.Remove(post);
+        }
+
+        _posts.Remove(postId);
+
+        return StorageResult.Success;
     }
+
+    private static void SaveFile(string filePath, string fileContent) => File.WriteAllText(filePath, fileContent);
+
+    private static void DeleteFile(string filePath) => File.Delete(filePath);
 
     private void RestorePost(string filePath)
     {
@@ -118,7 +160,7 @@ public partial class BlogStore : IBlogStore
         Post post = frontMatter;
         post.Content = fileContent[match.Length..];
 
-        _posts.Add(post.Id, post);
+        _posts[post.Id] = post;
     }
 
     [GeneratedRegex("^---\\s*\\n(?<frontMatter>(.|\\n)*?)\\n---\\s*\\n", RegexOptions.Multiline)]

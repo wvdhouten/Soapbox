@@ -96,7 +96,7 @@ public partial class AccountController
                 => RedirectToAction(nameof(Lockout)),
             { IsFailure: true, Error.Code: ErrorCode.InvalidOperation }
                 => WithErrorMessage(result.Error.Message).RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl }),
-            { IsFailure: true, Error.Code: "RequiresRegistration" } when result.Error is ValueError<ExternalLoginRegistrationRequest> error
+            { IsFailure: true, Error.Code: ProcessExternalLoginHandler.RequiresRegistration } when result.Error is ValueError<ExternalLoginRegistrationRequest> error
                 => WithViewData(ViewConstants.PageTitle, $"Sign in: {error.Value.ProviderDisplayName}").View(error.Value),
             _ => BadRequest(),
         };

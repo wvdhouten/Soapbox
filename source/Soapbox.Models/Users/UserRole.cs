@@ -26,12 +26,6 @@ public enum UserRole
     Author,
 
     /// <summary>
-    /// Can manage own posts.
-    /// </summary>
-    [Display(Name = "Contributor")]
-    Contributor,
-
-    /// <summary>
     /// Can manage own profile only.
     /// </summary>
     [Display(Name = "Subscriber")]

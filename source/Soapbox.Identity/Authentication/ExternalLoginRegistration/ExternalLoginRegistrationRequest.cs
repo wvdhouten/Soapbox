@@ -8,13 +8,13 @@ public class ExternalLoginRegistrationRequest
 
     public string? ReturnUrl { get; set; }
 
-    // TODO: Verify
+    [Required]
+    [EmailAddress]
+    [Display(Name = "Email", Prompt = "Email")]
+    public string Email { get; set; } = string.Empty;
+
     [Required]
     [MinLength(8)]
     [Display(Name = "Username", Prompt = "Username")]
     public string Username { get; set; } = string.Empty;
-
-    [Required]
-    [EmailAddress]
-    public required string Email { get; set; }
 }

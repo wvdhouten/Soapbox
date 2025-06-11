@@ -11,13 +11,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\**" />
+    <EmbeddedResource Remove="Pages\**" />
+    <None Remove="Pages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Alkaline64.Injectable" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Blog\Posts\GetPage\" />
-    <Folder Include="Pages\" />
   </ItemGroup>
 
 </Project>

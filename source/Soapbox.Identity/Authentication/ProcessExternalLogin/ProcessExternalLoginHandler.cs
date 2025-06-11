@@ -6,13 +6,17 @@ using Microsoft.Extensions.Options;
 using Soapbox.Application.Settings;
 using Soapbox.Domain.Results;
 using Soapbox.Domain.Users;
+using Soapbox.Identity.Authentication.ExternalLoginRegistration;
 using Soapbox.Identity.Authentication.Login;
+using System.Security.Claims;
 
 [Injectable]
 public class ProcessExternalLoginHandler
 {
     private readonly SiteSettings _siteSettings;
     private readonly SignInManager<SoapboxUser> _signInManager;
+
+    public const string RequiresRegistration = nameof(RequiresRegistration);
 
     public ProcessExternalLoginHandler(IOptionsSnapshot<SiteSettings> siteSettings, SignInManager<SoapboxUser> signInManager)
     {
@@ -34,7 +38,14 @@ public class ProcessExternalLoginHandler
             { IsLockedOut: true } => Error.Other(LoginRequest.LockedOut, "User account is locked out."),
             { IsNotAllowed: true } => Error.InvalidOperation("User account is not allowed to log in."),
             { } when !_siteSettings.AllowRegistration => Error.InvalidOperation("Registration is disabled."),
-            _ => Error.Other("RequiresRegistration")
+            _ => Error.ValueError(CreateRegistrationRequest(info), RequiresRegistration, string.Empty)
         };
     }
+
+    private static ExternalLoginRegistrationRequest CreateRegistrationRequest(ExternalLoginInfo info)
+        => new()
+        {
+            Email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
+            ProviderDisplayName = info.LoginProvider
+        };
 }

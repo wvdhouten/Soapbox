@@ -96,7 +96,7 @@ public class BlogRepository : IBlogRepository
 
     public Task CreateCategoryAsync(PostCategory category)
     {
-        _blogStore.Categories.Add(category);
+        _blogStore.UpdateCategory(category);
 
         return Task.CompletedTask;
     }
@@ -106,14 +106,16 @@ public class BlogRepository : IBlogRepository
         var existingCategory = _blogStore.Categories.FirstOrDefault(c => c.Id == category.Id);
 
         var list = new List<PostCategory>();
-        _blogStore.Categories.Add(category);
+        _blogStore.UpdateCategory(category);
 
         return Task.CompletedTask;
     }
 
     public Task DeleteCategoryByIdAsync(string categoryId)
     {
-        throw new NotImplementedException();
+        _blogStore.DeleteCategory(categoryId);
+
+        return Task.CompletedTask;
     }
 
     public async Task<SoapboxUser?> GetAuthorByIdAsync(string authorId)
