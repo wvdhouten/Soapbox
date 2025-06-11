@@ -55,7 +55,7 @@ public class Post
     /// Gets or sets the publication date.
     /// </summary>
     [Display(Name = "Published on"), DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
-    public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
+    public DateTime PublishedOn { get; set; } = DateTime.MaxValue;
 
     /// <summary>
     /// Gets or sets the categories.

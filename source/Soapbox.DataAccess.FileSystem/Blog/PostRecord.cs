@@ -7,7 +7,7 @@ using Soapbox.Domain.Blog;
 /// <summary>
 /// Represents a blog post.
 /// </summary>
-public record PostRecord
+internal record PostRecord
 {
     /// <summary>
     /// Gets or sets the post identifier.
@@ -47,7 +47,7 @@ public record PostRecord
     /// <summary>
     /// Gets or sets the publication date.
     /// </summary>
-    public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
+    public DateTime PublishedOn { get; set; } = DateTime.MaxValue;
 
     /// <summary>
     /// Gets or sets the categories.
@@ -60,8 +60,7 @@ public record PostRecord
     public IList<PostMetadata> Metadata { get; set; } = [];
 
     public static implicit operator Post(PostRecord record)
-    {
-        return new Post
+        => new()
         {
             Id = record.Id,
             Title = record.Title,
@@ -73,11 +72,10 @@ public record PostRecord
             Categories = [],
             Metadata = [],
         };
-    }
+
 
     public static implicit operator PostRecord(Post post)
-    {
-        return new PostRecord
+        => new()
         {
             Id = post.Id!,
             Title = post.Title,
@@ -90,5 +88,4 @@ public record PostRecord
             Categories = [],
             Metadata = [],
         };
-    }
 }
