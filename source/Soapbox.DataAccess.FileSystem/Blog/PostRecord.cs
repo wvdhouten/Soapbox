@@ -3,6 +3,7 @@ namespace Soapbox.DataAccess.FileSystem.Blog;
 using System;
 using System.Collections.Generic;
 using Soapbox.Domain.Blog;
+using YamlDotNet.Serialization;
 
 /// <summary>
 /// Represents a blog post.
@@ -33,6 +34,12 @@ internal record PostRecord
     /// Gets or sets the post excerpt.
     /// </summary>
     public string Excerpt { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the post content.
+    /// </summary>
+    [YamlIgnore]
+    public string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the modification date.
@@ -66,11 +73,12 @@ internal record PostRecord
             Title = record.Title,
             Slug = record.Slug,
             Excerpt = record.Excerpt,
+            Content = record.Content,
             ModifiedOn = record.ModifiedOn,
             Status = record.Status,
             PublishedOn = record.PublishedOn,
-            Categories = [],
-            Metadata = [],
+            Categories = [.. record.Categories.Select(category => new PostCategory() { Name = category })],
+            Metadata = record.Metadata,
         };
 
 
@@ -82,10 +90,11 @@ internal record PostRecord
             Slug = post.Slug,
             AuthorId = post.Author.Id,
             Excerpt = post.Excerpt,
+            Content = post.Content,
             ModifiedOn = post.ModifiedOn,
             Status = post.Status,
             PublishedOn = post.PublishedOn,
-            Categories = [],
-            Metadata = [],
+            Categories = [.. post.Categories.Select(category => category.Name)],
+            Metadata = post.Metadata,
         };
 }

@@ -19,7 +19,7 @@ public class EncryptedFileHandler
     public async Task WriteAllTextAsync(string filePath, string content)
     {
         using var aes = Aes.Create();
-        aes.Key = Encoding.UTF8.GetBytes(EncryptionKey.PadRight(32)[..32]);
+        aes.Key = Encoding.UTF8.GetBytes($"{filePath}{EncryptionKey}".PadRight(32)[..32]);
         aes.GenerateIV();
 
         using var ms = new MemoryStream();
@@ -39,7 +39,7 @@ public class EncryptedFileHandler
         byte[] encryptedContent = File.ReadAllBytes(filePath);
 
         using var aes = Aes.Create();
-        aes.Key = Encoding.UTF8.GetBytes(EncryptionKey.PadRight(32)[..32]);
+        aes.Key = Encoding.UTF8.GetBytes($"{filePath}{EncryptionKey}".PadRight(32)[..32]);
 
         using var ms = new MemoryStream(encryptedContent);
         byte[] iv = new byte[16];

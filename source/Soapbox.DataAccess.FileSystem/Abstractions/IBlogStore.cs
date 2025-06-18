@@ -1,6 +1,7 @@
 namespace Soapbox.DataAccess.FileSystem.Abstractions;
 
 using Soapbox.Domain.Blog;
+using Soapbox.Domain.Results;
 
 public interface IBlogStore
 {
@@ -8,11 +9,13 @@ public interface IBlogStore
 
     public IQueryable<PostCategory> Categories { get; }
 
-    public StorageResult UpdatePost(Post post);
+    public Result StorePost(Post post);
 
-    public StorageResult DeletePost(string postId);
+    public Result DeletePost(string postId);
+
+    public Result StoreCategory(PostCategory category);
+
+    public Result DeleteCategory(string postId);
 
     public void Refresh();
-    StorageResult UpdateCategory(PostCategory category);
-    StorageResult DeleteCategory(string postId);
 }

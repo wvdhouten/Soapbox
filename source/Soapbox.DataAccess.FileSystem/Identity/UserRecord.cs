@@ -12,4 +12,6 @@ public record UserRecord
     public string? AuthenticatorKey { get; set; }
 
     public List<string>? RecoveryCodes { get; set; }
+
+    public Dictionary<(string Provider, string Name), string?>? Tokens { get; set; }
 }

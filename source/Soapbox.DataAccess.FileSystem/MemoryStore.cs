@@ -13,5 +13,7 @@ public class MemoryStore
 
     internal Dictionary<string, string> Authenticators { get; } = [];
 
+    internal Dictionary<(string UserId, string Provider, string Name), string?> Tokens { get; } = [];
+
     internal Dictionary<string, List<string>> RecoveryCodes { get; } = [];
 }

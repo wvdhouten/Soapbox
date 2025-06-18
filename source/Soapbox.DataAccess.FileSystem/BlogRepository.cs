@@ -63,14 +63,14 @@ public class BlogRepository : IBlogRepository
 
     public Task CreatePostAsync(Post post)
     {
-        _blogStore.UpdatePost(post);
+        _blogStore.StorePost(post);
 
         return Task.CompletedTask;
     }
 
     public Task UpdatePostAsync(Post post)
     {
-        _blogStore.UpdatePost(post);
+        _blogStore.StorePost(post);
 
         return Task.CompletedTask;
     }
@@ -96,7 +96,7 @@ public class BlogRepository : IBlogRepository
 
     public Task CreateCategoryAsync(PostCategory category)
     {
-        _blogStore.UpdateCategory(category);
+        _blogStore.StoreCategory(category);
 
         return Task.CompletedTask;
     }
@@ -106,7 +106,7 @@ public class BlogRepository : IBlogRepository
         var existingCategory = _blogStore.Categories.FirstOrDefault(c => c.Id == category.Id);
 
         var list = new List<PostCategory>();
-        _blogStore.UpdateCategory(category);
+        _blogStore.StoreCategory(category);
 
         return Task.CompletedTask;
     }

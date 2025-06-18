@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Soapbox.DataAccess.Abstractions;
 using Soapbox.DataAccess.FileSystem.Encryption;
 using Soapbox.DataAccess.FileSystem.Identity;
+using Soapbox.DataAccess.FileSystem.Serialization;
 using Soapbox.Domain.Users;
 using System;
 using System.IO;
@@ -19,6 +20,8 @@ public partial class UserFileSystemStore :
     IProtectedUserStore<SoapboxUser>,
     IQueryableUserStore<SoapboxUser>
 {
+    private const string _userFileExtension = "sbuser";
+
     private readonly string _filePath = Path.Combine(Environment.CurrentDirectory, "Content", "Identity");
 
     private readonly MemoryStore _memoryStore;
@@ -40,12 +43,13 @@ public partial class UserFileSystemStore :
         _memoryStore.LoginInfos.Clear();
         _memoryStore.Authenticators.Clear();
         _memoryStore.RecoveryCodes.Clear();
+        _memoryStore.Tokens.Clear();
 
-        var files = Directory.GetFiles(_filePath, "*.sbu");
+        var files = Directory.GetFiles(_filePath, $"*.{_userFileExtension}");
         foreach (var file in files)
         {
             var json = await _fileHandler.ReadAllTextAsync(file);
-            var user = JsonSerializer.Deserialize<UserRecord>(json);
+            var user = JsonSerializer.Deserialize<UserRecord>(json, FileSystemSerialization.DefaultJsonSerializerOptions);
 
             if (user is null)
                 continue;
@@ -57,6 +61,9 @@ public partial class UserFileSystemStore :
                 _memoryStore.Authenticators.Add(user.User.Id, user.AuthenticatorKey);
             if (user.RecoveryCodes is not null)
                 _memoryStore.RecoveryCodes.Add(user.User.Id, user.RecoveryCodes);
+            if (user.Tokens is not null)
+                foreach (var token in user.Tokens)
+                    _memoryStore.Tokens.Add((user.User.Id, token.Key.Provider, token.Key.Name), token.Value);
         }
     }
 
@@ -142,15 +149,16 @@ public partial class UserFileSystemStore :
             User = user,
             LoginInfos = _memoryStore.LoginInfos.TryGetValue(user.Id, out var logins) ? logins : null,
             AuthenticatorKey = _memoryStore.Authenticators.TryGetValue(user.Id, out var key) ? key : null,
-            RecoveryCodes = _memoryStore.RecoveryCodes.TryGetValue(user.Id, out var codes) ? codes : null
-        });
+            RecoveryCodes = _memoryStore.RecoveryCodes.TryGetValue(user.Id, out var codes) ? codes : null,
+            Tokens = _memoryStore.Tokens.Where(token => token.Key.UserId == user.Id).ToDictionary(token => (token.Key.Provider, token.Key.Name), token => token.Value)
+        }, FileSystemSerialization.DefaultJsonSerializerOptions);
 
-        await _fileHandler.WriteAllTextAsync(Path.Combine(_filePath, $"{user.Id}.sbu"), json);
+        await _fileHandler.WriteAllTextAsync(Path.Combine(_filePath, $"{user.Id}.{_userFileExtension}"), json);
     }
 
     private Task DestroyUserAsync(SoapboxUser user)
     {
-        File.Delete(Path.Combine(_filePath, $"{user.Id}.sbu"));
+        File.Delete(Path.Combine(_filePath, $"{user.Id}.{_userFileExtension}"));
 
         return Task.CompletedTask;
     }

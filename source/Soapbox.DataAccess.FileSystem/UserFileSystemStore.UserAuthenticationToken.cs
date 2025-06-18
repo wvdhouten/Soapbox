@@ -7,16 +7,20 @@ public partial class UserFileSystemStore : IUserAuthenticationTokenStore<Soapbox
 {
     public Task SetTokenAsync(SoapboxUser user, string loginProvider, string name, string? value, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _memoryStore.Tokens.Add((user.Id, loginProvider, name), value);
+
+        return Task.CompletedTask;
     }
 
     public Task RemoveTokenAsync(SoapboxUser user, string loginProvider, string name, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _memoryStore.Tokens.Remove((user.Id, loginProvider, name));
+
+        return Task.CompletedTask;
     }
 
     public Task<string?> GetTokenAsync(SoapboxUser user, string loginProvider, string name, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+        => Task.FromResult(_memoryStore.Tokens.TryGetValue((user.Id, loginProvider, name), out var value)
+            ? value
+            : null);
 }
