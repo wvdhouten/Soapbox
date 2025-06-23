@@ -103,7 +103,9 @@ public partial class AccountController
     }
 
     [HttpPost, AllowAnonymous]
-    public async Task<IActionResult> ExternalLoginConfirmation([FromServices] ExternalLoginRegistrationHandler handler, [FromForm] ExternalLoginRegistrationRequest request)
+    public async Task<IActionResult> ExternalLoginConfirmation(
+        [FromServices] ExternalLoginRegistrationHandler handler,
+        [FromForm] ExternalLoginRegistrationRequest request)
     {
         if (!ModelState.IsValid)
             return View(nameof(ExternalLoginConfirmation), request);
@@ -123,7 +125,10 @@ public partial class AccountController
     }
 
     [HttpGet, AllowAnonymous]
-    public async Task<IActionResult> MfaLogin([FromServices] MfaLoginHandler handler, [FromQuery] bool rememberMe, [FromQuery] string? returnUrl = null)
+    public async Task<IActionResult> MfaLogin(
+        [FromServices] MfaLoginHandler handler,
+        [FromQuery] bool rememberMe,
+        [FromQuery] string? returnUrl = null)
     {
         return !await handler.HasMfaRequestAsync()
             ? BadRequest()
@@ -131,7 +136,9 @@ public partial class AccountController
     }
 
     [HttpPost, AllowAnonymous]
-    public async Task<IActionResult> MfaLogin([FromServices] MfaLoginHandler handler, [FromForm] MfaLoginRequest request)
+    public async Task<IActionResult> MfaLogin(
+        [FromServices] MfaLoginHandler handler,
+        [FromForm] MfaLoginRequest request)
     {
         if (!ModelState.IsValid)
             return View(request);
@@ -148,7 +155,9 @@ public partial class AccountController
     }
 
     [HttpGet, AllowAnonymous]
-    public async Task<IActionResult> RecoveryCodeLogin([FromServices] RecoveryCodeLoginHandler handler, [FromQuery] string? returnUrl = null)
+    public async Task<IActionResult> RecoveryCodeLogin(
+        [FromServices] RecoveryCodeLoginHandler handler,
+        [FromQuery] string? returnUrl = null)
     {
         return !await handler.HasMfaRequestAsync()
             ? BadRequest()

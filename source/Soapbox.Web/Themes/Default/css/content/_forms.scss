@@ -1,7 +1,6 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-bottom: 12px;
 }
 
@@ -15,6 +14,7 @@
   .horizontal-form .form-group,
   .form-group.horizontal {
     flex-direction: row;
+    align-items: center;
 
     > label,
     > .label {

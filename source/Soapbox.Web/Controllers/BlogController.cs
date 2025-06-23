@@ -96,7 +96,7 @@ public class BlogController : SoapboxControllerBase
         {
             false when result.Error?.Code == ErrorCode.NotFound => NotFound(result.Error.Message),
             false => BadRequest("Unable to process request."),
-            _ => View(PostViewName, result.Value),
+            _ => View(result.Value),
         };
     }
 

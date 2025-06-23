@@ -65,8 +65,6 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Content\Identity\" />
-    <Folder Include="Content\Views\" />
     <Folder Include="Logs\" />
     <Folder Include="Models\" />
   </ItemGroup>
@@ -75,5 +73,16 @@
     <None Include="Themes\*\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Content\Views\**" />
+    <Content Remove="Content\Views\**" />
+    <EmbeddedResource Remove="Content\Views\**" />
+    <None Remove="Content\Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Content\Views\**" />
   </ItemGroup>
 </Project>
