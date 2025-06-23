@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Alkaline64.Injectable;
-using Microsoft.Extensions.FileSystemGlobbing;
 using Soapbox.Application.Constants;
 using Soapbox.Application.Utils;
 using Soapbox.DataAccess.FileSystem.Abstractions;
@@ -29,6 +28,8 @@ public partial class BlogStore : IBlogStore
 
     private readonly Dictionary<string, Post> _posts = [];
     private readonly Dictionary<string, PostCategory> _categories = [];
+
+    public void Init() => Refresh();
 
     public void Refresh()
     {
@@ -112,52 +113,58 @@ public partial class BlogStore : IBlogStore
 
     public Result StoreCategory(PostCategory category)
     {
-        try
-        {
-            if (string.IsNullOrEmpty(category.Id))
-                category.Id = Guid.NewGuid().ToString();
-
-            var filePath = Path.Combine(_contentPath, $"categories.{_metaFileExtension}");
-
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append(_yamlSerializer.Serialize(_categories.Values));
-
-            SaveFile(filePath, contentBuilder.ToString());
-        }
-        catch
-        {
-            return Error.Unknown();
-        }
+        if (string.IsNullOrEmpty(category.Id))
+            category.Id = Guid.NewGuid().ToString();
 
         _categories[category.Id] = category;
 
-        return Result.Success();
+        var result = PersistCategories();
+        return result switch
+        {
+            { IsSuccess: true } => Result.Success(),
+            _ => Error.Unknown()
+        };
     }
 
-    public Result DeleteCategory(string postId)
+    private Result PersistCategories()
     {
-        var post = Posts.FirstOrDefault(post => post.Id == postId);
-        if (post == null)
-            return Error.NotFound("Category not found.");
-
         try
         {
-            var filePath = Path.Combine(_contentPath, $"{postId}.md");
-            DeleteFile(filePath);
+            var filePath = Path.Combine(_contentPath, $"categories.{_metaFileExtension}");
+
+            var contentBuilder = new StringBuilder();
+            contentBuilder.Append(_yamlSerializer.Serialize(_categories.Values.Select<PostCategory, CategoryRecord>(r => r)));
+
+            SaveFile(filePath, contentBuilder.ToString());
+
+            return Result.Success();
         }
         catch
         {
             return Error.Unknown();
         }
+    }
 
-        foreach (var category in post.Categories)
+    public Result DeleteCategory(string categoryId)
+    {
+        var category = Categories.FirstOrDefault(category => category.Id == categoryId);
+        if (category == null)
+            return Error.NotFound("Category not found.");
+
+        foreach (var post in category.Posts)
         {
-            category.Posts.Remove(post);
+            post.Categories.Remove(category);
+            StorePost(post);
         }
 
-        _posts.Remove(postId);
+        _categories.Remove(categoryId);
 
-        return Result.Success();
+        var result = PersistCategories();
+        return result switch
+        {
+            { IsSuccess: true } => Result.Success(),
+            _ => Error.Unknown()
+        };
     }
 
     private void LoadPost(string filePath)
@@ -171,7 +178,8 @@ public partial class BlogStore : IBlogStore
         post.Content = fileContent[match.Length..];
         _posts[post.Id] = post;
 
-        foreach(var reference in post.Categories) { 
+        foreach (var reference in post.Categories)
+        {
             var category = LoadCategory(reference);
             post.Categories.Remove(reference);
             post.Categories.Add(category);
@@ -180,7 +188,7 @@ public partial class BlogStore : IBlogStore
 
     private PostCategory LoadCategory(PostCategory reference)
     {
-        return Categories.FirstOrDefault(c => c.Id == reference.Id) 
+        return Categories.FirstOrDefault(c => c.Id == reference.Id)
             ?? new()
             {
                 Id = Ulid.NewUlid().ToString(),

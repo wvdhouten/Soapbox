@@ -11,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Blog\Posts\**" />
     <Compile Remove="Pages\**" />
+    <EmbeddedResource Remove="Blog\Posts\**" />
     <EmbeddedResource Remove="Pages\**" />
+    <None Remove="Blog\Posts\**" />
     <None Remove="Pages\**" />
   </ItemGroup>
 
@@ -20,10 +23,6 @@
     <PackageReference Include="Alkaline64.Injectable" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.5" />
     <PackageReference Include="Ulid" Version="1.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Blog\Posts\GetPage\" />
   </ItemGroup>
 
 </Project>

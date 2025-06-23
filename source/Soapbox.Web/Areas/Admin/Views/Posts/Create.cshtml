@@ -3,7 +3,7 @@
 @model Soapbox.Application.Blog.Posts.Create.CreatePostRequest
 @{
     ViewData[ViewConstants.PageTitle] = "Create post";
-    var categories = (IList<PostCategory>?)ViewData["Categories"] ?? [];
+    var categories = (List<PostCategory>?)ViewData["Categories"] ?? [];
 }
 
 <style>
@@ -37,16 +37,16 @@
       </div>
     </div>
     <div class="form-group horizontal">
-      <label asp-for="Post.Categories"></label>
+      <label>Categories</label>
       <div class="input-container">
         <div class="pillbox" condition="categories.Any()">
           @foreach (var category in categories)
           {
             <div class="pill">
-              <span>
-                <input asp-for="@Model.SelectedCategories" value="@category.Id" type="checkbox" />
-              </span>
-              <span><label>@category.Name</label></span>
+              <label>
+                <input name="@nameof(Model.SelectedCategories)" value="@category.Name" type="checkbox" checked="@(Model.SelectedCategories.Contains(category.Name))" />
+                <span>@category.Name</span>
+              </label>
             </div>
           }
         </div>

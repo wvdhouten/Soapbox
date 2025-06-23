@@ -1,1 +1,21 @@
-﻿<span>Are you sure? Delete related posts, reassign or unassign?</span>
+﻿<div class="container content">
+  <header>
+    <h1>Delete user</h1>
+    <p>
+      Are you sure? Delete related posts, reassign or unassign?
+    </p>
+  </header>
+  <form method="post" autocomplete="off">
+    <div class="form-group horizontal">
+      <span class="label">Membership</span>
+      <div class="input">
+        <input />
+        <label class="label">Woop</label>
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="submit">Delete</button>
+      <a role="button" class="outline" type="submit" asp-area="Admin" asp-controller="Users" asp-action="Index" title="Cancel'">Cancel</a>
+    </div>
+  </form>
+</div>

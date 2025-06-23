@@ -17,7 +17,10 @@ using System.Threading.Tasks;
 public class CategoriesController : SoapboxControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index([FromServices] ListCategoriesHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
+    public async Task<IActionResult> Index(
+        [FromServices] ListCategoriesHandler handler, 
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 25)
     {
         var result = await handler.GetCategoryPageAsync(page, pageSize);
         return result switch
@@ -31,7 +34,9 @@ public class CategoriesController : SoapboxControllerBase
     public IActionResult Create() => View(new CreateCategoryRequest());
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromServices] CreateCategoryHandler handler, [FromForm] CreateCategoryRequest request)
+    public async Task<IActionResult> Create(
+        [FromServices] CreateCategoryHandler handler,
+        [FromForm] CreateCategoryRequest request)
     {
         var result = await handler.CreateCategoryAsync(request);
         return result switch
@@ -42,7 +47,9 @@ public class CategoriesController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit([FromServices] GetCategoryHandler handler, string id)
+    public async Task<IActionResult> Edit(
+        [FromServices] GetCategoryHandler handler,
+        [FromRoute] string id)
     {
         var result = await handler.GetCategoryByIdAsync(id);
         return result switch
@@ -54,18 +61,22 @@ public class CategoriesController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromServices] UpdateCategoryHandler handler, [FromForm] UpdateCategoryRequest request)
+    public async Task<IActionResult> Edit(
+        [FromServices] UpdateCategoryHandler handler, 
+        [FromForm] UpdateCategoryRequest request)
     {
         var result = await handler.UpdateCategoryAsync(request);
         return result switch
         {
-            { IsSuccess: true } => RedirectToAction(nameof(Edit), new { id = request.Category.Id }),
+            { IsSuccess: true } => RedirectToAction(nameof(Index), new { id = request.Category.Id }),
             _ => BadRequest("Something went wrong.")
         };
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete([FromServices] DeleteCategoryHandler handler, string id)
+    public async Task<IActionResult> Delete(
+        [FromServices] DeleteCategoryHandler handler,
+        [FromRoute] string id)
     {
         var result = await handler.DeleteCategoryByIdAsync(id);
         return result switch

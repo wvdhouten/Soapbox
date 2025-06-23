@@ -10,4 +10,5 @@ public static class FolderNames
 
     public const string Config = nameof(Config);
     public const string Themes = nameof(Themes);
+    public const string Views = nameof(Views);
 }

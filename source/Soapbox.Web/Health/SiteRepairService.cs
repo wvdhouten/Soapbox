@@ -18,7 +18,7 @@ public class SiteRepairService
     private static bool TryCreateContentDirectories(ref List<string> errorMessages)
     {
         var contentPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Content);
-        var contentFolders = new string[] { FolderNames.Identity, FolderNames.Posts, FolderNames.Pages, FolderNames.Media };
+        var contentFolders = new string[] { FolderNames.Identity, FolderNames.Media, FolderNames.Posts, FolderNames.Pages, FolderNames.Views };
         var logsPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Logs);
 
         try

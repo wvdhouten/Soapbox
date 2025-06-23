@@ -689,11 +689,13 @@ a[role=button].large {
 .form-group {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-bottom: 12px;
 }
 
 .form-group > label,
 .form-group > .label {
+  align-self: start;
   margin-bottom: 4px;
 }
 
@@ -776,6 +778,10 @@ textarea[readonly] {
   background: var(--input-disabled-background);
 }
 
+figure > table {
+  margin-bottom: 0.67em;
+}
+
 table {
   width: 100%;
   max-width: 100%;
@@ -786,6 +792,19 @@ table th,
 table td {
   padding: 0.3em 0.7em;
   border: 1px solid var(--md-border-subtle);
+}
+table th.actions,
+table td.actions {
+  width: 1%;
+  white-space: nowrap;
+}
+table th:first-child,
+table td:first-child {
+  padding-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  padding-right: 0;
 }
 table thead tr th {
   text-align: left;

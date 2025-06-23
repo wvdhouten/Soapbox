@@ -35,7 +35,8 @@ public class SiteController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public IActionResult Restart([FromServices] RestartSiteHandler handler)
+    public IActionResult Restart(
+        [FromServices] RestartSiteHandler handler)
     {
         var result = handler.RestartSite();
         return result switch
@@ -47,7 +48,8 @@ public class SiteController : SoapboxControllerBase
     }
 
     [HttpGet]
-    public IActionResult Backup([FromServices] BackupHandler handler)
+    public IActionResult Backup(
+        [FromServices] BackupHandler handler)
     {
         var result = handler.CreateArchiveBackup();
         return result switch

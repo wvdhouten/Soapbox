@@ -7,7 +7,9 @@ using Soapbox.Web.Controllers.Base;
 public class PagesController : SoapboxControllerBase
 {
     [HttpGet("{page}")]
-    public IActionResult ShowPage([FromServices] GetPageViewHandler handler, [FromRoute] string page)
+    public IActionResult ShowPage(
+        [FromServices] GetPageViewHandler handler, 
+        [FromRoute] string page)
     {
         var viewPath = handler.GetPageView(page, HttpContext);
         return viewPath switch

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 [Injectable]
 public class CreateCategoryHandler
 {
+    public const string DuplicateCategory = nameof(DuplicateCategory);
+
     private readonly IBlogRepository _blogRepository;
 
     public CreateCategoryHandler(IBlogRepository blogRepository)
@@ -20,6 +22,10 @@ public class CreateCategoryHandler
     {
         if (request.GenerateSlugFromName || string.IsNullOrWhiteSpace(request.Category.Slug))
             request.Category.Slug = Slugifier.Slugify(request.Category.Name);
+
+        var existing = await _blogRepository.GetCategoryBySlugAsync(request.Category.Slug);
+        if (existing is not null)
+            return Error.Other(DuplicateCategory);
 
         await _blogRepository.CreateCategoryAsync(request.Category);
 

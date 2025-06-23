@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Alkaline64.Injectable.Extensions;
 using Soapbox.Domain.Users;
 using Soapbox.DataAccess.Abstractions;
+using Soapbox.DataAccess.FileSystem.Abstractions;
 
 public static class DependencyInjection
 {
@@ -30,6 +31,11 @@ public static class DependencyInjection
             .CreateScope().ServiceProvider
             .GetRequiredService<ITransactionalUserStore<SoapboxUser>>()
             .InitAsync()).RunSynchronously();
+
+        app.ApplicationServices
+            .CreateScope().ServiceProvider
+            .GetRequiredService<IBlogStore>()
+            .Init();
 
         return app;
     }

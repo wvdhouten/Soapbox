@@ -138,6 +138,8 @@ public partial class UserFileSystemStore :
 
     public async Task CommitChangesAsync()
     {
+        // TODO: persist only users with changes.
+
         foreach (var user in _memoryStore.Users.Values)
             await PersistUserAsync(user);
     }

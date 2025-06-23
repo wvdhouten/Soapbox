@@ -13,7 +13,10 @@ using Soapbox.Web.Controllers.Base;
 public class MediaController : SoapboxControllerBase
 {
     [HttpGet]
-    public IActionResult Index([FromServices] ListFilesHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
+    public IActionResult Index(
+        [FromServices] ListFilesHandler handler,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25)
     {
         var result = handler.GetPage(page, pageSize);
         return result switch
@@ -27,7 +30,9 @@ public class MediaController : SoapboxControllerBase
     public IActionResult Upload() => View();
 
     [HttpPost]
-    public IActionResult Upload([FromServices] UploadFilesHandler handler, UploadFilesRequest request)
+    public IActionResult Upload(
+        [FromServices] UploadFilesHandler handler, 
+        [FromForm] UploadFilesRequest request)
     {
         var result = handler.UploadFiles(request);
         return result switch
@@ -38,12 +43,14 @@ public class MediaController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public IActionResult Delete([FromServices] DeleteFileHandler handler, string name)
+    public IActionResult Delete(
+        [FromServices] DeleteFileHandler handler,
+        [FromRoute] string id)
     {
-        var result = handler.DeleteFile(name);
+        var result = handler.DeleteFile(id);
         return result switch
         {
-            { IsSuccess: true } => RedirectToAction(nameof(Index)),
+            { IsSuccess: true } => WithStatusMessage($"{id} deleted.").RedirectToAction(nameof(Index)),
             _ => BadRequest("Something went wrong.")
         };
     }

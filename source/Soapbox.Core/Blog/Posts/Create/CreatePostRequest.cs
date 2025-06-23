@@ -4,7 +4,7 @@ using Soapbox.Domain.Blog;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-public class CreatePostRequest
+public class CreatePostRequest : ICanAddCategory
 {
     public Post Post { get; set; } = new();
 
@@ -17,7 +17,10 @@ public class CreatePostRequest
     [Display(Name = "Update")]
     public bool UpdatePublishedOn { get; set; } = true;
 
-    public IEnumerable<string> SelectedCategories { get; set; } = [];
+    [Display(Name = "Categories")]
+    public IList<string> SelectedCategories { get; set; } = [];
 
     public string? NewCategory { get; set; }
+
+    public string? Action { get; set; }
 }

@@ -17,5 +17,7 @@ public interface IBlogStore
 
     public Result DeleteCategory(string postId);
 
+    public void Init();
+
     public void Refresh();
 }

@@ -1,3 +1,7 @@
+figure > table {
+  margin-bottom: 0.67em;
+}
+
 table {
   width: 100%;
   max-width: 100%;
@@ -8,6 +12,22 @@ table {
   td {
     padding: .3em .7em;
     border: 1px solid var(--md-border-subtle);
+  }
+
+  th.actions,
+  td.actions {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 0;
+  }
+
+  th:last-child,
+  td:last-child {
+    padding-right: 0;
   }
 
   thead {

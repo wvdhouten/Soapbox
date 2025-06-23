@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Alkaline64.Injectable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -17,20 +17,23 @@ using Soapbox.Domain.Email;
 [Injectable<IEmailRenderer>]
 public class RazorEmailRenderer : IEmailRenderer
 {
-    private readonly IRazorViewEngine _viewEngine;
-    private readonly ITempDataProvider _tempDataProvider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICompositeViewEngine _viewEngine;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ITempDataProvider _tempDataProvider;
     private readonly ILogger<RazorEmailRenderer> _logger;
 
     public RazorEmailRenderer(
-        IRazorViewEngine viewEngine,
-        ITempDataProvider tempDataProvider,
+        IHttpContextAccessor httpContextAccessor,
+        ICompositeViewEngine viewEngine,
         IServiceProvider serviceProvider,
+        ITempDataProvider tempDataProvider,
         ILogger<RazorEmailRenderer> logger)
     {
+        _httpContextAccessor = httpContextAccessor;
         _viewEngine = viewEngine;
-        _tempDataProvider = tempDataProvider;
         _serviceProvider = serviceProvider;
+        _tempDataProvider = tempDataProvider;
         _logger = logger;
     }
 
@@ -40,14 +43,15 @@ public class RazorEmailRenderer : IEmailRenderer
 
         // TODO: Maybe also search the Content folder
         // Note: You can also support multiple languages by separating each locale into a folder
-        var viewPath = $"/Views/EmailTemplate/{templateName}.cshtml";
-        var result = _viewEngine.GetView(null, viewPath, true);
+        var result = _viewEngine.GetView(null, templateName, true);
+        if (result.Success == false)
+            result = _viewEngine.FindView(actionContext, templateName, true);
 
         if (result.Success != true)
         {
             var searchedLocations = string.Join("\n", result.SearchedLocations);
-            _logger.LogError("Could not find view: {viewPath}. Searched locations:\n{searchedLocations}", viewPath, searchedLocations);
-            throw new InvalidOperationException($"Could not find view: {viewPath}. Searched locations:\n{searchedLocations}");
+            _logger.LogError("Could not find view: {viewPath}. Searched locations:\n{searchedLocations}", templateName, searchedLocations);
+            throw new InvalidOperationException($"Could not find view: {templateName}. Searched locations:\n{searchedLocations}");
         }
 
         var view = result.View;
@@ -71,12 +75,10 @@ public class RazorEmailRenderer : IEmailRenderer
         return writer.ToString();
     }
 
+    // For Razor Pages, set RouteData with "page" key and value as templateName
     private ActionContext GetActionContext()
     {
-        var httpContext = new DefaultHttpContext
-        {
-            RequestServices = _serviceProvider
-        };
-        return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        var httpContext = _httpContextAccessor.HttpContext ?? new DefaultHttpContext { RequestServices = _serviceProvider };
+        return new ActionContext(httpContext, new RouteData { Values = { { "Controller", "EmailTemplates" } } }, new ControllerActionDescriptor { ControllerName = "EmailTemplates", ActionName = "Email" });
     }
 }

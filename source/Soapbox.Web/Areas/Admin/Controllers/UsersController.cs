@@ -16,7 +16,10 @@ using System.Threading.Tasks;
 public class UsersController : SoapboxControllerBase
 {
     [HttpGet]
-    public IActionResult Index([FromServices] ListUsersHandler handler, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
+    public IActionResult Index(
+        [FromServices] ListUsersHandler handler,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25)
     {
         var result = handler.GetUsersPage(page, pageSize);
         return result switch
@@ -30,7 +33,9 @@ public class UsersController : SoapboxControllerBase
     public IActionResult Create() => View(new CreateUserRequest());
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromServices] CreateUserHandler handler, [FromForm] CreateUserRequest request)
+    public async Task<IActionResult> Create(
+        [FromServices] CreateUserHandler handler,
+        [FromForm] CreateUserRequest request)
     {
         if (!ModelState.IsValid)
             return View(request);
@@ -44,8 +49,10 @@ public class UsersController : SoapboxControllerBase
         };
     }
 
-    [HttpGet("[action]/{id}")]
-    public async Task<IActionResult> Edit([FromServices] GetUserHandler handler, string id)
+    [HttpGet]
+    public async Task<IActionResult> Edit(
+        [FromServices] GetUserHandler handler,
+        [FromRoute] string id)
     {
         var result = await handler.GetUserById(id);
         return result switch
@@ -64,7 +71,9 @@ public class UsersController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromServices] EditUserHandler handler, [FromForm] EditUserRequest request)
+    public async Task<IActionResult> Edit(
+        [FromServices] EditUserHandler handler,
+        [FromForm] EditUserRequest request)
     {
         if (!ModelState.IsValid)
             return View(request);
@@ -79,8 +88,10 @@ public class UsersController : SoapboxControllerBase
         };
     }
 
-    [HttpGet("[action]/{id}")]
-    public async Task<IActionResult> Delete([FromServices] GetUserHandler handler, string id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(
+        [FromServices] GetUserHandler handler,
+        [FromRoute] string id)
     {
         // TODO! Implement a confirmation view for deletion.
 
@@ -94,7 +105,9 @@ public class UsersController : SoapboxControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete([FromServices] DeleteUserHandler handler, [FromBody]string id)
+    public async Task<IActionResult> Delete(
+        [FromServices] DeleteUserHandler handler,
+        [FromBody] string id)
     {
         var result = await handler.DeleteUserAsync(id);
         return result switch

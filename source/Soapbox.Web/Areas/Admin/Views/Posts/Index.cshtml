@@ -21,7 +21,7 @@
           <th>Author</th>
           <th>Date</th>
           <th>Categories</th>
-          <th></th>
+          <th class="actions"></th>
         </tr>
       </thead>
       <tbody>
@@ -42,7 +42,7 @@
                 @string.Join("; ", post.Categories.Select(c => c.Name))
               </span>
             </td>
-            <td>
+            <td class="actions">
               <a asp-area="Admin" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" class="button small"><i class="fa fa-trash"></i></a>
             </td>
           </tr>

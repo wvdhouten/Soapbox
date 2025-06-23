@@ -54,7 +54,7 @@ internal record PostRecord
     /// <summary>
     /// Gets or sets the publication date.
     /// </summary>
-    public DateTime PublishedOn { get; set; } = DateTime.MaxValue;
+    public DateTime PublishedOn { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// Gets or sets the categories.
@@ -85,7 +85,7 @@ internal record PostRecord
     public static implicit operator PostRecord(Post post)
         => new()
         {
-            Id = post.Id!,
+            Id = post.Id,
             Title = post.Title,
             Slug = post.Slug,
             AuthorId = post.Author.Id,

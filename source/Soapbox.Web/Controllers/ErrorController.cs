@@ -9,7 +9,9 @@ public class ErrorController : SoapboxControllerBase
 {
     [HttpGet]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Index([FromServices] GetErrorDetailsHandler handler, [FromQuery] int? statusCode = null)
+    public IActionResult Index(
+        [FromServices] GetErrorDetailsHandler handler,
+        [FromQuery] int? statusCode = null)
     {
         var result = handler.GetErrorDetails(statusCode);
         return result.IsSuccess switch

@@ -21,7 +21,7 @@
           <th>Name</th>
           <th>Size</th>
           <th>Last modified</th>
-          <th></th>
+          <th class="actions"></th>
         </tr>
       </thead>
       <tbody>
@@ -31,8 +31,8 @@
             <td><a href="@($"{Context.Request.BaseUrl()}/Media/{media.Name}")" target="_blank">@media.Name</a></td>
             <td><file-size length="@media.Size" /></td>
             <td><time value="media.ModifiedOn" format="yyyy-MM-dd hh:mm:ss" /></td>
-            <td>
-              <form asp-area="Admin" asp-controller="Media" asp-action="Delete" asp-route-name="@media.Name" method="post">
+            <td class="actions">
+              <form asp-area="Admin" asp-controller="Media" asp-action="Delete" asp-route-id="@media.Name" method="post">
                 <button type="submit" class="small"><i class="fa fa-trash"></i></button>
               </form>
             </td>

@@ -14,14 +14,10 @@ public class EditSettingsHandler
     private readonly string _configPath = Path.Combine(Environment.CurrentDirectory, FolderNames.Config);
     private readonly JsonWriterOptions _jsonWriterOptions = new() { Indented = true };
 
-    private readonly SiteSettings _config;
     private readonly IViewEngineManager _viewEngineManager;
 
-    public EditSettingsHandler(
-        IOptionsSnapshot<SiteSettings> config,
-        IViewEngineManager viewEngineManager)
+    public EditSettingsHandler(IViewEngineManager viewEngineManager)
     {
-        _config = config.Value;
         _viewEngineManager = viewEngineManager;
     }
 
@@ -34,7 +30,7 @@ public class EditSettingsHandler
         return Result.Success();
     }
 
-    public void SaveToFile<TConfig>(TConfig config, string fileName)
+    private void SaveToFile<TConfig>(TConfig config, string fileName)
     {
         var filePath = Path.Combine(_configPath, fileName);
 
@@ -48,7 +44,7 @@ public class EditSettingsHandler
         writer.WriteEndObject();
         writer.Flush();
 
-        // A sleep will (likely) wait until the file is truly written.
+        // This sleep will (most likely) wait until the file is truly written, and result in the settings being available immediately.
         Thread.Sleep(500);
     }
 }

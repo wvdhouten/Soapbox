@@ -65,8 +65,8 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Content\" />
     <Folder Include="Content\Identity\" />
+    <Folder Include="Content\Views\" />
     <Folder Include="Logs\" />
     <Folder Include="Models\" />
   </ItemGroup>
@@ -75,9 +75,5 @@
     <None Include="Themes\*\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Themes\Modern\_Layout.cshtml" />
   </ItemGroup>
 </Project>

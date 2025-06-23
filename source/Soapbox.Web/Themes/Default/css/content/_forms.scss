@@ -1,11 +1,13 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-bottom: 12px;
 }
 
 .form-group > label,
 .form-group > .label {
+  align-self: start;
   margin-bottom: 4px;
 }
 

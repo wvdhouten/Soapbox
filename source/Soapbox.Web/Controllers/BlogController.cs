@@ -17,7 +17,10 @@ public class BlogController : SoapboxControllerBase
     private const string PostViewName = "_Post";
 
     [HttpGet("{page:int=1}")]
-    public async Task<IActionResult> Index([FromServices] ListPostsHandler handler, [FromRoute] int page = 1, [FromQuery] int pageSize = 5)
+    public async Task<IActionResult> Index(
+        [FromServices] ListPostsHandler handler,
+        [FromRoute] int page = 1, 
+        [FromQuery] int pageSize = 5)
     {
         var result = await handler.GetPostsPage(page, pageSize);
         return result.IsSuccess switch
@@ -28,7 +31,9 @@ public class BlogController : SoapboxControllerBase
     }
 
     [HttpGet("{slug}")]
-    public async Task<IActionResult> PostBySlug([FromServices] GetPostHandler handler, [FromRoute] string slug)
+    public async Task<IActionResult> PostBySlug(
+        [FromServices] GetPostHandler handler,
+        [FromRoute] string slug)
     {
         var result = await handler.GetPostBySlugAsync(slug);
         return result.IsSuccess switch
@@ -41,7 +46,9 @@ public class BlogController : SoapboxControllerBase
 
     [HttpGet("post/{id}")]
     [ActionName("PostView")]
-    public async Task<IActionResult> PostById([FromServices] GetPostHandler handler, [FromRoute] string id)
+    public async Task<IActionResult> PostById(
+        [FromServices] GetPostHandler handler,
+        [FromRoute] string id)
     {
         var result = await handler.GetPostByIdAsync(id);
         return result.IsSuccess switch

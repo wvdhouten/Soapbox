@@ -38,7 +38,7 @@ public class CreatePostHandler
         return Result.Success();
     }
 
-    public async Task<Result> CreatePost(CreatePostRequest request)
+    public async Task<Result> CreatePostAsync(CreatePostRequest request)
     {
         request.Post.Author = new SoapboxUser { Id = _contextAccessor.HttpContext.User.GetUserId() };
         var now = DateTime.UtcNow;

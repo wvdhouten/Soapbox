@@ -20,7 +20,7 @@
           <th>Name</th>
           <th>Slug</th>
           <th>Posts</th>
-          <th></th>
+          <th class="actions"></th>
         </tr>
       </thead>
       <tbody>
@@ -30,7 +30,7 @@
             <td><a asp-area="Admin" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">@category.Name</a></td>
             <td>@category.Slug</td>
             <td>@category.Posts.Count</td>
-            <td>
+            <td class="actions">
               <form asp-area="Admin" asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post">
                 <button type="submit" class="small"><i class="fa fa-trash"></i></button>
               </form>
